@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegalForms</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{font-size:16px;margin:0;padding:0;background:#eef2f7}
+input,select,textarea,button{font-size:16px!important;font-family:inherit}
+.screen{display:none}.screen.active{display:block}
+.form-input{width:100%;border:1.5px solid #d1d5db;border-radius:10px;padding:11px 13px;background:#fff;color:#111827;transition:border-color .15s}
+.form-input:focus{outline:none;border-color:#1a3a5c;box-shadow:0 0 0 3px rgba(26,58,92,.15)}
+.toggle-group{display:flex;gap:6px}
+.toggle-btn{flex:1;padding:11px 8px;border:2px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;line-height:1.2}
+.toggle-btn.on{background:#1a3a5c;border-color:#1a3a5c;color:#fff}
+.sec-hd{background:#1a3a5c;color:#fff;padding:11px 15px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.04em}
+.sec-bd{background:#fff;border:1.5px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;padding:15px}
+.fld{margin-bottom:14px}.fld:last-child{margin-bottom:0}
+.fld-lbl{display:block;font-size:12px;font-weight:700;color:#6b7280;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.yn-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6}
+.yn-row:last-child{border-bottom:none}
+.yn-mini{display:flex;gap:5px}
+.yn-mini .toggle-btn{padding:7px 14px;font-size:14px}
+.chk-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;border-bottom:1px solid #f3f4f6}
+.chk-row:last-child{border-bottom:none}
+.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#1a3a5c;cursor:pointer}
+.mini-inp{border:1.5px solid #d1d5db;border-radius:7px;padding:7px 8px;font-size:13px;width:100%;background:#fff}
+.mini-inp:focus{outline:none;border-color:#1a3a5c}
+.tel-hd{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;padding:0 2px;margin-bottom:3px}
+.tel-row-g{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;margin-bottom:5px;align-items:center}
+.tbl-hd{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase}
+.tr-hd{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;padding:0 2px;margin-bottom:3px}
+.tr-row-g{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;margin-bottom:5px;align-items:center}
+.fc-flag{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:700;margin-top:8px}
+.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#1a3a5c}
+.det-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6}
+.det-row:last-child{border-bottom:none}
+.narrative-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:#1e293b}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ---- Dictation ---- */
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 22px rgba(239,68,68,0)}}
+.mic-idle{background:#1a3a5c;color:#fff;border:none}
+.mic-recording{background:#ef4444!important;color:#fff;animation:mic-pulse 1.4s ease-in-out infinite}
+.mic-processing{background:#64748b!important;color:#fff}
+.dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
+.dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s;active:opacity-80}
+</style>
+</head>
+<body>
+<div id="app" class="max-w-lg mx-auto pb-12">
+
+<!-- ===== HOME ===== -->
+<div id="screen-home" class="screen active">
+  <div class="bg-[#1a3a5c] px-6 pt-14 pb-10 text-white text-center">
+    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    </div>
+    <h1 class="text-3xl font-bold tracking-tight">LegalForms</h1>
+    <p class="text-blue-200 mt-1 text-lg">Digital Attendance Notes</p>
+  </div>
+  <div class="p-4 space-y-3 mt-1">
+    <button onclick="openForm('form1')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
+      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-gray-900 text-lg">Police Station</p>
+        <p class="text-gray-400 text-sm mt-0.5">Custody attendance note</p>
+      </div>
+      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button onclick="openForm('form2')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
+      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-gray-900 text-lg">Magistrates Court</p>
+        <p class="text-gray-400 text-sm mt-0.5">Court attendance note</p>
+      </div>
+      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button onclick="openForm('form3')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
+      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-gray-900 text-lg">Crown Court</p>
+        <p class="text-gray-400 text-sm mt-0.5">Attendance note</p>
+      </div>
+      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button onclick="openDictation()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
+      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-gray-900 text-lg">🎙️ Voice Dictation</p>
+        <p class="text-gray-400 text-sm mt-0.5">Speak your notes — get instant text</p>
+      </div>
+      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button onclick="showScreen('settings')" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="font-medium">Settings</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== SETTINGS ===== -->
+<div id="screen-settings" class="screen">
+  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <span class="flex-1 font-bold text-lg">Settings</span>
+    <button onclick="saveSettings()" class="bg-white text-[#1a3a5c] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
+  </div>
+  <div class="p-4">
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-900 mb-4 text-lg">Practice Details</h2>
+      <div class="space-y-4">
+        <div class="fld">
+          <label class="fld-lbl">Solicitor Name</label>
+          <input type="text" id="settings-solicitor" class="form-input" placeholder="e.g. Jane Smith">
+        </div>
+        <div class="fld">
+          <label class="fld-lbl">Firm Name</label>
+          <input type="text" id="settings-firm" class="form-input" placeholder="e.g. Smith & Associates LLP">
+        </div>
+        <div class="fld">
+          <label class="fld-lbl">Firm Address</label>
+          <textarea id="settings-address" rows="3" class="form-input resize-none" placeholder="Enter firm address"></textarea>
+        </div>
+      </div>
+    </div>
+    <p id="settings-msg" class="text-center text-green-600 font-semibold mt-4 hidden">✓ Settings saved</p>
+  </div>
+</div>
+
+<!-- ===== FORM 1: POLICE STATION ===== -->
+<div id="screen-form1" class="screen">
+  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <span class="flex-1 font-bold">Police Station Attendance</span>
+    <button onclick="generateForm1PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+  </div>
+  <div class="p-4 space-y-4">
+
+    <!-- S1: Header -->
+    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Date</label><input type="date" id="f1-date" class="form-input"></div>
+        <div><label class="fld-lbl">UFN</label><input type="text" id="f1-ufn" class="form-input" placeholder="UFN"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">DSCC Reference</label><input type="text" id="f1-dscc" class="form-input"></div>
+        <div><label class="fld-lbl">Custody Number</label><input type="text" id="f1-custody" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Police Station</label><input type="text" id="f1-station" class="form-input" placeholder="Name of police station"></div>
+      <div class="fld"><label class="fld-lbl">Case Type</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f1-case-type" data-val="Own" onclick="setToggle('f1-case-type','Own')">Own</button>
+          <button class="toggle-btn" data-group="f1-case-type" data-val="Duty" onclick="setToggle('f1-case-type','Duty')">Duty</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Representative Name</label><input type="text" id="f1-rep" class="form-input" placeholder="Auto-filled from settings"></div>
+    </div></div>
+
+    <!-- S2: Client Details -->
+    <div><div class="sec-hd">CLIENT DETAILS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Full Name</label><input type="text" id="f1-client-name" class="form-input"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Date of Birth</label><input type="date" id="f1-dob" class="form-input" oninput="calcAge('f1-dob','f1-age')"></div>
+        <div><label class="fld-lbl">Age</label><input type="number" id="f1-age" class="form-input" placeholder="Auto" readonly></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Address</label><textarea id="f1-address" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Phone</label><input type="tel" id="f1-phone" class="form-input"></div>
+        <div><label class="fld-lbl">Email</label><input type="email" id="f1-email" class="form-input"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Gender</label>
+          <select id="f1-gender" class="form-input">
+            <option value="">Select</option><option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+          </select>
+        </div>
+        <div><label class="fld-lbl">Nationality</label><input type="text" id="f1-nationality" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Ethnicity</label>
+        <select id="f1-ethnicity" class="form-input">
+          <option value="">Select ethnicity</option>
+          <option>White - British</option><option>White - Irish</option><option>White - Other</option>
+          <option>Mixed - White and Black Caribbean</option><option>Mixed - White and Black African</option>
+          <option>Mixed - White and Asian</option><option>Mixed - Other</option>
+          <option>Asian or Asian British - Indian</option><option>Asian or Asian British - Pakistani</option>
+          <option>Asian or Asian British - Bangladeshi</option><option>Asian or Asian British - Chinese</option>
+          <option>Asian or Asian British - Other</option>
+          <option>Black or Black British - Caribbean</option><option>Black or Black British - African</option>
+          <option>Black or Black British - Other</option>
+          <option>Arab</option><option>Other ethnic group</option><option>Prefer not to say</option>
+        </select>
+      </div>
+      <div class="fld"><label class="fld-lbl">NI Number</label><input type="text" id="f1-ni" class="form-input" placeholder="XX 00 00 00 X"></div>
+      <div class="fld"><label class="fld-lbl">Youth Client</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f1-youth" data-val="Yes" onclick="setToggle('f1-youth','Yes')">Yes (Under 18)</button>
+          <button class="toggle-btn on" data-group="f1-youth" data-val="No" onclick="setToggle('f1-youth','No')">No</button>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S3: Police Details -->
+    <div><div class="sec-hd">POLICE DETAILS</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Arrest Date</label><input type="date" id="f1-arrest-date" class="form-input"></div>
+        <div><label class="fld-lbl">Arrest Time</label><input type="time" id="f1-arrest-time" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Place of Arrest</label><input type="text" id="f1-arrest-place" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Offence(s)</label><textarea id="f1-offence" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="fld">
+        <label class="fld-lbl">Attendance Type</label>
+        <label class="chk-row"><input type="checkbox" id="f1-interview-cb"><span>Interview</span></label>
+        <label class="chk-row"><input type="checkbox" id="f1-idparade-cb"><span>ID Parade</span></label>
+      </div>
+      <div class="fld"><label class="fld-lbl">Officer Name(s)</label><input type="text" id="f1-officers" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Attendance</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f1-vol-arrest" data-val="Voluntary" onclick="setToggle('f1-vol-arrest','Voluntary')">Voluntary</button>
+          <button class="toggle-btn" data-group="f1-vol-arrest" data-val="Arrested" onclick="setToggle('f1-vol-arrest','Arrested')">Arrested</button>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Additional Flags</label>
+        <label class="chk-row"><input type="checkbox" id="f1-access-delayed"><span>Access Delayed</span></label>
+        <label class="chk-row"><input type="checkbox" id="f1-vulnerable"><span>Vulnerable Client</span></label>
+        <label class="chk-row"><input type="checkbox" id="f1-fme"><span>FME Requested</span></label>
+      </div>
+      <div class="fld"><label class="fld-lbl">Fit for Interview</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f1-fit" data-val="Yes" onclick="setToggle('f1-fit','Yes')">Yes</button>
+          <button class="toggle-btn" data-group="f1-fit" data-val="No" onclick="setToggle('f1-fit','No')">No</button>
+          <button class="toggle-btn" data-group="f1-fit" data-val="Pending" onclick="setToggle('f1-fit','Pending')">Pending</button>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S4: Co-Defendants -->
+    <div><div class="sec-hd">CO-DEFENDANTS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Conflict of Interest</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f1-conflict" data-val="Yes" onclick="setToggle('f1-conflict','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f1-conflict" data-val="No" onclick="setToggle('f1-conflict','No')">No</button>
+        </div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Co-Defendant Name</label><input type="text" id="f1-codef-name" class="form-input"></div>
+        <div><label class="fld-lbl">Custody Number</label><input type="text" id="f1-codef-custody" class="form-input"></div>
+      </div>
+    </div></div>
+
+    <!-- S5: Police Information -->
+    <div><div class="sec-hd">POLICE INFORMATION</div><div class="sec-bd">
+      <label class="chk-row"><input type="checkbox" id="f1-custody-record"><span>Custody Record Viewed</span></label>
+      <label class="chk-row"><input type="checkbox" id="f1-prev-interview"><span>Previous Interview(s)</span></label>
+      <label class="chk-row"><input type="checkbox" id="f1-samples-taken"><span>Samples Taken</span></label>
+      <div class="fld mt-3"><label class="fld-lbl">Previous Interview — Client's Position</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f1-silence-stmt" data-val="Silence" onclick="setToggle('f1-silence-stmt','Silence')">Silence</button>
+          <button class="toggle-btn" data-group="f1-silence-stmt" data-val="Statement" onclick="setToggle('f1-silence-stmt','Statement')">Statement</button>
+          <button class="toggle-btn" data-group="f1-silence-stmt" data-val="N/A" onclick="setToggle('f1-silence-stmt','N/A')">N/A</button>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S6: Pre-Interview Advice -->
+    <div><div class="sec-hd">PRE-INTERVIEW ADVICE GIVEN</div><div class="sec-bd">
+      <div class="yn-row"><span>Caution Explained</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-caution" data-val="Yes" onclick="setToggle('f1-adv-caution','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-caution" data-val="No" onclick="setToggle('f1-adv-caution','No')">No</button></div></div>
+      <div class="yn-row"><span>Options Advised</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-options" data-val="Yes" onclick="setToggle('f1-adv-options','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-options" data-val="No" onclick="setToggle('f1-adv-options','No')">No</button></div></div>
+      <div class="yn-row"><span>Evidence Discussed</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-evidence" data-val="Yes" onclick="setToggle('f1-adv-evidence','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-evidence" data-val="No" onclick="setToggle('f1-adv-evidence','No')">No</button></div></div>
+      <div class="yn-row"><span>Samples Procedure</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-samples" data-val="Yes" onclick="setToggle('f1-adv-samples','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-samples" data-val="No" onclick="setToggle('f1-adv-samples','No')">No</button></div></div>
+      <div class="yn-row"><span>ID Procedures</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-id" data-val="Yes" onclick="setToggle('f1-adv-id','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-id" data-val="No" onclick="setToggle('f1-adv-id','No')">No</button></div></div>
+    </div></div>
+
+    <!-- S7: Client Instructions -->
+    <div><div class="sec-hd">CLIENT INSTRUCTIONS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Previous Convictions</label><textarea id="f1-prev-convictions" rows="2" class="form-input resize-none" placeholder="List any known previous convictions"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Version of Events</label><textarea id="f1-version-events" rows="4" class="form-input resize-none" placeholder="Client's account of events"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Alibi</label><textarea id="f1-alibi" rows="2" class="form-input resize-none" placeholder="Any alibi details"></textarea></div>
+    </div></div>
+
+    <!-- S8: Interview Advice -->
+    <div><div class="sec-hd">INTERVIEW ADVICE</div><div class="sec-bd">
+      <div class="fld">
+        <label class="fld-lbl">Advice Given</label>
+        <label class="chk-row"><input type="checkbox" id="f1-ia-nocomment"><span>No Comment</span></label>
+        <label class="chk-row"><input type="checkbox" id="f1-ia-comment"><span>Comment / Answer Questions</span></label>
+        <label class="chk-row"><input type="checkbox" id="f1-ia-statement"><span>Prepared Statement</span></label>
+      </div>
+      <div class="fld"><label class="fld-lbl">Reason for Advice</label><textarea id="f1-ia-reason" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Agreed Action</label><input type="text" id="f1-ia-action" class="form-input"></div>
+    </div></div>
+
+    <!-- S9: Interview Section -->
+    <div><div class="sec-hd">INTERVIEW</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Attended Interview</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f1-int-attended" data-val="Yes" onclick="setToggle('f1-int-attended','Yes')">Yes</button>
+          <button class="toggle-btn" data-group="f1-int-attended" data-val="No" onclick="setToggle('f1-int-attended','No')">No</button>
+        </div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Start Time</label><input type="time" id="f1-int-start" class="form-input"></div>
+        <div><label class="fld-lbl">End Time</label><input type="time" id="f1-int-end" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Interview Notes</label><textarea id="f1-int-notes" rows="3" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S10: Result -->
+    <div><div class="sec-hd">RESULT</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Outcome</label>
+        <select id="f1-result" class="form-input">
+          <option value="">Select outcome</option>
+          <option>Bailed</option><option>Charged</option><option>NFA (No Further Action)</option>
+          <option>RUI (Released Under Investigation)</option><option>Remanded in Custody</option>
+        </select>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Court Name</label><input type="text" id="f1-court-name" class="form-input"></div>
+        <div><label class="fld-lbl">Court Date</label><input type="date" id="f1-court-date" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Bail Conditions</label><textarea id="f1-bail-conditions" rows="2" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S11: Travel and Time -->
+    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Outward (HH:MM)</label><input type="text" id="f1-t-out" class="form-input" placeholder="0:30" oninput="calcF1Total()"></div>
+        <div><label class="fld-lbl">Waiting (HH:MM)</label><input type="text" id="f1-t-wait" class="form-input" placeholder="0:45" oninput="calcF1Total()"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Attendance (HH:MM)</label><input type="text" id="f1-t-attend" class="form-input" placeholder="1:00" oninput="calcF1Total()"></div>
+        <div><label class="fld-lbl">Return (HH:MM)</label><input type="text" id="f1-t-return" class="form-input" placeholder="0:30" oninput="calcF1Total()"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Total Time</label><input type="text" id="f1-t-total" class="form-input bg-gray-50" readonly placeholder="Auto-calculated"></div>
+        <div><label class="fld-lbl">Mileage</label><input type="number" id="f1-mileage" class="form-input" placeholder="0"></div>
+      </div>
+    </div></div>
+
+    <!-- S12: Telephone Calls -->
+    <div><div class="sec-hd">TELEPHONE CALLS</div><div class="sec-bd">
+      <div class="tel-hd">
+        <span class="tbl-hd">Date</span>
+        <span class="tbl-hd">Time</span>
+        <span class="tbl-hd">Person</span>
+        <span class="tbl-hd">Type</span>
+        <span class="tbl-hd">Dur.</span>
+        <span></span>
+      </div>
+      <div id="f1-tel-body"></div>
+      <button onclick="addTelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Call</button>
+    </div></div>
+
+    <button onclick="generateForm1PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+  </div>
+</div>
+
+<!-- ===== FORM 2: MAGISTRATES COURT ===== -->
+<div id="screen-form2" class="screen">
+  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <span class="flex-1 font-bold">Magistrates Court</span>
+    <button onclick="generateForm2PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+  </div>
+  <div class="p-4 space-y-4">
+
+    <!-- S1: Header -->
+    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Court</label><input type="text" id="f2-court" class="form-input" placeholder="Court name"></div>
+        <div><label class="fld-lbl">Date</label><input type="date" id="f2-date" class="form-input"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Case Reference</label><input type="text" id="f2-case-ref" class="form-input"></div>
+        <div><label class="fld-lbl">DSCC Reference</label><input type="text" id="f2-dscc" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Fee Earner</label><input type="text" id="f2-fee-earner" class="form-input" placeholder="Auto-filled from settings"></div>
+    </div></div>
+
+    <!-- S2: Client Details -->
+    <div><div class="sec-hd">CLIENT DETAILS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Full Name</label><input type="text" id="f2-client-name" class="form-input"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Date of Birth</label><input type="date" id="f2-dob" class="form-input" oninput="calcAge('f2-dob','f2-age')"></div>
+        <div><label class="fld-lbl">Age</label><input type="number" id="f2-age" class="form-input" readonly placeholder="Auto"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Ethnicity</label>
+        <select id="f2-ethnicity" class="form-input">
+          <option value="">Select</option>
+          <option>White - British</option><option>White - Irish</option><option>White - Other</option>
+          <option>Mixed - White and Black Caribbean</option><option>Mixed - White and Black African</option>
+          <option>Mixed - White and Asian</option><option>Mixed - Other</option>
+          <option>Asian or Asian British - Indian</option><option>Asian or Asian British - Pakistani</option>
+          <option>Asian or Asian British - Bangladeshi</option><option>Asian or Asian British - Chinese</option>
+          <option>Asian or Asian British - Other</option>
+          <option>Black or Black British - Caribbean</option><option>Black or Black British - African</option>
+          <option>Black or Black British - Other</option>
+          <option>Arab</option><option>Other ethnic group</option><option>Prefer not to say</option>
+        </select>
+      </div>
+      <div class="fld"><label class="fld-lbl">Address</label><textarea id="f2-address" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Contact</label><input type="tel" id="f2-contact" class="form-input"></div>
+        <div><label class="fld-lbl">NI Number</label><input type="text" id="f2-ni" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Income / Employment</label><input type="text" id="f2-income" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Allegations</label><textarea id="f2-allegations" rows="2" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S3: Arrest Details -->
+    <div><div class="sec-hd">ARREST DETAILS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Custody Reference</label><input type="text" id="f2-custody-ref" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Attendance</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f2-arrested" data-val="Arrested" onclick="setToggle('f2-arrested','Arrested')">Arrested</button>
+          <button class="toggle-btn" data-group="f2-arrested" data-val="Voluntary" onclick="setToggle('f2-arrested','Voluntary')">Voluntary</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Arresting Officer</label><input type="text" id="f2-officer" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Place of Arrest</label><input type="text" id="f2-arrest-place" class="form-input"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Arrest Date</label><input type="date" id="f2-arrest-date" class="form-input" oninput="calcF2Detention()"></div>
+        <div><label class="fld-lbl">Arrest Time</label><input type="time" id="f2-arrest-time" class="form-input" oninput="calcF2Detention()"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Detention Authorised</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f2-det-auth" data-val="Yes" onclick="setToggle('f2-det-auth','Yes')">Yes</button>
+          <button class="toggle-btn" data-group="f2-det-auth" data-val="No" onclick="setToggle('f2-det-auth','No')">No</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">OIC Details</label><input type="text" id="f2-oic" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Warrants / Bail Conditions</label><textarea id="f2-warrants" rows="2" class="form-input resize-none"></textarea></div>
+      <label class="chk-row"><input type="checkbox" id="f2-access-delayed"><span>Access Delayed</span></label>
+    </div></div>
+
+    <!-- S4: First Contact Times -->
+    <div><div class="sec-hd">FIRST CONTACT TIMES</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Notified</label><input type="time" id="f2-fc-notified" class="form-input" oninput="checkF2FC()"></div>
+        <div><label class="fld-lbl">First Contact</label><input type="time" id="f2-fc-contact" class="form-input" oninput="checkF2FC()"></div>
+      </div>
+      <div id="f2-fc-flag" class="fc-flag">⚠ Over 45 minutes between notification and first contact</div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Advised Attending</label><input type="time" id="f2-fc-advised" class="form-input"></div>
+        <div><label class="fld-lbl">Requested</label><input type="time" id="f2-fc-requested" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Arrived</label><input type="time" id="f2-fc-arrived" class="form-input"></div>
+    </div></div>
+
+    <!-- S5: Travel Table -->
+    <div><div class="sec-hd">TRAVEL TABLE</div><div class="sec-bd">
+      <div class="tr-hd">
+        <span class="tbl-hd">Date</span>
+        <span class="tbl-hd">Out</span>
+        <span class="tbl-hd">Wait</span>
+        <span class="tbl-hd">Attend</span>
+        <span class="tbl-hd">Return</span>
+        <span class="tbl-hd">Miles</span>
+        <span class="tbl-hd">Earner</span>
+      </div>
+      <div id="f2-travel-body"></div>
+      <div class="tr-row-g mt-1 text-xs font-bold text-gray-700">
+        <span class="text-[#1a3a5c]">TOTAL</span>
+        <span id="f2-tr-tot-out">—</span>
+        <span id="f2-tr-tot-wait">—</span>
+        <span id="f2-tr-tot-attend">—</span>
+        <span id="f2-tr-tot-return">—</span>
+        <span id="f2-tr-tot-miles">—</span>
+        <span></span>
+      </div>
+      <button onclick="addTravelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Row</button>
+    </div></div>
+
+    <!-- S6: Detention Reviews -->
+    <div><div class="sec-hd">DETENTION REVIEWS</div><div class="sec-bd">
+      <p class="text-xs text-gray-400 mb-3">Auto-calculated from arrest date/time</p>
+      <div class="det-row"><span class="text-gray-700 font-medium">6-hour review</span><span id="f2-det-6" class="det-pill">—</span></div>
+      <div class="det-row"><span class="text-gray-700 font-medium">15-hour review</span><span id="f2-det-15" class="det-pill">—</span></div>
+      <div class="det-row"><span class="text-gray-700 font-medium">24-hour review</span><span id="f2-det-24" class="det-pill">—</span></div>
+    </div></div>
+
+    <!-- S7: Disclosure -->
+    <div><div class="sec-hd">DISCLOSURE</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Officer</label><input type="text" id="f2-disc-officer" class="form-input"></div>
+        <div><label class="fld-lbl">Time</label><input type="time" id="f2-disc-time" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Details</label><textarea id="f2-disc-details" rows="3" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S8: Samples -->
+    <div><div class="sec-hd">SAMPLES</div><div class="sec-bd">
+      <label class="chk-row"><input type="checkbox" id="f2-samp-taken"><span>Samples Taken</span></label>
+      <label class="chk-row"><input type="checkbox" id="f2-samp-consent"><span>Consent Given</span></label>
+      <label class="chk-row"><input type="checkbox" id="f2-samp-nonintimate"><span>Non-Intimate Samples</span></label>
+      <label class="chk-row"><input type="checkbox" id="f2-samp-searches"><span>Searches Conducted</span></label>
+    </div></div>
+
+    <!-- S9: Co-Accused -->
+    <div><div class="sec-hd">CO-ACCUSED</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Co-Accused Present</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f2-coaccused" data-val="Yes" onclick="setToggle('f2-coaccused','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f2-coaccused" data-val="No" onclick="setToggle('f2-coaccused','No')">No</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Name(s)</label><input type="text" id="f2-co-names" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Represented By</label><input type="text" id="f2-co-rep" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Implicates Client</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f2-co-implicate" data-val="Yes" onclick="setToggle('f2-co-implicate','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f2-co-implicate" data-val="No" onclick="setToggle('f2-co-implicate','No')">No</button>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S10: Client Instructions -->
+    <div><div class="sec-hd">CLIENT INSTRUCTIONS</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Start Time</label><input type="time" id="f2-ci-start" class="form-input"></div>
+        <div><label class="fld-lbl">End Time</label><input type="time" id="f2-ci-end" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Instructions</label><textarea id="f2-ci-instructions" rows="4" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Previous Convictions</label><textarea id="f2-ci-prevconv" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Bail Status</label><input type="text" id="f2-ci-bail" class="form-input"></div>
+    </div></div>
+
+    <!-- S11: Advice Given -->
+    <div><div class="sec-hd">ADVICE GIVEN</div><div class="sec-bd">
+      <label class="chk-row"><input type="checkbox" id="f2-adv-detention"><span>Detention Rights Explained</span></label>
+      <label class="chk-row"><input type="checkbox" id="f2-adv-caution"><span>Caution Explained</span></label>
+      <label class="chk-row"><input type="checkbox" id="f2-adv-warnings"><span>Special Warnings Explained</span></label>
+      <div class="fld mt-3"><label class="fld-lbl">Advice Notes</label><textarea id="f2-adv-text" rows="3" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S12: Medical -->
+    <div><div class="sec-hd">MEDICAL</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Complaint / Condition</label><input type="text" id="f2-med-complaint" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Injuries</label><input type="text" id="f2-med-injuries" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Drug / Alcohol Dependency</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f2-addict" data-val="Yes" onclick="setToggle('f2-addict','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f2-addict" data-val="No" onclick="setToggle('f2-addict','No')">No</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">FME Requested</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f2-fme" data-val="Yes" onclick="setToggle('f2-fme','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f2-fme" data-val="No" onclick="setToggle('f2-fme','No')">No</button>
+        </div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Fit to Detain</label>
+          <div class="toggle-group">
+            <button class="toggle-btn on" data-group="f2-fit-detain" data-val="Yes" onclick="setToggle('f2-fit-detain','Yes')">Yes</button>
+            <button class="toggle-btn" data-group="f2-fit-detain" data-val="No" onclick="setToggle('f2-fit-detain','No')">No</button>
+          </div>
+        </div>
+        <div><label class="fld-lbl">Fit to Interview</label>
+          <div class="toggle-group">
+            <button class="toggle-btn on" data-group="f2-fit-interview" data-val="Yes" onclick="setToggle('f2-fit-interview','Yes')">Yes</button>
+            <button class="toggle-btn" data-group="f2-fit-interview" data-val="No" onclick="setToggle('f2-fit-interview','No')">No</button>
+          </div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S13: Interview Details -->
+    <div><div class="sec-hd">INTERVIEW DETAILS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Persons Present</label><input type="text" id="f2-int-persons" class="form-input"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Start Time</label><input type="time" id="f2-int-start" class="form-input"></div>
+        <div><label class="fld-lbl">End Time</label><input type="time" id="f2-int-end" class="form-input"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Reference</label><input type="text" id="f2-int-ref" class="form-input"></div>
+        <div><label class="fld-lbl">Seal Number</label><input type="text" id="f2-int-seal" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Notes</label><textarea id="f2-int-notes" rows="3" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S14: Result -->
+    <div><div class="sec-hd">RESULT</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Outcome</label>
+        <select id="f2-result" class="form-input">
+          <option value="">Select outcome</option>
+          <option>Bailed</option><option>Charged</option><option>NFA (No Further Action)</option>
+          <option>RUI (Released Under Investigation)</option><option>Remanded in Custody</option>
+        </select>
+      </div>
+      <div class="fld"><label class="fld-lbl">Court</label><input type="text" id="f2-result-court" class="form-input"></div>
+      <div class="fld"><label class="fld-lbl">Bail Conditions</label><textarea id="f2-bail-conditions" rows="2" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Outcome Explained to Client</label>
+        <div class="toggle-group">
+          <button class="toggle-btn on" data-group="f2-outcome-explained" data-val="Yes" onclick="setToggle('f2-outcome-explained','Yes')">Yes</button>
+          <button class="toggle-btn" data-group="f2-outcome-explained" data-val="No" onclick="setToggle('f2-outcome-explained','No')">No</button>
+        </div>
+      </div>
+    </div></div>
+
+    <button onclick="generateForm2PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+  </div>
+</div>
+
+<!-- ===== FORM 3: CROWN COURT ===== -->
+<div id="screen-form3" class="screen">
+  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <span class="flex-1 font-bold">Crown Court Attendance</span>
+    <button onclick="generateForm3PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+  </div>
+  <div class="p-4 space-y-4">
+
+    <!-- S1: Header -->
+    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Court Name</label>
+        <input list="crown-courts" id="f3-court" class="form-input" placeholder="Type or select court">
+        <datalist id="crown-courts">
+          <option>Central Criminal Court (Old Bailey)</option>
+          <option>Southwark Crown Court</option><option>Woolwich Crown Court</option>
+          <option>Inner London Crown Court</option><option>Kingston Crown Court</option>
+          <option>Isleworth Crown Court</option><option>Snaresbrook Crown Court</option>
+          <option>Harrow Crown Court</option><option>Wood Green Crown Court</option>
+          <option>Croydon Crown Court</option><option>Guildford Crown Court</option>
+          <option>Reading Crown Court</option><option>Winchester Crown Court</option>
+          <option>Maidstone Crown Court</option><option>Canterbury Crown Court</option>
+          <option>Lewes Crown Court</option><option>Birmingham Crown Court</option>
+          <option>Coventry Crown Court</option><option>Leicester Crown Court</option>
+          <option>Nottingham Crown Court</option>
+          <option>Manchester Crown Court (Minshull Street)</option>
+          <option>Manchester Crown Court (Crown Square)</option>
+          <option>Liverpool Crown Court</option><option>Leeds Crown Court</option>
+          <option>Sheffield Crown Court</option><option>Newcastle Crown Court</option>
+          <option>Bristol Crown Court</option><option>Cardiff Crown Court</option>
+        </datalist>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Defendant</label><input type="text" id="f3-defendant" class="form-input" oninput="updateCaseName()"></div>
+        <div><label class="fld-lbl">Case Name</label><input type="text" id="f3-case-name" class="form-input" placeholder="Regina v ..."></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Judge</label><input type="text" id="f3-judge" class="form-input" placeholder="HHJ / Mr Justice ..."></div>
+        <div><label class="fld-lbl">Date</label><input type="date" id="f3-date" class="form-input"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Prosecution Counsel</label><input type="text" id="f3-pros-counsel" class="form-input"></div>
+        <div><label class="fld-lbl">Defence Counsel</label><input type="text" id="f3-def-counsel" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Hearing Type</label>
+        <select id="f3-hearing-type" class="form-input" onchange="togglePTPH()">
+          <option value="">Select type</option>
+          <option value="PTPH">PTPH (Plea &amp; Trial Preparation Hearing)</option>
+          <option value="Trial">Trial</option>
+          <option value="Sentence">Sentence</option>
+          <option value="Appeal">Appeal</option>
+          <option value="Mention">Mention</option>
+          <option value="PTR">PTR (Pre-Trial Review)</option>
+          <option value="Plea">Plea</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div></div>
+
+    <!-- S2: Hearing Details -->
+    <div><div class="sec-hd">HEARING DETAILS</div><div class="sec-bd">
+      <div class="fld">
+        <label class="fld-lbl">Parties Present</label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-defendant"><span>Defendant</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-prosecution"><span>Prosecution Counsel</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-defence"><span>Defence Counsel</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-judge"><span>Judge</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-interpreter"><span>Interpreter</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-probation"><span>Probation</span></label>
+        <label class="chk-row"><input type="checkbox" id="f3-p-yot"><span>YOT</span></label>
+      </div>
+      <div class="fld"><label class="fld-lbl">Hearing Summary</label><textarea id="f3-summary" rows="5" class="form-input resize-none" placeholder="Summary of what occurred at the hearing"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Orders Made</label><textarea id="f3-orders" rows="3" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Next Hearing Date</label><input type="date" id="f3-next-hearing" class="form-input"></div>
+    </div></div>
+
+    <!-- S3: Stage Dates (PTPH only) -->
+    <div id="f3-ptph-section" style="display:none">
+      <div class="sec-hd">STAGE DATES (PTPH)</div><div class="sec-bd">
+        <div class="row2 fld">
+          <div><label class="fld-lbl">Stage 1</label><input type="date" id="f3-stage1" class="form-input"></div>
+          <div><label class="fld-lbl">Stage 2</label><input type="date" id="f3-stage2" class="form-input"></div>
+        </div>
+        <div class="row2 fld">
+          <div><label class="fld-lbl">Stage 3</label><input type="date" id="f3-stage3" class="form-input"></div>
+          <div><label class="fld-lbl">Stage 4</label><input type="date" id="f3-stage4" class="form-input"></div>
+        </div>
+        <div class="row3 fld">
+          <div><label class="fld-lbl">COTR</label><input type="date" id="f3-cotr" class="form-input"></div>
+          <div><label class="fld-lbl">Trial Warned</label><input type="date" id="f3-trial-warned" class="form-input"></div>
+          <div><label class="fld-lbl">Trial Date</label><input type="date" id="f3-trial-date" class="form-input"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: Generate Narrative -->
+    <div><div class="sec-hd">AI NARRATIVE GENERATOR</div><div class="sec-bd">
+      <p class="text-sm text-gray-500 mb-3">Uses hearing details above to generate a formal attendance note narrative. Requires /api/generate backend endpoint.</p>
+      <button id="f3-gen-btn" onclick="generateNarrative()" class="w-full bg-[#1a3a5c] text-white py-3.5 rounded-xl font-bold active:opacity-80">Generate Narrative</button>
+      <div id="f3-narrative-output" class="mt-3" style="display:none">
+        <label class="fld-lbl">Generated Narrative</label>
+        <div id="f3-narrative-text" class="narrative-box"></div>
+        <button onclick="copyNarrative()" class="mt-2 w-full py-2.5 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm">Copy to Clipboard</button>
+      </div>
+    </div></div>
+
+    <!-- S5: Post Hearing -->
+    <div><div class="sec-hd">POST HEARING</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Conference Held with Client</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-group="f3-conference" data-val="Yes" onclick="setToggle('f3-conference','Yes')">Yes</button>
+          <button class="toggle-btn on" data-group="f3-conference" data-val="No" onclick="setToggle('f3-conference','No')">No</button>
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Notes</label><textarea id="f3-post-notes" rows="3" class="form-input resize-none"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Further Instructions</label><textarea id="f3-further-instructions" rows="3" class="form-input resize-none"></textarea></div>
+    </div></div>
+
+    <!-- S6: Solicitor Sign Off -->
+    <div><div class="sec-hd">SOLICITOR SIGN OFF</div><div class="sec-bd">
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Solicitor Name</label><input type="text" id="f3-solicitor" class="form-input" placeholder="Auto-filled from settings"></div>
+        <div><label class="fld-lbl">Date</label><input type="date" id="f3-sign-date" class="form-input"></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Firm</label><input type="text" id="f3-firm" class="form-input" readonly></div>
+    </div></div>
+
+    <button onclick="generateForm3PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+  </div>
+</div>
+
+<!-- ===== DICTATION SCREEN ===== -->
+<div id="screen-dictation" class="screen">
+  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="leaveDictation()" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <div class="flex-1">
+      <p class="font-bold text-lg leading-tight">Voice Dictation</p>
+      <p class="text-blue-200 text-sm leading-tight">Tap the mic and speak freely</p>
+    </div>
+  </div>
+
+  <div class="p-5 flex flex-col items-center" style="min-height:calc(100vh - 68px)">
+
+    <!-- One-time permission notice -->
+    <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
+      <p class="font-bold mb-1">🔒 Microphone access</p>
+      <p>This app uses your microphone <strong>only</strong> to transcribe your spoken notes. Audio is processed securely via OpenAI Whisper and is never stored anywhere.</p>
+      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#1a3a5c] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
+    </div>
+
+    <!-- Mic button -->
+    <div class="flex flex-col items-center mt-6 mb-6 w-full">
+      <button id="mic-btn" onclick="toggleRecording()"
+        class="mic-idle rounded-full flex items-center justify-center transition-all duration-200 active:scale-95"
+        style="width:130px;height:130px;min-width:130px;min-height:130px">
+        <svg id="mic-icon" style="width:56px;height:56px" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+        </svg>
+      </button>
+      <p id="mic-status" class="mt-4 text-gray-500 font-semibold text-base text-center">Tap to start recording</p>
+    </div>
+
+    <!-- Transcript area -->
+    <div class="w-full flex-1">
+      <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Transcribed Notes</label>
+      <textarea id="dictation-transcript"
+        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#1a3a5c] text-gray-900 leading-relaxed"
+        style="min-height:300px;font-size:18px"
+        placeholder="Your transcribed notes will appear here…"></textarea>
+      <p id="dictation-error" class="mt-2 text-red-500 font-semibold text-sm text-center" style="display:none">
+        Could not transcribe — please try again
+      </p>
+      <p id="dictation-copy-confirm" class="mt-2 text-green-600 font-semibold text-sm text-center" style="display:none">
+        ✓ Copied to clipboard
+      </p>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex gap-3 w-full mt-5">
+      <button onclick="dictationCopy()" class="dct-action-btn bg-[#1a3a5c] text-white">Copy</button>
+      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#1a3a5c]">New Recording</button>
+      <button onclick="dictationClear()" class="dct-action-btn bg-[#fee2e2] text-red-700">Clear</button>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end #app -->
+
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+const v = id => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+const cb = id => { const e = document.getElementById(id); return e ? e.checked : false; };
+const gt = group => { const e = document.querySelector(`[data-group="${group}"].on`); return e ? e.dataset.val : ''; };
+const el = id => document.getElementById(id);
+
+function setToggle(group, val) {
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.toggle('on', b.dataset.val === val));
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  el('screen-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function getSettings() {
+  return JSON.parse(localStorage.getItem('lf-settings') || '{}');
+}
+
+function saveSettings() {
+  const s = { solicitorName: v('settings-solicitor'), firmName: v('settings-firm'), firmAddress: v('settings-address') };
+  localStorage.setItem('lf-settings', JSON.stringify(s));
+  el('settings-msg').classList.remove('hidden');
+  setTimeout(() => el('settings-msg').classList.add('hidden'), 2000);
+}
+
+function loadSettings() {
+  const s = getSettings();
+  if (s.solicitorName) el('settings-solicitor').value = s.solicitorName;
+  if (s.firmName) el('settings-firm').value = s.firmName;
+  if (s.firmAddress) el('settings-address').value = s.firmAddress;
+}
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const p = d.split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+}
+
+function calcAge(dobId, ageId) {
+  const dob = new Date(el(dobId).value);
+  if (isNaN(dob)) return;
+  const now = new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  if (now.getMonth() < dob.getMonth() || (now.getMonth() === dob.getMonth() && now.getDate() < dob.getDate())) age--;
+  el(ageId).value = age;
+}
+
+function addDurs(...vals) {
+  let total = 0;
+  vals.forEach(v => {
+    if (!v) return;
+    const parts = v.split(':');
+    total += (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+  });
+  return total > 0 ? `${Math.floor(total/60)}h ${total%60}m` : '—';
+}
+
+function formatDT(dt) {
+  if (!dt || isNaN(dt)) return '—';
+  return dt.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// ============================================================
+// FORM OPEN
+// ============================================================
+function openForm(form) {
+  const s = getSettings();
+  const t = today();
+  if (form === 'form1') {
+    el('f1-date').value = t;
+    el('f1-rep').value = s.solicitorName || '';
+    f1TelCount = 0;
+    el('f1-tel-body').innerHTML = '';
+    addTelRow();
+  }
+  if (form === 'form2') {
+    el('f2-date').value = t;
+    el('f2-fee-earner').value = s.solicitorName || '';
+    f2TrCount = 0;
+    el('f2-travel-body').innerHTML = '';
+    addTravelRow();
+    calcF2Detention();
+  }
+  if (form === 'form3') {
+    el('f3-date').value = t;
+    el('f3-sign-date').value = t;
+    el('f3-solicitor').value = s.solicitorName || '';
+    el('f3-firm').value = s.firmName || '';
+  }
+  showScreen(form);
+}
+
+// ============================================================
+// FORM 1 — TELEPHONE CALLS TABLE
+// ============================================================
+let f1TelCount = 0;
+function addTelRow() {
+  f1TelCount++;
+  const n = f1TelCount;
+  const div = document.createElement('div');
+  div.className = 'tel-row-g';
+  div.id = `f1-tel-row-${n}`;
+  div.innerHTML = `
+    <input type="date" id="f1-td-${n}" class="mini-inp">
+    <input type="time" id="f1-tt-${n}" class="mini-inp">
+    <input type="text" id="f1-tp-${n}" class="mini-inp" placeholder="Person">
+    <select id="f1-ttype-${n}" class="mini-inp"><option>Advice</option><option>Routine</option></select>
+    <input type="text" id="f1-tdur-${n}" class="mini-inp" placeholder="mins">
+    <button onclick="removeTelRow(${n})" class="text-red-400 font-bold text-lg leading-none">×</button>
+  `;
+  el('f1-tel-body').appendChild(div);
+}
+function removeTelRow(n) {
+  const r = el(`f1-tel-row-${n}`);
+  if (r) r.remove();
+}
+
+// ============================================================
+// FORM 1 — TRAVEL TOTALS
+// ============================================================
+function calcF1Total() {
+  el('f1-t-total').value = addDurs(v('f1-t-out'), v('f1-t-wait'), v('f1-t-attend'), v('f1-t-return'));
+}
+
+// ============================================================
+// FORM 2 — TRAVEL TABLE
+// ============================================================
+let f2TrCount = 0;
+function addTravelRow() {
+  f2TrCount++;
+  const n = f2TrCount;
+  const div = document.createElement('div');
+  div.className = 'tr-row-g';
+  div.id = `f2-tr-row-${n}`;
+  div.innerHTML = `
+    <input type="date" id="f2-trd-${n}" class="mini-inp">
+    <input type="text" id="f2-tro-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
+    <input type="text" id="f2-trw-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
+    <input type="text" id="f2-tra-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
+    <input type="text" id="f2-trr-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
+    <input type="number" id="f2-trm-${n}" class="mini-inp" placeholder="0" oninput="calcF2TrTotals()">
+    <input type="text" id="f2-tre-${n}" class="mini-inp" placeholder="Initials">
+  `;
+  el('f2-travel-body').appendChild(div);
+}
+
+function calcF2TrTotals() {
+  let outs=[], waits=[], attends=[], returns=[], miles=0;
+  for (let i=1; i<=f2TrCount; i++) {
+    if (!el(`f2-tr-row-${i}`)) continue;
+    outs.push(v(`f2-tro-${i}`)); waits.push(v(`f2-trw-${i}`));
+    attends.push(v(`f2-tra-${i}`)); returns.push(v(`f2-trr-${i}`));
+    miles += parseFloat(v(`f2-trm-${i}`)) || 0;
+  }
+  el('f2-tr-tot-out').textContent = addDurs(...outs);
+  el('f2-tr-tot-wait').textContent = addDurs(...waits);
+  el('f2-tr-tot-attend').textContent = addDurs(...attends);
+  el('f2-tr-tot-return').textContent = addDurs(...returns);
+  el('f2-tr-tot-miles').textContent = miles > 0 ? miles : '—';
+}
+
+// ============================================================
+// FORM 2 — FIRST CONTACT FLAG
+// ============================================================
+function checkF2FC() {
+  const notified = v('f2-fc-notified');
+  const contact = v('f2-fc-contact');
+  if (!notified || !contact) return;
+  const [nh, nm] = notified.split(':').map(Number);
+  const [ch, cm] = contact.split(':').map(Number);
+  const diff = (ch * 60 + cm) - (nh * 60 + nm);
+  el('f2-fc-flag').style.display = diff > 45 ? 'block' : 'none';
+}
+
+// ============================================================
+// FORM 2 — DETENTION REVIEWS
+// ============================================================
+function calcF2Detention() {
+  const date = v('f2-arrest-date');
+  const time = v('f2-arrest-time');
+  if (!date || !time) { ['f2-det-6','f2-det-15','f2-det-24'].forEach(id => el(id).textContent = '—'); return; }
+  const base = new Date(`${date}T${time}`);
+  if (isNaN(base)) return;
+  el('f2-det-6').textContent = formatDT(new Date(base.getTime() + 6*3600000));
+  el('f2-det-15').textContent = formatDT(new Date(base.getTime() + 15*3600000));
+  el('f2-det-24').textContent = formatDT(new Date(base.getTime() + 24*3600000));
+}
+
+// ============================================================
+// FORM 3 — PTPH TOGGLE
+// ============================================================
+function togglePTPH() {
+  el('f3-ptph-section').style.display = v('f3-hearing-type') === 'PTPH' ? 'block' : 'none';
+}
+
+function updateCaseName() {
+  el('f3-case-name').value = v('f3-defendant') ? `Regina v ${v('f3-defendant')}` : '';
+}
+
+// ============================================================
+// FORM 3 — GENERATE NARRATIVE (Claude API)
+// ============================================================
+async function generateNarrative() {
+  const btn = el('f3-gen-btn');
+  btn.innerHTML = '<span class="spin"></span>Generating…';
+  btn.disabled = true;
+
+  const systemPrompt = "You are a legal attendance note writer for a UK solicitor firm. Write a professional formal attendance note in third person past tense using formal legal language. Be concise and factual. Format as bullet points.";
+  const userMsg = `Please write an attendance note for the following Crown Court hearing:
+Court: ${v('f3-court')}
+Case: ${v('f3-case-name')}
+Defendant: ${v('f3-defendant')}
+Judge: ${v('f3-judge')}
+Date: ${fmtDate(v('f3-date'))}
+Prosecution Counsel: ${v('f3-pros-counsel')}
+Defence Counsel: ${v('f3-def-counsel')}
+Hearing Type: ${v('f3-hearing-type')}
+Parties Present: ${getF3Parties()}
+Summary: ${v('f3-summary')}
+Orders Made: ${v('f3-orders')}
+Next Hearing: ${fmtDate(v('f3-next-hearing'))}`;
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: systemPrompt, messages: [{ role: 'user', content: userMsg }] })
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    const text = data.content?.[0]?.text || data.text || data.message || JSON.stringify(data);
+    el('f3-narrative-text').textContent = text;
+    el('f3-narrative-output').style.display = 'block';
+  } catch (err) {
+    el('f3-narrative-text').textContent = `Error: ${err.message}\n\nNote: This feature requires a /api/generate backend endpoint connected to the Claude API.`;
+    el('f3-narrative-output').style.display = 'block';
+  } finally {
+    btn.innerHTML = 'Generate Narrative';
+    btn.disabled = false;
+  }
+}
+
+function getF3Parties() {
+  const pts = [];
+  if (cb('f3-p-defendant')) pts.push('Defendant');
+  if (cb('f3-p-prosecution')) pts.push('Prosecution Counsel');
+  if (cb('f3-p-defence')) pts.push('Defence Counsel');
+  if (cb('f3-p-judge')) pts.push('Judge');
+  if (cb('f3-p-interpreter')) pts.push('Interpreter');
+  if (cb('f3-p-probation')) pts.push('Probation');
+  if (cb('f3-p-yot')) pts.push('YOT');
+  return pts.join(', ') || 'Not recorded';
+}
+
+function copyNarrative() {
+  const text = el('f3-narrative-text').textContent;
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+// ============================================================
+// PDF BUILDER
+// ============================================================
+function makePDF(firmName, title, solicitorName) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const L = 15, W = 180;
+  const NAVY = [26, 58, 92];
+  let y = 0;
+
+  function _header() {
+    doc.setFillColor(...NAVY);
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.text(firmName || 'Legal Firm', L, 11);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text(title, L, 19);
+    doc.setFontSize(8);
+    doc.text(new Date().toLocaleDateString('en-GB'), 195, 11, {align:'right'});
+    doc.setTextColor(0,0,0);
+    y = 35;
+  }
+
+  function _pageHeader() {
+    doc.setFillColor(...NAVY);
+    doc.rect(0, 0, 210, 16, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(`${firmName || 'Legal Firm'} — ${title} (continued)`, L, 11);
+    doc.setTextColor(0,0,0);
+    y = 22;
+  }
+
+  function chk(need) {
+    if (y + (need||12) > 272) { doc.addPage(); _pageHeader(); }
+  }
+
+  const section = (t) => {
+    chk(14);
+    doc.setFillColor(...NAVY);
+    doc.rect(L, y, W, 8, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(t, L+3, y+5.5);
+    doc.setTextColor(0,0,0);
+    y += 11;
+  };
+
+  const field = (label, value) => {
+    const val = (value||'').toString().trim() || '—';
+    const lw = 55, vx = L+lw+3, vw = W-lw-3;
+    const lines = doc.splitTextToSize(val, vw);
+    chk(lines.length * 4.5 + 5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(label + ':', L, y);
+    doc.setFont('helvetica','normal');
+    doc.text(lines, vx, y);
+    y += Math.max(lines.length, 1) * 4.5 + 2;
+    doc.setDrawColor(230,230,230);
+    doc.line(L, y-0.5, L+W, y-0.5);
+    y += 1.5;
+  };
+
+  const fieldFull = (label, value) => {
+    const val = (value||'').toString().trim() || '—';
+    chk(15);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(label + ':', L, y); y += 5;
+    doc.setFont('helvetica','normal');
+    const lines = doc.splitTextToSize(val, W);
+    lines.forEach(ln => { chk(5); doc.text(ln, L, y); y += 4.5; });
+    y += 2;
+    doc.setDrawColor(230,230,230);
+    doc.line(L, y-0.5, L+W, y-0.5);
+    y += 1.5;
+  };
+
+  const row2 = (pairs) => {
+    chk(14);
+    const cw = W/2;
+    pairs.forEach(([lbl, val], i) => {
+      const x = L + i*cw;
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.text(lbl + ':', x, y);
+      doc.setFont('helvetica','normal');
+      doc.text(doc.splitTextToSize((val||'—').toString(), cw-5)[0], x, y+5);
+    });
+    y += 13;
+    doc.setDrawColor(230,230,230);
+    doc.line(L, y-0.5, L+W, y-0.5);
+    y += 1.5;
+  };
+
+  const tbl = (hdrs, rows) => {
+    doc.autoTable({
+      head: [hdrs], body: rows, startY: y,
+      margin: { left: L, right: L },
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [220,220,220], lineWidth: 0.3 },
+      headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [248,250,252] },
+      theme: 'grid'
+    });
+    y = doc.lastAutoTable.finalY + 5;
+  };
+
+  const save = (filename) => {
+    const total = doc.internal.getNumberOfPages();
+    const footer = `${firmName || ''}${solicitorName ? ' | ' + solicitorName : ''}`;
+    for (let i = 1; i <= total; i++) {
+      doc.setPage(i);
+      doc.setFillColor(...NAVY);
+      doc.rect(0, 281, 210, 16, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+      doc.text(`${footer} | PRIVATE & CONFIDENTIAL — This document is intended solely for the named recipient.`, L, 287, {maxWidth: W-20});
+      doc.text(`Page ${i} of ${total}`, 197, 292, {align:'right'});
+    }
+    doc.save(filename);
+  };
+
+  _header();
+  return { section, field, fieldFull, row2, tbl, save, getY: () => y, spacer: (n=5) => { y += n; } };
+}
+
+// ============================================================
+// FORM 1 PDF
+// ============================================================
+function generateForm1PDF() {
+  const s = getSettings();
+  const p = makePDF(s.firmName, 'Police Station Attendance Note', s.solicitorName);
+
+  p.section('HEADER');
+  p.row2([['Date', fmtDate(v('f1-date'))], ['UFN', v('f1-ufn')]]);
+  p.row2([['DSCC Reference', v('f1-dscc')], ['Custody Number', v('f1-custody')]]);
+  p.field('Police Station', v('f1-station'));
+  p.row2([['Case Type', gt('f1-case-type')], ['Representative', v('f1-rep')]]);
+
+  p.section('CLIENT DETAILS');
+  p.field('Full Name', v('f1-client-name'));
+  p.row2([['Date of Birth', fmtDate(v('f1-dob'))], ['Age', v('f1-age')]]);
+  p.fieldFull('Address', v('f1-address'));
+  p.row2([['Telephone', v('f1-phone')], ['Email', v('f1-email')]]);
+  p.row2([['Gender', v('f1-gender')], ['Nationality', v('f1-nationality')]]);
+  p.field('Ethnicity', v('f1-ethnicity'));
+  p.row2([['NI Number', v('f1-ni')], ['Youth Client', gt('f1-youth')]]);
+
+  p.section('POLICE DETAILS');
+  p.row2([['Arrest Date', fmtDate(v('f1-arrest-date'))], ['Arrest Time', v('f1-arrest-time')]]);
+  p.field('Place of Arrest', v('f1-arrest-place'));
+  p.fieldFull('Offence(s)', v('f1-offence'));
+  const atTypes = [cb('f1-interview-cb')&&'Interview', cb('f1-idparade-cb')&&'ID Parade'].filter(Boolean).join(', ');
+  p.field('Attendance Type', atTypes || 'Not specified');
+  p.field('Officer Name(s)', v('f1-officers'));
+  p.row2([['Attendance', gt('f1-vol-arrest')], ['Fit for Interview', gt('f1-fit')]]);
+  const flags = [cb('f1-access-delayed')&&'Access Delayed', cb('f1-vulnerable')&&'Vulnerable', cb('f1-fme')&&'FME'].filter(Boolean).join(', ');
+  p.field('Additional Flags', flags || 'None');
+
+  p.section('CO-DEFENDANTS');
+  p.row2([['Conflict of Interest', gt('f1-conflict')], ['Custody Number', v('f1-codef-custody')]]);
+  p.field('Co-Defendant Name', v('f1-codef-name'));
+
+  p.section('POLICE INFORMATION');
+  const polInfo = [cb('f1-custody-record')&&'Custody Record Viewed', cb('f1-prev-interview')&&'Previous Interviews', cb('f1-samples-taken')&&'Samples Taken'].filter(Boolean).join(', ');
+  p.field('Custody Information', polInfo || 'None noted');
+  p.field('Previous Interview Position', gt('f1-silence-stmt'));
+
+  p.section('PRE-INTERVIEW ADVICE GIVEN');
+  p.row2([['Caution Explained', gt('f1-adv-caution')], ['Options Advised', gt('f1-adv-options')]]);
+  p.row2([['Evidence Discussed', gt('f1-adv-evidence')], ['Samples Procedure', gt('f1-adv-samples')]]);
+  p.field('ID Procedures', gt('f1-adv-id'));
+
+  p.section('CLIENT INSTRUCTIONS');
+  p.fieldFull('Previous Convictions', v('f1-prev-convictions'));
+  p.fieldFull('Version of Events', v('f1-version-events'));
+  p.fieldFull('Alibi', v('f1-alibi'));
+
+  p.section('INTERVIEW ADVICE');
+  const ia = [cb('f1-ia-nocomment')&&'No Comment', cb('f1-ia-comment')&&'Answer Questions', cb('f1-ia-statement')&&'Prepared Statement'].filter(Boolean).join(', ');
+  p.field('Advice Given', ia || 'Not recorded');
+  p.fieldFull('Reason for Advice', v('f1-ia-reason'));
+  p.field('Agreed Action', v('f1-ia-action'));
+
+  p.section('INTERVIEW');
+  p.row2([['Attended Interview', gt('f1-int-attended')], ['']]);
+  p.row2([['Start Time', v('f1-int-start')], ['End Time', v('f1-int-end')]]);
+  p.fieldFull('Interview Notes', v('f1-int-notes'));
+
+  p.section('RESULT');
+  p.field('Outcome', v('f1-result'));
+  p.row2([['Court Name', v('f1-court-name')], ['Court Date', fmtDate(v('f1-court-date'))]]);
+  p.fieldFull('Bail Conditions', v('f1-bail-conditions'));
+
+  p.section('TRAVEL AND TIME');
+  p.row2([['Outward', v('f1-t-out')||'—'], ['Waiting', v('f1-t-wait')||'—']]);
+  p.row2([['Attendance', v('f1-t-attend')||'—'], ['Return', v('f1-t-return')||'—']]);
+  p.row2([['Total Time', v('f1-t-total')||'—'], ['Mileage', v('f1-mileage')||'—']]);
+
+  // Telephone calls table
+  const telHdrs = ['Date','Time','Person','Type','Duration'];
+  const telRows = [];
+  for (let i = 1; i <= f1TelCount; i++) {
+    if (!el(`f1-tel-row-${i}`)) continue;
+    telRows.push([fmtDate(v(`f1-td-${i}`)), v(`f1-tt-${i}`), v(`f1-tp-${i}`), v(`f1-ttype-${i}`), v(`f1-tdur-${i}`)]);
+  }
+  if (telRows.length > 0) {
+    p.section('TELEPHONE CALLS');
+    p.tbl(telHdrs, telRows);
+  }
+
+  p.save(`Police_Station_${(v('f1-client-name')||'Attendance').replace(/\s+/g,'_')}_${v('f1-date')||today()}.pdf`);
+}
+
+// ============================================================
+// FORM 2 PDF
+// ============================================================
+function generateForm2PDF() {
+  const s = getSettings();
+  const p = makePDF(s.firmName, 'Magistrates Court Attendance Note', s.solicitorName);
+
+  p.section('HEADER');
+  p.row2([['Court', v('f2-court')], ['Date', fmtDate(v('f2-date'))]]);
+  p.row2([['Case Reference', v('f2-case-ref')], ['DSCC Reference', v('f2-dscc')]]);
+  p.field('Fee Earner', v('f2-fee-earner'));
+
+  p.section('CLIENT DETAILS');
+  p.field('Full Name', v('f2-client-name'));
+  p.row2([['Date of Birth', fmtDate(v('f2-dob'))], ['Age', v('f2-age')]]);
+  p.field('Ethnicity', v('f2-ethnicity'));
+  p.fieldFull('Address', v('f2-address'));
+  p.row2([['Contact', v('f2-contact')], ['NI Number', v('f2-ni')]]);
+  p.field('Income / Employment', v('f2-income'));
+  p.fieldFull('Allegations', v('f2-allegations'));
+
+  p.section('ARREST DETAILS');
+  p.row2([['Custody Reference', v('f2-custody-ref')], ['Attendance', gt('f2-arrested')]]);
+  p.field('Arresting Officer', v('f2-officer'));
+  p.field('Place of Arrest', v('f2-arrest-place'));
+  p.row2([['Arrest Date', fmtDate(v('f2-arrest-date'))], ['Arrest Time', v('f2-arrest-time')]]);
+  p.row2([['Detention Authorised', gt('f2-det-auth')], ['Access Delayed', cb('f2-access-delayed')?'Yes':'No']]);
+  p.field('OIC Details', v('f2-oic'));
+  p.fieldFull('Warrants / Bail Conditions', v('f2-warrants'));
+
+  p.section('FIRST CONTACT TIMES');
+  p.row2([['Notified', v('f2-fc-notified')||'—'], ['First Contact', v('f2-fc-contact')||'—']]);
+  const fcMins = (() => {
+    const n = v('f2-fc-notified'), c = v('f2-fc-contact');
+    if (!n||!c) return null;
+    const [nh,nm] = n.split(':').map(Number), [ch,cm] = c.split(':').map(Number);
+    return (ch*60+cm)-(nh*60+nm);
+  })();
+  if (fcMins !== null) p.field('Notification to Contact', `${fcMins} minutes${fcMins > 45 ? ' ⚠ OVER 45 MINUTES' : ''}`);
+  p.row2([['Advised Attending', v('f2-fc-advised')||'—'], ['Requested', v('f2-fc-requested')||'—']]);
+  p.field('Arrived', v('f2-fc-arrived')||'—');
+
+  // Travel table
+  const trHdrs = ['Date','Outward','Waiting','Attendance','Return','Mileage','Fee Earner'];
+  const trRows = [];
+  for (let i = 1; i <= f2TrCount; i++) {
+    if (!el(`f2-tr-row-${i}`)) continue;
+    trRows.push([fmtDate(v(`f2-trd-${i}`)), v(`f2-tro-${i}`)||'—', v(`f2-trw-${i}`)||'—', v(`f2-tra-${i}`)||'—', v(`f2-trr-${i}`)||'—', v(`f2-trm-${i}`)||'—', v(`f2-tre-${i}`)||'—']);
+  }
+  if (trRows.length > 0) {
+    trRows.push(['TOTAL', el('f2-tr-tot-out').textContent, el('f2-tr-tot-wait').textContent, el('f2-tr-tot-attend').textContent, el('f2-tr-tot-return').textContent, el('f2-tr-tot-miles').textContent, '']);
+    p.section('TRAVEL TABLE');
+    p.tbl(trHdrs, trRows);
+  }
+
+  p.section('DETENTION REVIEWS');
+  p.row2([['6-hour review', el('f2-det-6').textContent], ['15-hour review', el('f2-det-15').textContent]]);
+  p.field('24-hour review', el('f2-det-24').textContent);
+
+  p.section('DISCLOSURE');
+  p.row2([['Officer', v('f2-disc-officer')], ['Time', v('f2-disc-time')||'—']]);
+  p.fieldFull('Details', v('f2-disc-details'));
+
+  p.section('SAMPLES');
+  const samps = [cb('f2-samp-taken')&&'Taken', cb('f2-samp-consent')&&'Consent Given', cb('f2-samp-nonintimate')&&'Non-Intimate', cb('f2-samp-searches')&&'Searches'].filter(Boolean).join(', ');
+  p.field('Samples', samps||'None recorded');
+
+  p.section('CO-ACCUSED');
+  p.field('Co-Accused', gt('f2-coaccused'));
+  p.row2([['Name(s)', v('f2-co-names')], ['Represented By', v('f2-co-rep')]]);
+  p.field('Implicates Client', gt('f2-co-implicate'));
+
+  p.section('CLIENT INSTRUCTIONS');
+  p.row2([['Start Time', v('f2-ci-start')||'—'], ['End Time', v('f2-ci-end')||'—']]);
+  p.fieldFull('Instructions', v('f2-ci-instructions'));
+  p.fieldFull('Previous Convictions', v('f2-ci-prevconv'));
+  p.field('Bail Status', v('f2-ci-bail'));
+
+  p.section('ADVICE GIVEN');
+  const adv = [cb('f2-adv-detention')&&'Detention Rights', cb('f2-adv-caution')&&'Caution', cb('f2-adv-warnings')&&'Special Warnings'].filter(Boolean).join(', ');
+  p.field('Topics Covered', adv||'See notes');
+  p.fieldFull('Advice Notes', v('f2-adv-text'));
+
+  p.section('MEDICAL');
+  p.row2([['Complaint', v('f2-med-complaint')], ['Injuries', v('f2-med-injuries')]]);
+  p.row2([['Dependency', gt('f2-addict')], ['FME', gt('f2-fme')]]);
+  p.row2([['Fit to Detain', gt('f2-fit-detain')], ['Fit to Interview', gt('f2-fit-interview')]]);
+
+  p.section('INTERVIEW DETAILS');
+  p.field('Persons Present', v('f2-int-persons'));
+  p.row2([['Start Time', v('f2-int-start')||'—'], ['End Time', v('f2-int-end')||'—']]);
+  p.row2([['Reference', v('f2-int-ref')], ['Seal Number', v('f2-int-seal')]]);
+  p.fieldFull('Notes', v('f2-int-notes'));
+
+  p.section('RESULT');
+  p.field('Outcome', v('f2-result'));
+  p.field('Court', v('f2-result-court'));
+  p.fieldFull('Bail Conditions', v('f2-bail-conditions'));
+  p.field('Outcome Explained to Client', gt('f2-outcome-explained'));
+
+  p.save(`Magistrates_Court_${(v('f2-client-name')||'Attendance').replace(/\s+/g,'_')}_${v('f2-date')||today()}.pdf`);
+}
+
+// ============================================================
+// FORM 3 PDF
+// ============================================================
+function generateForm3PDF() {
+  const s = getSettings();
+  const p = makePDF(s.firmName, 'Crown Court Attendance Note', s.solicitorName);
+
+  p.section('HEADER');
+  p.field('Court', v('f3-court'));
+  p.row2([['Case Name', v('f3-case-name')], ['Defendant', v('f3-defendant')]]);
+  p.row2([['Judge', v('f3-judge')], ['Date', fmtDate(v('f3-date'))]]);
+  p.row2([['Prosecution Counsel', v('f3-pros-counsel')], ['Defence Counsel', v('f3-def-counsel')]]);
+  p.field('Hearing Type', v('f3-hearing-type'));
+
+  p.section('HEARING DETAILS');
+  p.field('Parties Present', getF3Parties());
+  p.fieldFull('Hearing Summary', v('f3-summary'));
+  p.fieldFull('Orders Made', v('f3-orders'));
+  p.field('Next Hearing Date', fmtDate(v('f3-next-hearing')));
+
+  if (v('f3-hearing-type') === 'PTPH') {
+    p.section('STAGE DATES (PTPH)');
+    p.row2([['Stage 1', fmtDate(v('f3-stage1'))], ['Stage 2', fmtDate(v('f3-stage2'))]]);
+    p.row2([['Stage 3', fmtDate(v('f3-stage3'))], ['Stage 4', fmtDate(v('f3-stage4'))]]);
+    p.row2([['COTR', fmtDate(v('f3-cotr'))], ['Trial Warned', fmtDate(v('f3-trial-warned'))]]);
+    p.field('Trial Date', fmtDate(v('f3-trial-date')));
+  }
+
+  const narrative = el('f3-narrative-text').textContent.trim();
+  if (narrative && !narrative.startsWith('Error:')) {
+    p.section('ATTENDANCE NOTE NARRATIVE');
+    p.fieldFull('Narrative', narrative);
+  }
+
+  p.section('POST HEARING');
+  p.field('Conference Held with Client', gt('f3-conference'));
+  p.fieldFull('Notes', v('f3-post-notes'));
+  p.fieldFull('Further Instructions', v('f3-further-instructions'));
+
+  p.section('SOLICITOR SIGN OFF');
+  p.row2([['Solicitor', v('f3-solicitor')], ['Date', fmtDate(v('f3-sign-date'))]]);
+  p.field('Firm', v('f3-firm') || s.firmName);
+
+  p.save(`Crown_Court_${(v('f3-case-name')||v('f3-defendant')||'Attendance').replace(/[\s\/]+/g,'_')}_${v('f3-date')||today()}.pdf`);
+}
+
+// ============================================================
+// DICTATION
+// ============================================================
+let mediaRecorder = null;
+let audioChunks = [];
+let dictRecording = false;
+
+function openDictation() {
+  if (!localStorage.getItem('lf-mic-notice')) {
+    el('dictation-permission').style.display = 'block';
+  }
+  el('dictation-error').style.display = 'none';
+  el('dictation-copy-confirm').style.display = 'none';
+  setMicState('idle');
+  showScreen('dictation');
+}
+
+function leaveDictation() {
+  if (dictRecording) stopRecording();
+  showScreen('home');
+}
+
+function dismissPermission() {
+  localStorage.setItem('lf-mic-notice', '1');
+  el('dictation-permission').style.display = 'none';
+}
+
+function setMicState(state) {
+  const btn = el('mic-btn');
+  const status = el('mic-status');
+  btn.className = btn.className.replace(/mic-\w+/g, '').trim();
+  if (state === 'idle') {
+    btn.classList.add('mic-idle');
+    status.textContent = 'Tap to start recording';
+    status.style.color = '#6b7280';
+    dictRecording = false;
+  } else if (state === 'recording') {
+    btn.classList.add('mic-recording');
+    status.textContent = 'Recording… tap to stop';
+    status.style.color = '#ef4444';
+    dictRecording = true;
+  } else if (state === 'processing') {
+    btn.classList.add('mic-processing');
+    status.textContent = 'Transcribing…';
+    status.style.color = '#64748b';
+    dictRecording = false;
+  }
+}
+
+function getSupportedMime() {
+  const types = [
+    'audio/webm;codecs=opus','audio/webm',
+    'audio/ogg;codecs=opus','audio/ogg','audio/mp4'
+  ];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+async function toggleRecording() {
+  el('dictation-error').style.display = 'none';
+  if (dictRecording) {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+}
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mime = getSupportedMime();
+    mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      transcribeAudio();
+    };
+    mediaRecorder.start(250); // collect every 250ms for reliability on mobile
+    setMicState('recording');
+  } catch (err) {
+    el('dictation-error').textContent = 'Microphone access denied. Please allow microphone access in browser settings.';
+    el('dictation-error').style.display = 'block';
+    setMicState('idle');
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    setMicState('processing');
+  }
+}
+
+async function transcribeAudio() {
+  const mimeType = (audioChunks[0] && audioChunks[0].type) || 'audio/webm';
+  const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm';
+  const blob = new Blob(audioChunks, { type: mimeType });
+
+  const form = new FormData();
+  form.append('audio', blob, `recording.${ext}`);
+
+  try {
+    const res = await fetch('/api/transcribe', { method: 'POST', body: form });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    appendTranscript(data.text || '');
+  } catch (err) {
+    el('dictation-error').style.display = 'block';
+  }
+  setMicState('idle');
+}
+
+function appendTranscript(text) {
+  if (!text.trim()) return;
+  const ta = el('dictation-transcript');
+  const existing = ta.value.trim();
+  ta.value = existing ? existing + '\n\n' + text.trim() : text.trim();
+  ta.scrollTop = ta.scrollHeight;
+}
+
+function dictationCopy() {
+  const text = el('dictation-transcript').value;
+  if (!text.trim()) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = el('dictation-copy-confirm');
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 2000);
+  }).catch(() => {});
+}
+
+function dictationClear() {
+  if (dictRecording) return;
+  el('dictation-transcript').value = '';
+  el('dictation-error').style.display = 'none';
+  el('dictation-copy-confirm').style.display = 'none';
+}
+
+function dictationNewRecording() {
+  if (!dictRecording) startRecording();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadSettings();
+});
+</script>
+</body>
+</html>
