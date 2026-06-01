@@ -51,6 +51,15 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 .mic-processing{background:#64748b!important;color:#fff}
 .dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
 .dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s;active:opacity-80}
+/* ---- Travel time table ---- */
+.time-cell-inp{width:100%;border:none;padding:5px 2px;font-size:13px;background:transparent;text-align:center;min-width:0;color:#111827}
+.time-cell-inp:focus{outline:2px solid #1a3a5c;border-radius:3px}
+.ttime-th-group{background:#1a3a5c;color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #0f2a4a}
+.ttime-th-sub{border:1px solid #d1d5db;background:#f9fafb;text-align:center;padding:5px 3px;font-size:12px;color:#4b5563;font-weight:600}
+.ttime-td{border:1px solid #d1d5db;padding:2px}
+.ttime-tot{background:#eef4fb;border-radius:10px;padding:11px 12px;border:1px solid #c8d8ea}
+.ttime-tot p:first-child{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px}
+.ttime-tot .tval{font-weight:700;color:#1a3a5c;font-size:16px;margin:0}
 </style>
 </head>
 <body>
@@ -337,18 +346,64 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
     </div></div>
 
     <!-- S11: Travel and Time -->
-    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Outward (HH:MM)</label><input type="text" id="f1-t-out" class="form-input" placeholder="0:30" oninput="calcF1Total()"></div>
-        <div><label class="fld-lbl">Waiting (HH:MM)</label><input type="text" id="f1-t-wait" class="form-input" placeholder="0:45" oninput="calcF1Total()"></div>
+    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd" style="padding:12px 10px">
+      <div class="overflow-x-auto" style="margin:0 -10px;padding:0 10px">
+        <table style="min-width:516px;width:100%;border-collapse:collapse">
+          <thead>
+            <tr>
+              <th colspan="2" class="ttime-th-group">Travel Time</th>
+              <th colspan="2" class="ttime-th-group">Waiting Time</th>
+              <th colspan="2" class="ttime-th-group">Attendance Time</th>
+            </tr>
+            <tr>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f1-tv-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-tv-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f1-tv-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-tv-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f1-tv-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-tv-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f1-tv-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-tv-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-wt-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+              <td class="ttime-td"><input type="time" id="f1-at-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Attendance (HH:MM)</label><input type="text" id="f1-t-attend" class="form-input" placeholder="1:00" oninput="calcF1Total()"></div>
-        <div><label class="fld-lbl">Return (HH:MM)</label><input type="text" id="f1-t-return" class="form-input" placeholder="0:30" oninput="calcF1Total()"></div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Total Time</label><input type="text" id="f1-t-total" class="form-input bg-gray-50" readonly placeholder="Auto-calculated"></div>
-        <div><label class="fld-lbl">Mileage</label><input type="number" id="f1-mileage" class="form-input" placeholder="0"></div>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
       </div>
     </div></div>
 
@@ -462,28 +517,66 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <div class="fld"><label class="fld-lbl">Arrived</label><input type="time" id="f2-fc-arrived" class="form-input"></div>
     </div></div>
 
-    <!-- S5: Travel Table -->
-    <div><div class="sec-hd">TRAVEL TABLE</div><div class="sec-bd">
-      <div class="tr-hd">
-        <span class="tbl-hd">Date</span>
-        <span class="tbl-hd">Out</span>
-        <span class="tbl-hd">Wait</span>
-        <span class="tbl-hd">Attend</span>
-        <span class="tbl-hd">Return</span>
-        <span class="tbl-hd">Miles</span>
-        <span class="tbl-hd">Earner</span>
+    <!-- S5: Travel and Time -->
+    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd" style="padding:12px 10px">
+      <div class="overflow-x-auto" style="margin:0 -10px;padding:0 10px">
+        <table style="min-width:516px;width:100%;border-collapse:collapse">
+          <thead>
+            <tr>
+              <th colspan="2" class="ttime-th-group">Travel Time</th>
+              <th colspan="2" class="ttime-th-group">Waiting Time</th>
+              <th colspan="2" class="ttime-th-group">Attendance Time</th>
+            </tr>
+            <tr>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f2-tv-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-tv-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f2-tv-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-tv-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f2-tv-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-tv-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+            </tr>
+            <tr>
+              <td class="ttime-td"><input type="time" id="f2-tv-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-tv-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-wt-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+              <td class="ttime-td"><input type="time" id="f2-at-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div id="f2-travel-body"></div>
-      <div class="tr-row-g mt-1 text-xs font-bold text-gray-700">
-        <span class="text-[#1a3a5c]">TOTAL</span>
-        <span id="f2-tr-tot-out">—</span>
-        <span id="f2-tr-tot-wait">—</span>
-        <span id="f2-tr-tot-attend">—</span>
-        <span id="f2-tr-tot-return">—</span>
-        <span id="f2-tr-tot-miles">—</span>
-        <span></span>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
       </div>
-      <button onclick="addTravelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Row</button>
     </div></div>
 
     <!-- S6: Detention Reviews -->
@@ -891,9 +984,6 @@ function openForm(form) {
   if (form === 'form2') {
     el('f2-date').value = t;
     el('f2-fee-earner').value = s.solicitorName || '';
-    f2TrCount = 0;
-    el('f2-travel-body').innerHTML = '';
-    addTravelRow();
     calcF2Detention();
   }
   if (form === 'form3') {
@@ -931,47 +1021,40 @@ function removeTelRow(n) {
 }
 
 // ============================================================
-// FORM 1 — TRAVEL TOTALS
+// TRAVEL TIME TABLE — shared by Form 1 and Form 2
 // ============================================================
-function calcF1Total() {
-  el('f1-t-total').value = addDurs(v('f1-t-out'), v('f1-t-wait'), v('f1-t-attend'), v('f1-t-return'));
+function timeDiffMins(from, to) {
+  if (!from || !to) return 0;
+  const [fh, fm] = from.split(':').map(Number);
+  const [th, tm] = to.split(':').map(Number);
+  const diff = (th * 60 + tm) - (fh * 60 + fm);
+  return diff < 0 ? diff + 1440 : diff; // handle overnight
 }
 
-// ============================================================
-// FORM 2 — TRAVEL TABLE
-// ============================================================
-let f2TrCount = 0;
-function addTravelRow() {
-  f2TrCount++;
-  const n = f2TrCount;
-  const div = document.createElement('div');
-  div.className = 'tr-row-g';
-  div.id = `f2-tr-row-${n}`;
-  div.innerHTML = `
-    <input type="date" id="f2-trd-${n}" class="mini-inp">
-    <input type="text" id="f2-tro-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
-    <input type="text" id="f2-trw-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
-    <input type="text" id="f2-tra-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
-    <input type="text" id="f2-trr-${n}" class="mini-inp" placeholder="H:MM" oninput="calcF2TrTotals()">
-    <input type="number" id="f2-trm-${n}" class="mini-inp" placeholder="0" oninput="calcF2TrTotals()">
-    <input type="text" id="f2-tre-${n}" class="mini-inp" placeholder="Initials">
-  `;
-  el('f2-travel-body').appendChild(div);
+function fmtDuration(mins) {
+  if (mins <= 0) return '—';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m} min${m !== 1 ? 's' : ''}`;
+  if (m === 0) return `${h}hr${h !== 1 ? 's' : ''}`;
+  return `${h}hr${h !== 1 ? 's' : ''} ${m} min${m !== 1 ? 's' : ''}`;
 }
 
-function calcF2TrTotals() {
-  let outs=[], waits=[], attends=[], returns=[], miles=0;
-  for (let i=1; i<=f2TrCount; i++) {
-    if (!el(`f2-tr-row-${i}`)) continue;
-    outs.push(v(`f2-tro-${i}`)); waits.push(v(`f2-trw-${i}`));
-    attends.push(v(`f2-tra-${i}`)); returns.push(v(`f2-trr-${i}`));
-    miles += parseFloat(v(`f2-trm-${i}`)) || 0;
+function calcTravelTotals(px) {
+  let travel = 0, wait = 0, attend = 0;
+  let arrival = '', departure = '';
+  for (let i = 1; i <= 4; i++) {
+    travel  += timeDiffMins(v(`${px}-tv-f${i}`), v(`${px}-tv-t${i}`));
+    wait    += timeDiffMins(v(`${px}-wt-f${i}`), v(`${px}-wt-t${i}`));
+    attend  += timeDiffMins(v(`${px}-at-f${i}`), v(`${px}-at-t${i}`));
+    if (!arrival  && v(`${px}-tv-t${i}`)) arrival  = v(`${px}-tv-t${i}`);
+    if (v(`${px}-at-t${i}`))              departure = v(`${px}-at-t${i}`);
   }
-  el('f2-tr-tot-out').textContent = addDurs(...outs);
-  el('f2-tr-tot-wait').textContent = addDurs(...waits);
-  el('f2-tr-tot-attend').textContent = addDurs(...attends);
-  el('f2-tr-tot-return').textContent = addDurs(...returns);
-  el('f2-tr-tot-miles').textContent = miles > 0 ? miles : '—';
+  el(`${px}-tot-travel`).value  = fmtDuration(travel);
+  el(`${px}-tot-wait`).value    = fmtDuration(wait);
+  el(`${px}-tot-attend`).value  = fmtDuration(attend);
+  if (arrival)   el(`${px}-arrival-disp`).value  = arrival;
+  if (departure) el(`${px}-departure-disp`).value = departure;
 }
 
 // ============================================================
@@ -1266,9 +1349,17 @@ function generateForm1PDF() {
   p.fieldFull('Bail Conditions', v('f1-bail-conditions'));
 
   p.section('TRAVEL AND TIME');
-  p.row2([['Outward', v('f1-t-out')||'—'], ['Waiting', v('f1-t-wait')||'—']]);
-  p.row2([['Attendance', v('f1-t-attend')||'—'], ['Return', v('f1-t-return')||'—']]);
-  p.row2([['Total Time', v('f1-t-total')||'—'], ['Mileage', v('f1-mileage')||'—']]);
+  const f1TravelRows = [];
+  for (let i = 1; i <= 4; i++) {
+    const tf = v(`f1-tv-f${i}`), tt = v(`f1-tv-t${i}`);
+    const wf = v(`f1-wt-f${i}`), wt = v(`f1-wt-t${i}`);
+    const af = v(`f1-at-f${i}`), at = v(`f1-at-t${i}`);
+    if (tf||tt||wf||wt||af||at) f1TravelRows.push([`${tf||'—'} → ${tt||'—'}`, `${wf||'—'} → ${wt||'—'}`, `${af||'—'} → ${at||'—'}`]);
+  }
+  if (f1TravelRows.length) p.tbl(['Travel Time (From→To)', 'Waiting Time (From→To)', 'Attendance Time (From→To)'], f1TravelRows);
+  p.row2([['Total Travel', v('f1-tot-travel')||'—'], ['Total Waiting', v('f1-tot-wait')||'—']]);
+  p.row2([['Total Attendance', v('f1-tot-attend')||'—'], ['Total Mileage', v('f1-mileage')||'—']]);
+  p.row2([['Arrival Time', v('f1-arrival-disp')||'—'], ['Departure Time', v('f1-departure-disp')||'—']]);
 
   // Telephone calls table
   const telHdrs = ['Date','Time','Person','Type','Duration'];
@@ -1327,18 +1418,18 @@ function generateForm2PDF() {
   p.row2([['Advised Attending', v('f2-fc-advised')||'—'], ['Requested', v('f2-fc-requested')||'—']]);
   p.field('Arrived', v('f2-fc-arrived')||'—');
 
-  // Travel table
-  const trHdrs = ['Date','Outward','Waiting','Attendance','Return','Mileage','Fee Earner'];
-  const trRows = [];
-  for (let i = 1; i <= f2TrCount; i++) {
-    if (!el(`f2-tr-row-${i}`)) continue;
-    trRows.push([fmtDate(v(`f2-trd-${i}`)), v(`f2-tro-${i}`)||'—', v(`f2-trw-${i}`)||'—', v(`f2-tra-${i}`)||'—', v(`f2-trr-${i}`)||'—', v(`f2-trm-${i}`)||'—', v(`f2-tre-${i}`)||'—']);
+  p.section('TRAVEL AND TIME');
+  const f2TravelRows = [];
+  for (let i = 1; i <= 4; i++) {
+    const tf = v(`f2-tv-f${i}`), tt = v(`f2-tv-t${i}`);
+    const wf = v(`f2-wt-f${i}`), wt = v(`f2-wt-t${i}`);
+    const af = v(`f2-at-f${i}`), at = v(`f2-at-t${i}`);
+    if (tf||tt||wf||wt||af||at) f2TravelRows.push([`${tf||'—'} → ${tt||'—'}`, `${wf||'—'} → ${wt||'—'}`, `${af||'—'} → ${at||'—'}`]);
   }
-  if (trRows.length > 0) {
-    trRows.push(['TOTAL', el('f2-tr-tot-out').textContent, el('f2-tr-tot-wait').textContent, el('f2-tr-tot-attend').textContent, el('f2-tr-tot-return').textContent, el('f2-tr-tot-miles').textContent, '']);
-    p.section('TRAVEL TABLE');
-    p.tbl(trHdrs, trRows);
-  }
+  if (f2TravelRows.length) p.tbl(['Travel Time (From→To)', 'Waiting Time (From→To)', 'Attendance Time (From→To)'], f2TravelRows);
+  p.row2([['Total Travel', v('f2-tot-travel')||'—'], ['Total Waiting', v('f2-tot-wait')||'—']]);
+  p.row2([['Total Attendance', v('f2-tot-attend')||'—'], ['Total Mileage', v('f2-mileage')||'—']]);
+  p.row2([['Arrival Time', v('f2-arrival-disp')||'—'], ['Departure Time', v('f2-departure-disp')||'—']]);
 
   p.section('DETENTION REVIEWS');
   p.row2([['6-hour review', el('f2-det-6').textContent], ['15-hour review', el('f2-det-15').textContent]]);
