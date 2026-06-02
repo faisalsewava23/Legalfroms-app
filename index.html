@@ -138,8 +138,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
           <input type="text" id="settings-solicitor" class="form-input" placeholder="e.g. Jane Smith">
         </div>
         <div class="fld">
-          <label class="fld-lbl">Firm Name</label>
-          <input type="text" id="settings-firm" class="form-input" placeholder="e.g. Smith & Associates LLP">
+          <label class="fld-lbl">Law Firm Name</label>
+          <input type="text" id="settings-firm" class="form-input" placeholder="e.g. Smith and Partners Solicitors">
         </div>
         <div class="fld">
           <label class="fld-lbl">Firm Address</label>
@@ -805,17 +805,6 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
     </div>
 
-    <!-- S4: Generate Narrative -->
-    <div><div class="sec-hd">AI NARRATIVE GENERATOR</div><div class="sec-bd">
-      <p class="text-sm text-gray-500 mb-3">Uses hearing details above to generate a formal attendance note narrative. Requires /api/generate backend endpoint.</p>
-      <button id="f3-gen-btn" onclick="generateNarrative()" class="w-full bg-[#1a3a5c] text-white py-3.5 rounded-xl font-bold active:opacity-80">Generate Narrative</button>
-      <div id="f3-narrative-output" class="mt-3" style="display:none">
-        <label class="fld-lbl">Generated Narrative</label>
-        <div id="f3-narrative-text" class="narrative-box"></div>
-        <button onclick="copyNarrative()" class="mt-2 w-full py-2.5 border border-gray-300 rounded-xl text-gray-600 font-semibold text-sm">Copy to Clipboard</button>
-      </div>
-    </div></div>
-
     <!-- S5: Post Hearing -->
     <div><div class="sec-hd">POST HEARING</div><div class="sec-bd">
       <div class="fld"><label class="fld-lbl">Conference Held with Client</label>
@@ -1095,49 +1084,6 @@ function updateCaseName() {
   el('f3-case-name').value = v('f3-defendant') ? `Regina v ${v('f3-defendant')}` : '';
 }
 
-// ============================================================
-// FORM 3 — GENERATE NARRATIVE (Claude API)
-// ============================================================
-async function generateNarrative() {
-  const btn = el('f3-gen-btn');
-  btn.innerHTML = '<span class="spin"></span>Generating…';
-  btn.disabled = true;
-
-  const systemPrompt = "You are a legal attendance note writer for a UK solicitor firm. Write a professional formal attendance note in third person past tense using formal legal language. Be concise and factual. Format as bullet points.";
-  const userMsg = `Please write an attendance note for the following Crown Court hearing:
-Court: ${v('f3-court')}
-Case: ${v('f3-case-name')}
-Defendant: ${v('f3-defendant')}
-Judge: ${v('f3-judge')}
-Date: ${fmtDate(v('f3-date'))}
-Prosecution Counsel: ${v('f3-pros-counsel')}
-Defence Counsel: ${v('f3-def-counsel')}
-Hearing Type: ${v('f3-hearing-type')}
-Parties Present: ${getF3Parties()}
-Summary: ${v('f3-summary')}
-Orders Made: ${v('f3-orders')}
-Next Hearing: ${fmtDate(v('f3-next-hearing'))}`;
-
-  try {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: systemPrompt, messages: [{ role: 'user', content: userMsg }] })
-    });
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-    const data = await res.json();
-    const text = data.content?.[0]?.text || data.text || data.message || JSON.stringify(data);
-    el('f3-narrative-text').textContent = text;
-    el('f3-narrative-output').style.display = 'block';
-  } catch (err) {
-    el('f3-narrative-text').textContent = `Error: ${err.message}\n\nNote: This feature requires a /api/generate backend endpoint connected to the Claude API.`;
-    el('f3-narrative-output').style.display = 'block';
-  } finally {
-    btn.innerHTML = 'Generate Narrative';
-    btn.disabled = false;
-  }
-}
-
 function getF3Parties() {
   const pts = [];
   if (cb('f3-p-defendant')) pts.push('Defendant');
@@ -1150,10 +1096,6 @@ function getF3Parties() {
   return pts.join(', ') || 'Not recorded';
 }
 
-function copyNarrative() {
-  const text = el('f3-narrative-text').textContent;
-  navigator.clipboard.writeText(text).catch(() => {});
-}
 
 // ============================================================
 // PDF BUILDER
@@ -1166,27 +1108,47 @@ function makePDF(firmName, title, solicitorName) {
   let y = 0;
 
   function _header() {
-    doc.setFillColor(...NAVY);
-    doc.rect(0, 0, 210, 28, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold'); doc.setFontSize(13);
-    doc.text(firmName || 'Legal Firm', L, 11);
-    doc.setFont('helvetica','normal'); doc.setFontSize(10);
-    doc.text(title, L, 19);
+    const cx = 105; // centre of A4
+    // Firm name — large bold navy, centred
+    doc.setTextColor(...NAVY);
+    doc.setFont('helvetica', 'bold');
+    if (firmName) {
+      doc.setFontSize(18);
+      doc.text(firmName, cx, 18, { align: 'center' });
+    } else {
+      doc.setFontSize(16);
+      doc.setTextColor(160, 160, 160);
+      doc.setFont('helvetica', 'italic');
+      doc.text('[Law Firm Name]', cx, 18, { align: 'center' });
+      doc.setTextColor(...NAVY);
+      doc.setFont('helvetica', 'bold');
+    }
+    // Subtitle — form title, centred
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(80, 80, 80);
+    doc.text(title, cx, 26, { align: 'center' });
+    // Date — top right
     doc.setFontSize(8);
-    doc.text(new Date().toLocaleDateString('en-GB'), 195, 11, {align:'right'});
-    doc.setTextColor(0,0,0);
-    y = 35;
+    doc.setTextColor(120, 120, 120);
+    doc.text(new Date().toLocaleDateString('en-GB'), 195, 12, { align: 'right' });
+    // Divider line — navy
+    doc.setDrawColor(...NAVY);
+    doc.setLineWidth(0.8);
+    doc.line(L, 31, L + W, 31);
+    doc.setLineWidth(0.2);
+    doc.setTextColor(0, 0, 0);
+    y = 38;
   }
 
   function _pageHeader() {
     doc.setFillColor(...NAVY);
-    doc.rect(0, 0, 210, 16, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text(`${firmName || 'Legal Firm'} — ${title} (continued)`, L, 11);
-    doc.setTextColor(0,0,0);
-    y = 22;
+    doc.rect(0, 0, 210, 14, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+    doc.text(`${firmName || '[Law Firm Name]'} — ${title} (continued)`, L, 9.5);
+    doc.setTextColor(0, 0, 0);
+    y = 20;
   }
 
   function chk(need) {
@@ -1505,12 +1467,6 @@ function generateForm3PDF() {
     p.row2([['Stage 3', fmtDate(v('f3-stage3'))], ['Stage 4', fmtDate(v('f3-stage4'))]]);
     p.row2([['COTR', fmtDate(v('f3-cotr'))], ['Trial Warned', fmtDate(v('f3-trial-warned'))]]);
     p.field('Trial Date', fmtDate(v('f3-trial-date')));
-  }
-
-  const narrative = el('f3-narrative-text').textContent.trim();
-  if (narrative && !narrative.startsWith('Error:')) {
-    p.section('ATTENDANCE NOTE NARRATIVE');
-    p.fieldFull('Narrative', narrative);
   }
 
   p.section('POST HEARING');
