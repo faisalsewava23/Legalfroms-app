@@ -9,63 +9,107 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LegalForms">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#0C447C">
+<meta name="theme-color" content="#2454d4">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
-html,body{font-size:16px;margin:0;padding:0;background:#eef2f7}
+html,body{font-size:16px;margin:0;padding:0;background:#f0f4f8}
 input,select,textarea,button{font-size:16px!important;font-family:inherit}
 .screen{display:none}.screen.active{display:block}
-.form-input{width:100%;border:1.5px solid #d1d5db;border-radius:10px;padding:11px 13px;background:#fff;color:#111827;transition:border-color .15s}
-.form-input:focus{outline:none;border-color:#1a3a5c;box-shadow:0 0 0 3px rgba(26,58,92,.15)}
-.toggle-group{display:flex;gap:6px}
-.toggle-btn{flex:1;padding:11px 8px;border:2px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;line-height:1.2}
-.toggle-btn.on{background:#1a3a5c;border-color:#1a3a5c;color:#fff}
-.sec-hd{background:#1a3a5c;color:#fff;padding:11px 15px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.04em}
-.sec-bd{background:#fff;border:1.5px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;padding:15px}
+
+/* ---- Inputs ---- */
+.form-input{width:100%;border:1.5px solid #dde3ec;border-radius:10px;padding:11px 13px;background:#fafbfd;color:#111827;transition:border-color .15s,box-shadow .15s}
+.form-input:focus{outline:none;border-color:#2454d4;box-shadow:0 0 0 3px rgba(36,84,212,.12);background:#fff}
+.mini-inp{border:1.5px solid #dde3ec;border-radius:7px;padding:7px 8px;font-size:13px;width:100%;background:#fafbfd}
+.mini-inp:focus{outline:none;border-color:#2454d4}
+
+/* ---- Segmented toggle controls ---- */
+.toggle-group{display:flex;gap:0;background:#e8edf5;border-radius:12px;padding:3px}
+.toggle-btn{flex:1;padding:10px 8px;border:none;border-radius:9px;background:transparent;color:#6b7280;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;line-height:1.2}
+.toggle-btn.on{background:#fff;color:#0d1b3e;box-shadow:0 2px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.07)}
+/* Inline yes/no toggles keep a bordered pill style */
+.yn-mini{display:flex;gap:5px}
+.yn-mini .toggle-btn{padding:7px 14px;font-size:14px;border:1.5px solid #dde3ec;background:#fff;color:#374151;border-radius:8px}
+.yn-mini .toggle-btn.on{background:#0d1b3e;border-color:#0d1b3e;color:#fff;box-shadow:none}
+
+/* ---- Section headers ---- */
+.sec-hd{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.05em;border-left:4px solid #c8a84b}
+.sec-bd{background:#fff;border:1.5px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;padding:16px;box-shadow:0 4px 16px rgba(13,27,62,.06)}
+
+/* ---- Field labels ---- */
 .fld{margin-bottom:14px}.fld:last-child{margin-bottom:0}
-.fld-lbl{display:block;font-size:12px;font-weight:700;color:#6b7280;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.fld-lbl{display:block;font-size:12px;font-weight:700;color:#4b5563;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* ---- Yes/No rows ---- */
 .yn-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6}
 .yn-row:last-child{border-bottom:none}
-.yn-mini{display:flex;gap:5px}
-.yn-mini .toggle-btn{padding:7px 14px;font-size:14px}
+
+/* ---- Checkbox rows ---- */
 .chk-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;border-bottom:1px solid #f3f4f6}
 .chk-row:last-child{border-bottom:none}
-.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#1a3a5c;cursor:pointer}
-.mini-inp{border:1.5px solid #d1d5db;border-radius:7px;padding:7px 8px;font-size:13px;width:100%;background:#fff}
-.mini-inp:focus{outline:none;border-color:#1a3a5c}
+.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#0d1b3e;cursor:pointer}
+
+/* ---- Table headers ---- */
 .tel-hd{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;padding:0 2px;margin-bottom:3px}
 .tel-row-g{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;margin-bottom:5px;align-items:center}
 .tbl-hd{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase}
 .tr-hd{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;padding:0 2px;margin-bottom:3px}
 .tr-row-g{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;margin-bottom:5px;align-items:center}
+
+/* ---- Misc UI ---- */
 .fc-flag{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:700;margin-top:8px}
-.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#1a3a5c}
+.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#0d1b3e}
 .det-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6}
 .det-row:last-child{border-bottom:none}
 .narrative-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:#1e293b}
 .spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
 /* ---- Dictation ---- */
 @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 22px rgba(239,68,68,0)}}
-.mic-idle{background:#1a3a5c;color:#fff;border:none}
+.mic-idle{background:#0d1b3e;color:#fff;border:none}
 .mic-recording{background:#ef4444!important;color:#fff;animation:mic-pulse 1.4s ease-in-out infinite}
 .mic-processing{background:#64748b!important;color:#fff}
 .dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
 .dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s;active:opacity-80}
+
 /* ---- Travel time table ---- */
 .time-cell-inp{width:100%;border:none;padding:5px 2px;font-size:13px;background:transparent;text-align:center;min-width:0;color:#111827}
-.time-cell-inp:focus{outline:2px solid #1a3a5c;border-radius:3px}
-.ttime-th-group{background:#1a3a5c;color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #0f2a4a}
+.time-cell-inp:focus{outline:2px solid #0d1b3e;border-radius:3px}
+.ttime-th-group{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #162550}
 .ttime-th-sub{border:1px solid #d1d5db;background:#f9fafb;text-align:center;padding:5px 3px;font-size:12px;color:#4b5563;font-weight:600}
 .ttime-td{border:1px solid #d1d5db;padding:2px}
 .ttime-tot{background:#eef4fb;border-radius:10px;padding:11px 12px;border:1px solid #c8d8ea}
 .ttime-tot p:first-child{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px}
-.ttime-tot .tval{font-weight:700;color:#1a3a5c;font-size:16px;margin:0}
+.ttime-tot .tval{font-weight:700;color:#0d1b3e;font-size:16px;margin:0}
+
+/* ---- Nav bar depth ---- */
+.sticky.top-0{box-shadow:0 2px 10px rgba(0,0,0,.2)}
+
+/* ---- Home hero gradient ---- */
+.hero-hd{background:linear-gradient(160deg,#0d1b3e 0%,#162550 55%,#0a1428 100%)}
+.hero-ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none}
+.hero-ring-1{width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.hero-ring-2{width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.hero-logo{box-shadow:0 8px 32px rgba(36,84,212,.35)}
+
+/* ---- Home card left-border accents ---- */
+.card-police{border-left:4px solid #dc2626!important}
+.card-mags{border-left:4px solid #4f46e5!important}
+.card-crown{border-left:4px solid #d97706!important}
+.card-dictate{border-left:4px solid #059669!important}
+.card-invoice{border-left:4px solid #7c3aed!important}
+.tab-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:999px;background:#f0f4f8;color:#6b7280;border:none;cursor:pointer;transition:all .2s}
+.tab-btn.tab-active{background:#0d1b3e;color:#fff}
+.note-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;flex-shrink:0}
+.note-badge-draft{background:#fef3c7;color:#92400e}
+.note-badge-done{background:#d1fae5;color:#065f46}
+.saved-flash{background:#c8a84b!important;color:#0d1b3e!important}
+.firm-edit-wrap{display:none}
 </style>
 </head>
 <body>
@@ -73,16 +117,33 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 <!-- ===== HOME ===== -->
 <div id="screen-home" class="screen active">
-  <div class="bg-[#1a3a5c] px-6 pt-14 pb-10 text-white text-center">
-    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-      <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+  <div class="hero-hd px-6 pt-14 pb-10 text-white text-center relative overflow-hidden">
+    <div class="hero-ring hero-ring-1"></div>
+    <div class="hero-ring hero-ring-2"></div>
+    <div class="relative" style="z-index:1">
+      <div class="hero-logo w-20 h-20 bg-white/15 rounded-3xl flex items-center justify-center mx-auto mb-5">
+        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
+      <p class="mt-2 text-base" style="color:rgba(255,255,255,.55)">Digital Attendance Notes</p>
     </div>
-    <h1 class="text-3xl font-bold tracking-tight">LegalForms</h1>
-    <p class="text-blue-200 mt-1 text-lg">Digital Attendance Notes</p>
   </div>
+  <!-- Quick firm name edit bar -->
+  <div class="px-4 pt-3">
+    <div id="firm-display" class="flex items-center gap-2.5 bg-white rounded-2xl px-4 py-3 border border-gray-100 shadow-sm cursor-pointer" onclick="startFirmEdit()">
+      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+      <span id="firm-name-display" class="flex-1 text-sm font-medium text-gray-700 truncate">Set firm name…</span>
+      <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+    </div>
+    <div id="firm-edit" class="firm-edit-wrap flex gap-2 items-center">
+      <input type="text" id="firm-quick-input" class="form-input flex-1" placeholder="Law Firm Name">
+      <button onclick="saveFirmName()" class="bg-[#0d1b3e] text-white px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">Save</button>
+    </div>
+  </div>
+
   <div class="p-4 space-y-3 mt-1">
-    <button onclick="openForm('form1')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+    <button onclick="openForm('form1')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-police">
+      <div class="w-14 h-14 bg-red-700 rounded-xl flex items-center justify-center flex-shrink-0">
         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
       </div>
       <div class="flex-1">
@@ -91,8 +152,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
       <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <button onclick="openForm('form2')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+    <button onclick="openForm('form2')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-mags">
+      <div class="w-14 h-14 bg-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0">
         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
       </div>
       <div class="flex-1">
@@ -101,8 +162,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
       <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <button onclick="openForm('form3')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+    <button onclick="openForm('form3')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-crown">
+      <div class="w-14 h-14 bg-amber-600 rounded-xl flex items-center justify-center flex-shrink-0">
         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
       </div>
       <div class="flex-1">
@@ -111,8 +172,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
       <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <button onclick="openDictation()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="w-14 h-14 bg-[#1a3a5c] rounded-xl flex items-center justify-center flex-shrink-0">
+    <button onclick="openDictation()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-dictate">
+      <div class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
       </div>
       <div class="flex-1">
@@ -121,19 +182,43 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
       <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
+    <button onclick="openInvoice()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-invoice">
+      <div class="w-14 h-14 bg-violet-600 rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-gray-900 text-lg">Generate Invoice</p>
+        <p class="text-gray-400 text-sm mt-0.5">Professional PDF invoices</p>
+      </div>
+      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
     <button onclick="showScreen('settings')" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       <span class="font-medium">Settings</span>
     </button>
   </div>
+
+  <!-- My Notes -->
+  <div class="px-4 pb-6 mt-1">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-bold text-gray-600 text-xs uppercase tracking-wider">My Notes</h2>
+      <div class="flex gap-1">
+        <button onclick="showDraftsTab('draft')" id="tab-draft" class="tab-btn tab-active">Drafts</button>
+        <button onclick="showDraftsTab('completed')" id="tab-completed" class="tab-btn">Completed</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div id="notes-list"><p class="text-center text-gray-400 text-sm py-5 px-4">No drafts yet — open a form and tap Save</p></div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== SETTINGS ===== -->
 <div id="screen-settings" class="screen">
-  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold text-lg">Settings</span>
-    <button onclick="saveSettings()" class="bg-white text-[#1a3a5c] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="saveSettings()" class="bg-white text-[#0d1b3e] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
   </div>
   <div class="p-4">
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -159,10 +244,11 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 <!-- ===== FORM 1: POLICE STATION ===== -->
 <div id="screen-form1" class="screen">
-  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Police Station Attendance</span>
-    <button onclick="generateForm1PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form1" onclick="saveDraft('form1')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm1PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -404,12 +490,12 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         </table>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
       </div>
     </div></div>
 
@@ -427,16 +513,17 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <button onclick="addTelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Call</button>
     </div></div>
 
-    <button onclick="generateForm1PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm1PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== FORM 2: MAGISTRATES COURT ===== -->
 <div id="screen-form2" class="screen">
-  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Magistrates Court</span>
-    <button onclick="generateForm2PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form2" onclick="saveDraft('form2')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm2PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -576,12 +663,12 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         </table>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1a3a5c;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
       </div>
     </div></div>
 
@@ -712,16 +799,17 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
     </div></div>
 
-    <button onclick="generateForm2PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm2PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== FORM 3: CROWN COURT ===== -->
 <div id="screen-form3" class="screen">
-  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Crown Court Attendance</span>
-    <button onclick="generateForm3PDF()" class="bg-white text-[#1a3a5c] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form3" onclick="saveDraft('form3')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm3PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -832,13 +920,13 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <div class="fld"><label class="fld-lbl">Firm</label><input type="text" id="f3-firm" class="form-input" readonly></div>
     </div></div>
 
-    <button onclick="generateForm3PDF()" class="w-full bg-[#1a3a5c] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm3PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== DICTATION SCREEN ===== -->
 <div id="screen-dictation" class="screen">
-  <div class="sticky top-0 z-10 bg-[#1a3a5c] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="leaveDictation()" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <div class="flex-1">
       <p class="font-bold text-lg leading-tight">Voice Dictation</p>
@@ -852,7 +940,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
     <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
       <p class="font-bold mb-1">🔒 Microphone access</p>
       <p>This app uses your microphone <strong>only</strong> to transcribe your spoken notes. Audio is processed securely via OpenAI Whisper and is never stored anywhere.</p>
-      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#1a3a5c] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
+      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#0d1b3e] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
     </div>
 
     <!-- Mic button -->
@@ -865,13 +953,15 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         </svg>
       </button>
       <p id="mic-status" class="mt-4 text-gray-500 font-semibold text-base text-center">Tap to start recording</p>
+      <p id="rec-timer" class="font-mono font-bold text-xl text-red-500 mt-1 text-center" style="display:none">0:00</p>
+      <p id="rec-warn" class="text-xs font-semibold text-amber-600 mt-1 text-center px-4" style="display:none">Long recordings may take a few seconds to transcribe</p>
     </div>
 
     <!-- Transcript area -->
     <div class="w-full flex-1">
       <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Transcribed Notes</label>
       <textarea id="dictation-transcript"
-        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#1a3a5c] text-gray-900 leading-relaxed"
+        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#0d1b3e] text-gray-900 leading-relaxed"
         style="min-height:300px;font-size:18px"
         placeholder="Your transcribed notes will appear here…"></textarea>
       <p id="dictation-error" class="mt-2 text-red-500 font-semibold text-sm text-center" style="display:none">
@@ -884,10 +974,61 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
     <!-- Action buttons -->
     <div class="flex gap-3 w-full mt-5">
-      <button onclick="dictationCopy()" class="dct-action-btn bg-[#1a3a5c] text-white">Copy</button>
-      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#1a3a5c]">New Recording</button>
+      <button onclick="dictationCopy()" class="dct-action-btn bg-[#0d1b3e] text-white">Copy</button>
+      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#0d1b3e]">New Recording</button>
       <button onclick="dictationClear()" class="dct-action-btn bg-[#fee2e2] text-red-700">Clear</button>
     </div>
+
+  </div>
+</div>
+
+<!-- ===== INVOICE ===== -->
+<div id="screen-invoice" class="screen">
+  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <span class="flex-1 font-bold">Generate Invoice</span>
+    <button onclick="generateInvoicePDF()" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+  </div>
+  <div class="p-4 space-y-4">
+
+    <div><div class="sec-hd">INVOICE DETAILS</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Client Name</label><input type="text" id="inv-client" class="form-input" placeholder="e.g. John Smith"></div>
+      <div class="fld"><label class="fld-lbl">Matter Reference</label><input type="text" id="inv-matter" class="form-input" placeholder="e.g. JS/2024/001"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Invoice Date</label><input type="date" id="inv-date" class="form-input"></div>
+        <div><label class="fld-lbl">Invoice No.</label><input type="text" id="inv-number" class="form-input" placeholder="INV-001"></div>
+      </div>
+    </div></div>
+
+    <div><div class="sec-hd">LINE ITEMS</div><div class="sec-bd">
+      <div class="grid gap-2 mb-2" style="grid-template-columns:1fr 90px 28px">
+        <span class="fld-lbl">Description</span><span class="fld-lbl text-right">Amount £</span><span></span>
+      </div>
+      <div id="inv-items-body"></div>
+      <button onclick="addInvItem()" class="mt-2 text-sm font-semibold flex items-center gap-1.5" style="color:#0d1b3e;background:none;border:none;cursor:pointer;padding:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        Add line item
+      </button>
+    </div></div>
+
+    <div><div class="sec-hd">TOTALS</div><div class="sec-bd">
+      <div class="yn-row">
+        <span class="text-sm font-semibold text-gray-700">Include VAT (20%)</span>
+        <div class="yn-mini">
+          <button class="toggle-btn" data-group="inv-vat" data-val="Yes" onclick="setToggle('inv-vat','Yes');calcInvTotals()">Yes</button>
+          <button class="toggle-btn on" data-group="inv-vat" data-val="No" onclick="setToggle('inv-vat','No');calcInvTotals()">No</button>
+        </div>
+      </div>
+      <div class="det-row"><span class="text-sm text-gray-600">Subtotal</span><span id="inv-subtotal" class="font-bold text-gray-900">£0.00</span></div>
+      <div id="inv-vat-row" class="det-row" style="display:none"><span class="text-sm text-gray-600">VAT (20%)</span><span id="inv-vat-amt" class="font-bold text-gray-900">£0.00</span></div>
+      <div class="det-row" style="border-bottom:none"><span class="font-bold text-[#0d1b3e]">Total Due</span><span id="inv-total" class="font-bold text-[#0d1b3e] text-xl">£0.00</span></div>
+    </div></div>
+
+    <div><div class="sec-hd">PAYMENT</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">Payment Link (optional)</label><input type="url" id="inv-payment-link" class="form-input" placeholder="https://..."></div>
+      <div class="fld"><label class="fld-lbl">Payment Terms</label><input type="text" id="inv-terms" class="form-input" placeholder="e.g. Payment due within 30 days"></div>
+      <div class="fld"><label class="fld-lbl">Notes / Bank Details</label><textarea id="inv-notes" rows="3" class="form-input resize-none" placeholder="Bank details, reference to quote, etc."></textarea></div>
+    </div></div>
 
   </div>
 </div>
@@ -911,6 +1052,8 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   el('screen-' + name).classList.add('active');
   window.scrollTo(0, 0);
+  if (name === 'home') { renderDrafts(); updateFirmDisplay(); }
+  if (!['form1','form2','form3'].includes(name)) stopAutoSave();
 }
 
 function getSettings() {
@@ -929,6 +1072,8 @@ function loadSettings() {
   if (s.solicitorName) el('settings-solicitor').value = s.solicitorName;
   if (s.firmName) el('settings-firm').value = s.firmName;
   if (s.firmAddress) el('settings-address').value = s.firmAddress;
+  updateFirmDisplay();
+  renderDrafts();
 }
 
 function today() { return new Date().toISOString().split('T')[0]; }
@@ -967,6 +1112,7 @@ function formatDT(dt) {
 // FORM OPEN
 // ============================================================
 function openForm(form) {
+  currentDraftId[form] = null;
   const s = getSettings();
   const t = today();
   if (form === 'form1') {
@@ -988,6 +1134,7 @@ function openForm(form) {
     el('f3-firm').value = s.firmName || '';
   }
   showScreen(form);
+  startAutoSave(form);
 }
 
 // ============================================================
@@ -1202,18 +1349,25 @@ function makePDF(firmName, title, solicitorName) {
   };
 
   const row2 = (pairs) => {
-    chk(14);
     const cw = W/2;
-    pairs.forEach(([lbl, val], i) => {
-      const x = L + i*cw;
+    let maxLines = 1;
+    const sp = pairs.map(([lbl, val]) => {
+      const lines = doc.splitTextToSize((val||'—').toString(), cw - 8);
+      const trimmed = lines.slice(0, 2);
+      maxLines = Math.max(maxLines, trimmed.length);
+      return [lbl, trimmed];
+    });
+    chk(10 + maxLines * 4.5);
+    sp.forEach(([lbl, lines], i) => {
+      const x = L + i * cw;
       doc.setFont('helvetica','bold'); doc.setFontSize(8);
       doc.text(lbl + ':', x, y);
       doc.setFont('helvetica','normal');
-      doc.text(doc.splitTextToSize((val||'—').toString(), cw-5)[0], x, y+5);
+      doc.text(lines, x, y + 5);
     });
-    y += 13;
+    y += 8 + maxLines * 4.5;
     doc.setDrawColor(230,230,230);
-    doc.line(L, y-0.5, L+W, y-0.5);
+    doc.line(L, y - 0.5, L + W, y - 0.5);
     y += 1.5;
   };
 
@@ -1252,6 +1406,7 @@ function makePDF(firmName, title, solicitorName) {
 // FORM 1 PDF
 // ============================================================
 function generateForm1PDF() {
+  markDraftCompleted('form1');
   const s = getSettings();
   const p = makePDF(s.firmName, 'Police Station Attendance Note', s.solicitorName);
 
@@ -1348,6 +1503,7 @@ function generateForm1PDF() {
 // FORM 2 PDF
 // ============================================================
 function generateForm2PDF() {
+  markDraftCompleted('form2');
   const s = getSettings();
   const p = makePDF(s.firmName, 'Magistrates Court Attendance Note', s.solicitorName);
 
@@ -1451,6 +1607,7 @@ function generateForm2PDF() {
 // FORM 3 PDF
 // ============================================================
 function generateForm3PDF() {
+  markDraftCompleted('form3');
   const s = getSettings();
   const p = makePDF(s.firmName, 'Crown Court Attendance Note', s.solicitorName);
 
@@ -1520,19 +1677,22 @@ function setMicState(state) {
   btn.className = btn.className.replace(/mic-\w+/g, '').trim();
   if (state === 'idle') {
     btn.classList.add('mic-idle');
-    status.textContent = 'Tap to start recording';
+    status.innerHTML = 'Tap to start recording';
     status.style.color = '#6b7280';
     dictRecording = false;
+    stopRecTimer();
   } else if (state === 'recording') {
     btn.classList.add('mic-recording');
-    status.textContent = 'Recording… tap to stop';
+    status.innerHTML = 'Recording… tap to stop';
     status.style.color = '#ef4444';
     dictRecording = true;
+    startRecTimer();
   } else if (state === 'processing') {
     btn.classList.add('mic-processing');
-    status.textContent = 'Transcribing…';
+    status.innerHTML = '<span class="spin"></span>Transcribing your recording…';
     status.style.color = '#64748b';
     dictRecording = false;
+    stopRecTimer();
   }
 }
 
@@ -1585,17 +1745,24 @@ async function transcribeAudio() {
   const mimeType = (audioChunks[0] && audioChunks[0].type) || 'audio/webm';
   const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm';
   const blob = new Blob(audioChunks, { type: mimeType });
-
   const form = new FormData();
   form.append('audio', blob, `recording.${ext}`);
-
   try {
-    const res = await fetch('/api/transcribe', { method: 'POST', body: form });
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 45000);
+    const res = await fetch('/api/transcribe', { method: 'POST', body: form, signal: ctrl.signal });
+    clearTimeout(timeout);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     appendTranscript(data.text || '');
   } catch (err) {
+    const msg = !navigator.onLine
+      ? 'No internet connection — check your network and try again.'
+      : err.name === 'AbortError'
+      ? 'Request timed out — please try again.'
+      : 'Could not transcribe — please try again.';
+    el('dictation-error').textContent = msg;
     el('dictation-error').style.display = 'block';
   }
   setMicState('idle');
@@ -1628,6 +1795,375 @@ function dictationClear() {
 
 function dictationNewRecording() {
   if (!dictRecording) startRecording();
+}
+
+// ============================================================
+// DRAFT SYSTEM — FIX 1
+// ============================================================
+const DRAFTS_KEY = 'lf-drafts';
+let currentDraftId = { form1: null, form2: null, form3: null };
+let autoSaveTimer = null;
+let currentDraftsTab = 'draft';
+
+function getAllDrafts() {
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); } catch { return []; }
+}
+function saveDraftsStore(drafts) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts)); }
+
+function collectFormState(formType) {
+  const scr = el('screen-' + formType);
+  if (!scr) return { inputs: {}, toggles: {}, checkboxes: {} };
+  const state = { inputs: {}, toggles: {}, checkboxes: {} };
+  scr.querySelectorAll('input[id], textarea[id], select[id]').forEach(inp => {
+    if (inp.type !== 'checkbox') state.inputs[inp.id] = inp.value;
+  });
+  scr.querySelectorAll('[data-group].on').forEach(btn => {
+    state.toggles[btn.dataset.group] = btn.dataset.val;
+  });
+  scr.querySelectorAll('input[type="checkbox"][id]').forEach(c => {
+    state.checkboxes[c.id] = c.checked;
+  });
+  return state;
+}
+
+function restoreFormState(formType, state) {
+  if (!state) return;
+  if (formType === 'form1') {
+    el('f1-tel-body').innerHTML = '';
+    f1TelCount = 0;
+    let maxTel = 0;
+    Object.keys(state.inputs || {}).forEach(id => { const m = id.match(/^f1-td-(\d+)$/); if (m) maxTel = Math.max(maxTel, +m[1]); });
+    for (let i = 0; i < Math.max(maxTel, 1); i++) addTelRow();
+  }
+  Object.entries(state.inputs || {}).forEach(([id, val]) => { const e = el(id); if (e && e.type !== 'checkbox') e.value = val; });
+  Object.entries(state.toggles || {}).forEach(([group, val]) => setToggle(group, val));
+  Object.entries(state.checkboxes || {}).forEach(([id, chk]) => { const e = el(id); if (e && e.type === 'checkbox') e.checked = chk; });
+  if (formType === 'form1') { calcAge('f1-dob','f1-age'); calcTravelTotals('f1'); }
+  if (formType === 'form2') { calcAge('f2-dob','f2-age'); calcTravelTotals('f2'); calcF2Detention(); checkFC(); }
+  if (formType === 'form3') { updateCaseName(); togglePTPH(); }
+}
+
+function getDraftClientName(formType, state) {
+  const inp = state.inputs || {};
+  if (formType === 'form1') return (inp['f1-client-name'] || '').trim();
+  if (formType === 'form2') return (inp['f2-client-name'] || '').trim();
+  if (formType === 'form3') return (inp['f3-defendant'] || '').trim();
+  return '';
+}
+
+function saveDraft(formType) {
+  const state = collectFormState(formType);
+  const clientName = getDraftClientName(formType, state) || 'Unnamed';
+  const drafts = getAllDrafts();
+  const existingId = currentDraftId[formType];
+  const idx = existingId ? drafts.findIndex(d => d.id === existingId) : -1;
+  if (idx >= 0) {
+    drafts[idx] = { ...drafts[idx], clientName, savedAt: new Date().toISOString(), state };
+  } else {
+    const id = Date.now().toString();
+    currentDraftId[formType] = id;
+    drafts.unshift({ id, formType, clientName, savedAt: new Date().toISOString(), status: 'draft', state });
+  }
+  saveDraftsStore(drafts);
+  flashSaveBtn(formType);
+  renderDrafts();
+}
+
+function flashSaveBtn(formType) {
+  const btn = el('save-draft-btn-' + formType);
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  btn.classList.add('saved-flash');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('saved-flash'); }, 1500);
+}
+
+function startAutoSave(formType) {
+  if (autoSaveTimer) clearInterval(autoSaveTimer);
+  autoSaveTimer = setInterval(() => {
+    const state = collectFormState(formType);
+    const hasData = getDraftClientName(formType, state) ||
+      Object.values(state.inputs).some(v => v && v !== today());
+    if (hasData) saveDraft(formType);
+  }, 30000);
+}
+
+function stopAutoSave() {
+  if (autoSaveTimer) { clearInterval(autoSaveTimer); autoSaveTimer = null; }
+}
+
+function markDraftCompleted(formType) {
+  const state = collectFormState(formType);
+  const clientName = getDraftClientName(formType, state) || 'Unnamed';
+  const drafts = getAllDrafts();
+  const existingId = currentDraftId[formType];
+  const idx = existingId ? drafts.findIndex(d => d.id === existingId) : -1;
+  if (idx >= 0) {
+    drafts[idx] = { ...drafts[idx], clientName, savedAt: new Date().toISOString(), state, status: 'completed' };
+  } else {
+    const id = Date.now().toString();
+    currentDraftId[formType] = id;
+    drafts.unshift({ id, formType, clientName, savedAt: new Date().toISOString(), status: 'completed', state });
+  }
+  saveDraftsStore(drafts);
+}
+
+function loadDraftAndOpen(draftId) {
+  const draft = getAllDrafts().find(d => d.id === draftId);
+  if (!draft) return;
+  openForm(draft.formType);
+  setTimeout(() => {
+    restoreFormState(draft.formType, draft.state);
+    currentDraftId[draft.formType] = draft.id;
+  }, 80);
+}
+
+function deleteDraft(id) {
+  saveDraftsStore(getAllDrafts().filter(d => d.id !== id));
+  renderDrafts();
+}
+
+function confirmDeleteDraft(id, name) {
+  if (confirm('Delete "' + (name || 'this note') + '"?')) deleteDraft(id);
+}
+
+function showDraftsTab(tab) {
+  currentDraftsTab = tab;
+  el('tab-draft').classList.toggle('tab-active', tab === 'draft');
+  el('tab-completed').classList.toggle('tab-active', tab === 'completed');
+  renderDrafts();
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderDrafts() {
+  const list = el('notes-list');
+  if (!list) return;
+  const filtered = getAllDrafts().filter(d => d.status === currentDraftsTab);
+  if (filtered.length === 0) {
+    const msg = currentDraftsTab === 'draft'
+      ? 'No drafts yet — open a form and tap Save'
+      : 'No completed notes yet';
+    list.innerHTML = '<p class="text-center text-gray-400 text-sm py-5 px-4">' + msg + '</p>';
+    return;
+  }
+  const labels = { form1: 'Police Station', form2: 'Magistrates', form3: 'Crown Court' };
+  list.innerHTML = filtered.map(d => {
+    const dt = new Date(d.savedAt);
+    const ts = dt.toLocaleDateString('en-GB') + ' · ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const badge = d.status === 'completed'
+      ? '<span class="note-badge note-badge-done">PDF</span>'
+      : '<span class="note-badge note-badge-draft">Draft</span>';
+    return '<div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0">'
+      + '<div class="flex-1 min-w-0 cursor-pointer" onclick="loadDraftAndOpen(\'' + d.id + '\')">'
+      + '<p class="font-semibold text-gray-900 text-sm truncate">' + escHtml(d.clientName) + '</p>'
+      + '<p class="text-xs text-gray-400 mt-0.5">' + (labels[d.formType] || '') + ' · ' + ts + '</p>'
+      + '</div>' + badge
+      + '<button onclick="confirmDeleteDraft(\'' + d.id + '\',\'' + escHtml(d.clientName) + '\')" class="text-gray-300 active:text-red-400 p-1 flex-shrink-0">'
+      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6M9 6V4h6v2"/></svg>'
+      + '</button></div>';
+  }).join('');
+}
+
+// ============================================================
+// FIRM NAME QUICK EDIT — FIX 3
+// ============================================================
+function updateFirmDisplay() {
+  const s = getSettings();
+  const disp = el('firm-name-display');
+  if (disp) disp.textContent = s.firmName || 'Set firm name…';
+}
+
+function startFirmEdit() {
+  el('firm-display').style.display = 'none';
+  el('firm-edit').style.display = 'flex';
+  const s = getSettings();
+  el('firm-quick-input').value = s.firmName || '';
+  el('firm-quick-input').focus();
+}
+
+function saveFirmName() {
+  const s = getSettings();
+  s.firmName = el('firm-quick-input').value.trim();
+  localStorage.setItem('lf-settings', JSON.stringify(s));
+  if (el('settings-firm')) el('settings-firm').value = s.firmName;
+  el('firm-display').style.display = 'flex';
+  el('firm-edit').style.display = 'none';
+  updateFirmDisplay();
+}
+
+// ============================================================
+// DICTATION TIMER — FIX 4
+// ============================================================
+let recTimerInterval = null;
+let recStartMs = 0;
+
+function startRecTimer() {
+  recStartMs = Date.now();
+  el('rec-timer').style.display = 'block';
+  recTimerInterval = setInterval(() => {
+    const secs = Math.floor((Date.now() - recStartMs) / 1000);
+    const m = Math.floor(secs / 60), s = secs % 60;
+    el('rec-timer').textContent = m + ':' + String(s).padStart(2, '0');
+    if (secs >= 60) el('rec-warn').style.display = 'block';
+  }, 500);
+}
+
+function stopRecTimer() {
+  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
+  if (el('rec-timer')) el('rec-timer').style.display = 'none';
+  if (el('rec-warn')) el('rec-warn').style.display = 'none';
+}
+
+// ============================================================
+// INVOICE — FIX 5
+// ============================================================
+let invItemCount = 0;
+
+function openInvoice() {
+  el('inv-date').value = today();
+  el('inv-number').value = 'INV-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-4);
+  invItemCount = 0;
+  el('inv-items-body').innerHTML = '';
+  addInvItem(); addInvItem(); addInvItem();
+  showScreen('invoice');
+}
+
+function addInvItem() {
+  if (invItemCount >= 8) return;
+  invItemCount++;
+  const n = invItemCount;
+  const div = document.createElement('div');
+  div.id = 'inv-item-' + n;
+  div.className = 'grid gap-2 mb-2 items-center';
+  div.style.gridTemplateColumns = '1fr 90px 28px';
+  div.innerHTML = '<input type="text" id="inv-desc-' + n + '" class="mini-inp" placeholder="Description">'
+    + '<input type="number" id="inv-amt-' + n + '" class="mini-inp" style="text-align:right" placeholder="0.00" step="0.01" oninput="calcInvTotals()">'
+    + '<button onclick="removeInvItem(' + n + ')" class="text-red-400 font-bold text-lg leading-none">×</button>';
+  el('inv-items-body').appendChild(div);
+}
+
+function removeInvItem(n) {
+  const r = el('inv-item-' + n);
+  if (r) { r.remove(); calcInvTotals(); }
+}
+
+function calcInvTotals() {
+  let sub = 0;
+  for (let i = 1; i <= invItemCount; i++) {
+    const e = el('inv-amt-' + i);
+    if (e) sub += parseFloat(e.value || 0) || 0;
+  }
+  const vatOn = gt('inv-vat') === 'Yes';
+  const vat = vatOn ? sub * 0.2 : 0;
+  el('inv-subtotal').textContent = '£' + sub.toFixed(2);
+  el('inv-vat-amt').textContent = '£' + vat.toFixed(2);
+  el('inv-total').textContent = '£' + (sub + vat).toFixed(2);
+  el('inv-vat-row').style.display = vatOn ? 'flex' : 'none';
+}
+
+function generateInvoicePDF() {
+  const s = getSettings();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const L = 15, W = 180;
+  const NAVY = [13, 27, 62], GOLD = [200, 168, 75];
+
+  // Dark header band
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 0, 210, 52, 'F');
+  doc.setDrawColor(...GOLD);
+  doc.setLineWidth(3);
+  doc.line(0, 52, 210, 52);
+  doc.setLineWidth(0.2);
+
+  // INVOICE title
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(24);
+  doc.text('INVOICE', L, 22);
+
+  // Firm name
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  if (s.firmName) doc.text(s.firmName, L, 31);
+  if (s.firmAddress) {
+    doc.setFontSize(8);
+    doc.splitTextToSize(s.firmAddress, 85).slice(0,2).forEach((ln, i) => doc.text(ln, L, 37 + i*4));
+  }
+
+  // Invoice meta (right)
+  doc.setTextColor(180,190,210); doc.setFontSize(8);
+  doc.text('Invoice: ' + (v('inv-number')||''), 195, 22, { align:'right' });
+  doc.text('Date: ' + fmtDate(v('inv-date')), 195, 28, { align:'right' });
+
+  let y = 64;
+  // Bill to
+  doc.setTextColor(0,0,0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.setTextColor(100,100,100); doc.text('BILLED TO', L, y);
+  y += 5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(0,0,0);
+  if (v('inv-client')) { doc.text(v('inv-client'), L, y); y += 5; }
+  if (v('inv-matter')) { doc.setFontSize(8); doc.setTextColor(100,100,100); doc.text(v('inv-matter'), L, y); y += 6; }
+  y += 4;
+
+  // Line items table
+  const rows = [];
+  let sub = 0;
+  for (let i = 1; i <= invItemCount; i++) {
+    const desc = v('inv-desc-' + i);
+    const e = el('inv-amt-' + i);
+    const amt = parseFloat(e ? e.value : 0) || 0;
+    if (desc || amt > 0) { rows.push([desc || '—', '£' + amt.toFixed(2)]); sub += amt; }
+  }
+  doc.autoTable({
+    head: [['Description','Amount']], body: rows, startY: y,
+    margin: { left: L, right: L },
+    styles: { fontSize: 9, cellPadding: 4, lineColor: [220,220,220], lineWidth: 0.3 },
+    headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold' },
+    columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 35, halign: 'right' } },
+    alternateRowStyles: { fillColor: [248,250,252] }, theme: 'grid'
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  // Totals
+  const vatOn = gt('inv-vat') === 'Yes';
+  const vat = vatOn ? sub * 0.2 : 0;
+  const total = sub + vat;
+  const tx = L + W - 72;
+  if (vatOn) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    doc.text('Subtotal', tx, y); doc.text('£' + sub.toFixed(2), L+W, y, { align:'right' }); y += 6;
+    doc.text('VAT (20%)', tx, y); doc.text('£' + vat.toFixed(2), L+W, y, { align:'right' }); y += 6;
+    doc.setDrawColor(...NAVY); doc.setLineWidth(0.4); doc.line(tx, y, L+W, y); y += 3;
+  }
+  doc.setFillColor(...NAVY);
+  doc.roundedRect(tx - 4, y - 4, 75, 13, 2, 2, 'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('TOTAL DUE', tx, y + 4);
+  doc.text('£' + total.toFixed(2), L+W-2, y + 4, { align:'right' });
+  y += 18;
+
+  // Payment info
+  const terms = v('inv-terms'), notes = v('inv-notes'), link = v('inv-payment-link');
+  if (terms || notes || link) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
+    doc.text('PAYMENT DETAILS', L, y); y += 6;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
+    if (terms) { doc.text(terms, L, y); y += 5; }
+    if (link) { doc.setTextColor(36,84,212); doc.text(link, L, y); doc.setTextColor(60,60,60); y += 5; }
+    if (notes) { doc.splitTextToSize(notes, W).forEach(ln => { doc.text(ln, L, y); y += 4.5; }); }
+  }
+
+  // Footer
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 281, 210, 16, 'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+  doc.text((s.firmName || '') + ' | PRIVATE & CONFIDENTIAL', L, 287, { maxWidth: W-20 });
+  doc.text('Page 1 of 1', 197, 292, { align:'right' });
+
+  doc.save('Invoice_' + (v('inv-client')||'Invoice').replace(/\s+/g,'_') + '_' + (v('inv-date')||today()) + '.pdf');
 }
 
 // ============================================================
