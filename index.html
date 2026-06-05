@@ -111,6 +111,189 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 .saved-flash{background:#c8a84b!important;color:#0d1b3e!important}
 .firm-edit-wrap{display:none}
 </style>
+
+<!-- BARRISTER'S CHAMBERS — dark, refined, editorial design system -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Global dark canvas ── */
+html, body { background: #0d0f14 !important; }
+#app { color: #e2dfd8; }
+
+/* ── Surface overrides (Tailwind bg-white → dark glass) ── */
+#app .bg-white {
+  background: rgba(18, 20, 28, 0.92) !important;
+  border-color: rgba(200, 168, 75, 0.12) !important;
+}
+/* Keep nav-bar action buttons white for contrast */
+.sticky.top-0 button.bg-white,
+button.bg-white { background: rgba(255,255,255,0.96) !important; color: #0d1b3e !important; }
+
+/* ── Text overrides ── */
+#app .text-gray-900, #app .text-gray-800 { color: #e2dfd8 !important; }
+#app .text-gray-700 { color: #c9c4bb !important; }
+#app .text-gray-600 { color: #a09a90 !important; }
+#app .text-gray-500, #app .text-gray-400 { color: #706a60 !important; }
+#app .text-gray-300 { color: #9a9488 !important; }
+#app .border-gray-200, #app .border-gray-100 { border-color: rgba(200,168,75,0.10) !important; }
+#app .bg-gray-50, #app .bg-gray-100 { background: rgba(255,255,255,0.03) !important; }
+
+/* ── Typography: section headers → Cormorant Garamond ── */
+.sec-hd {
+  background: linear-gradient(135deg, rgba(13,27,62,0.95) 0%, rgba(22,37,80,0.95) 100%) !important;
+  border-left: 4px solid #c8a84b !important;
+  color: #c8a84b !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── Section body: dark glass ── */
+.sec-bd {
+  background: rgba(16, 18, 26, 0.88) !important;
+  border: 1.5px solid rgba(200, 168, 75, 0.14) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+}
+
+/* ── Field labels → DM Mono ── */
+.fld-lbl {
+  font-family: 'DM Mono', 'Courier New', monospace !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: rgba(200, 168, 75, 0.7) !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+/* ── Inputs on dark background ── */
+#app input[type="text"], #app input[type="date"], #app input[type="time"],
+#app input[type="number"], #app input[type="tel"], #app input[type="email"],
+#app textarea, #app select {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(200,168,75,0.18) !important;
+  color: #e2dfd8 !important;
+  border-radius: 8px !important;
+}
+#app input:focus, #app textarea:focus, #app select:focus {
+  outline: none !important;
+  border-color: #c8a84b !important;
+  box-shadow: 0 0 0 3px rgba(200,168,75,0.12) !important;
+}
+#app input::placeholder, #app textarea::placeholder { color: rgba(200,168,75,0.3) !important; }
+#app select option { background: #12141c; color: #e2dfd8; }
+
+/* ── Toggle group → gold active state ── */
+.toggle-group { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(200,168,75,0.12) !important; }
+.toggle-btn.on {
+  background: #c8a84b !important;
+  color: #0d1b3e !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 12px rgba(200,168,75,0.3) !important;
+}
+.toggle-btn:not(.on) { color: rgba(200,168,75,0.5) !important; }
+
+/* ── Nav bars: glassmorphism ── */
+.sticky.top-0 {
+  background: rgba(10, 11, 16, 0.92) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.2) !important;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* ── Hero / Home header ── */
+.hero-hd {
+  background: linear-gradient(160deg, #0a0c14 0%, #0d1b3e 55%, #0a1428 100%) !important;
+  border-bottom: 1px solid rgba(200,168,75,0.15) !important;
+}
+.hero-hd h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 42px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1 !important;
+  color: #fff !important;
+}
+.hero-hd h1 span { color: #c8a84b !important; }
+.hero-hd p, .hero-hd .subtitle {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 11px !important;
+  color: rgba(200,168,75,0.55) !important;
+  letter-spacing: 0.1em !important;
+}
+
+/* ── Home: firm display ── */
+#firm-display {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 11px !important;
+  color: rgba(200,168,75,0.6) !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ── Home cards: dark glass with gold accents, entrance animations ── */
+@keyframes lf-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#screen-home .screen-card, #screen-home [class*="card-"] {
+  animation: lf-fade-up 0.45s ease both;
+}
+#screen-home .screen-card:nth-child(1), #screen-home [class*="card-"]:nth-child(1) { animation-delay: 0.06s; }
+#screen-home .screen-card:nth-child(2), #screen-home [class*="card-"]:nth-child(2) { animation-delay: 0.12s; }
+#screen-home .screen-card:nth-child(3), #screen-home [class*="card-"]:nth-child(3) { animation-delay: 0.18s; }
+#screen-home .screen-card:nth-child(4), #screen-home [class*="card-"]:nth-child(4) { animation-delay: 0.24s; }
+#screen-home .screen-card:nth-child(5), #screen-home [class*="card-"]:nth-child(5) { animation-delay: 0.30s; }
+
+/* ── Tabs ── */
+.tab-btn { background: rgba(255,255,255,0.04) !important; color: rgba(200,168,75,0.45) !important; border: 1px solid rgba(200,168,75,0.1) !important; }
+.tab-btn.tab-active { background: rgba(200,168,75,0.12) !important; color: #c8a84b !important; border-color: rgba(200,168,75,0.3) !important; }
+
+/* ── Note/draft badges ── */
+.note-badge-draft { background: rgba(200,168,75,0.15) !important; color: #c8a84b !important; }
+.note-badge-done  { background: rgba(16,185,129,0.15) !important; color: #34d399 !important; }
+
+/* ── Note list items ── */
+#notes-list .bg-white, #notes-list [class*="bg-white"] {
+  background: rgba(18,20,28,0.8) !important;
+  border: 1px solid rgba(200,168,75,0.1) !important;
+}
+
+/* ── Dictation screen ── */
+#screen-dictation { background: #0d0f14 !important; }
+#rec-timer { font-family: 'DM Mono', monospace !important; color: #c8a84b !important; font-size: 32px !important; }
+#rec-warn  { color: rgba(200,168,75,0.6) !important; font-family: 'DM Mono', monospace !important; }
+
+/* ── Invoice screen inputs ── */
+#screen-invoice .bg-blue-50 { background: rgba(13,27,62,0.4) !important; border: 1px solid rgba(200,168,75,0.12) !important; }
+#screen-invoice .text-blue-800 { color: #c8a84b !important; }
+#screen-invoice .bg-gray-50 { background: rgba(255,255,255,0.02) !important; }
+#screen-invoice .border-gray-200 { border-color: rgba(200,168,75,0.1) !important; }
+#screen-invoice tfoot { border-top: 1px solid rgba(200,168,75,0.2) !important; }
+
+/* ── Gold primary buttons ── */
+button.bg-blue-600, button[class*="bg-blue-"] {
+  background: linear-gradient(135deg, #c8a84b 0%, #b8963b 100%) !important;
+  color: #0d1b3e !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 16px rgba(200,168,75,0.25) !important;
+  border: none !important;
+}
+button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
+  background: linear-gradient(135deg, #d4b55e 0%, #c8a84b 100%) !important;
+  box-shadow: 0 6px 20px rgba(200,168,75,0.35) !important;
+}
+
+/* ── Settings screen ── */
+#screen-settings { background: #0d0f14 !important; }
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0d0f14; }
+::-webkit-scrollbar-thumb { background: rgba(200,168,75,0.25); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,168,75,0.45); }
+</style>
 </head>
 <body>
 <div id="app" class="max-w-lg mx-auto pb-12">
@@ -124,8 +307,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <div class="hero-logo w-20 h-20 bg-white/15 rounded-3xl flex items-center justify-center mx-auto mb-5">
         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
-      <p class="mt-2 text-base" style="color:rgba(255,255,255,.55)">Digital Attendance Notes</p>
+      <h1 class="text-3xl font-bold tracking-tight" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:46px;font-weight:700;letter-spacing:-0.01em;line-height:1">Legal<span style="color:#c8a84b">Forms</span></h1>
+      <p class="mt-2 subtitle" style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(200,168,75,.55);letter-spacing:.1em;text-transform:uppercase">Digital Attendance Notes</p>
     </div>
   </div>
   <!-- Quick firm name edit bar -->
