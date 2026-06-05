@@ -110,196 +110,145 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 .note-badge-done{background:#d1fae5;color:#065f46}
 .saved-flash{background:#c8a84b!important;color:#0d1b3e!important}
 .firm-edit-wrap{display:none}
-</style>
 
-<!-- BARRISTER'S CHAMBERS — dark, refined, editorial design system -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-/* ── Global dark canvas ── */
-html, body { background: #0d0f14 !important; }
-#app { color: #e2dfd8; }
+/* ---- Screen transitions ---- */
+#app{overflow-x:hidden}
+.screen.slide-in{animation:slideIn .28s cubic-bezier(.4,0,.2,1) forwards}
+.screen.slide-back{animation:slideBack .28s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes slideIn{from{transform:translateX(32px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideBack{from{transform:translateX(-32px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* ── Surface overrides (Tailwind bg-white → dark glass) ── */
-#app .bg-white {
-  background: rgba(18, 20, 28, 0.92) !important;
-  border-color: rgba(200, 168, 75, 0.12) !important;
-}
-/* Keep nav-bar action buttons white for contrast */
-.sticky.top-0 button.bg-white,
-button.bg-white { background: rgba(255,255,255,0.96) !important; color: #0d1b3e !important; }
+/* ---- Splash ---- */
+@keyframes splashFadeOut{0%{opacity:1}80%{opacity:1}100%{opacity:0;pointer-events:none}}
+@keyframes splashLogoIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes splashBarGrow{from{width:0}to{width:100%}}
+.splash-logo-anim{animation:splashLogoIn .5s cubic-bezier(.34,1.56,.64,1) forwards}
+.splash-bar{height:3px;background:#c8a84b;border-radius:3px;animation:splashBarGrow 2s linear forwards}
 
-/* ── Text overrides ── */
-#app .text-gray-900, #app .text-gray-800 { color: #e2dfd8 !important; }
-#app .text-gray-700 { color: #c9c4bb !important; }
-#app .text-gray-600 { color: #a09a90 !important; }
-#app .text-gray-500, #app .text-gray-400 { color: #706a60 !important; }
-#app .text-gray-300 { color: #9a9488 !important; }
-#app .border-gray-200, #app .border-gray-100 { border-color: rgba(200,168,75,0.10) !important; }
-#app .bg-gray-50, #app .bg-gray-100 { background: rgba(255,255,255,0.03) !important; }
-
-/* ── Typography: section headers → Cormorant Garamond ── */
-.sec-hd {
-  background: linear-gradient(135deg, rgba(13,27,62,0.95) 0%, rgba(22,37,80,0.95) 100%) !important;
-  border-left: 4px solid #c8a84b !important;
-  color: #c8a84b !important;
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.04em !important;
-}
-
-/* ── Section body: dark glass ── */
-.sec-bd {
-  background: rgba(16, 18, 26, 0.88) !important;
-  border: 1.5px solid rgba(200, 168, 75, 0.14) !important;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
-}
-
-/* ── Field labels → DM Mono ── */
-.fld-lbl {
-  font-family: 'DM Mono', 'Courier New', monospace !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  color: rgba(200, 168, 75, 0.7) !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-}
-
-/* ── Inputs on dark background ── */
-#app input[type="text"], #app input[type="date"], #app input[type="time"],
-#app input[type="number"], #app input[type="tel"], #app input[type="email"],
-#app textarea, #app select {
-  background: rgba(255,255,255,0.04) !important;
-  border: 1px solid rgba(200,168,75,0.18) !important;
-  color: #e2dfd8 !important;
-  border-radius: 8px !important;
-}
-#app input:focus, #app textarea:focus, #app select:focus {
-  outline: none !important;
-  border-color: #c8a84b !important;
-  box-shadow: 0 0 0 3px rgba(200,168,75,0.12) !important;
-}
-#app input::placeholder, #app textarea::placeholder { color: rgba(200,168,75,0.3) !important; }
-#app select option { background: #12141c; color: #e2dfd8; }
-
-/* ── Toggle group → gold active state ── */
-.toggle-group { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(200,168,75,0.12) !important; }
-.toggle-btn.on {
-  background: #c8a84b !important;
-  color: #0d1b3e !important;
-  font-weight: 700 !important;
-  box-shadow: 0 2px 12px rgba(200,168,75,0.3) !important;
-}
-.toggle-btn:not(.on) { color: rgba(200,168,75,0.5) !important; }
-
-/* ── Nav bars: glassmorphism ── */
-.sticky.top-0 {
-  background: rgba(10, 11, 16, 0.92) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(200, 168, 75, 0.2) !important;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.5) !important;
-}
-
-/* ── Hero / Home header ── */
-.hero-hd {
-  background: linear-gradient(160deg, #0a0c14 0%, #0d1b3e 55%, #0a1428 100%) !important;
-  border-bottom: 1px solid rgba(200,168,75,0.15) !important;
-}
-.hero-hd h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 42px !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.01em !important;
-  line-height: 1 !important;
-  color: #fff !important;
-}
-.hero-hd h1 span { color: #c8a84b !important; }
-.hero-hd p, .hero-hd .subtitle {
-  font-family: 'DM Mono', monospace !important;
-  font-size: 11px !important;
-  color: rgba(200,168,75,0.55) !important;
-  letter-spacing: 0.1em !important;
-}
-
-/* ── Home: firm display ── */
-#firm-display {
-  font-family: 'DM Mono', monospace !important;
-  font-size: 11px !important;
-  color: rgba(200,168,75,0.6) !important;
-  letter-spacing: 0.05em !important;
-}
-
-/* ── Home cards: dark glass with gold accents, entrance animations ── */
-@keyframes lf-fade-up {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-#screen-home .screen-card, #screen-home [class*="card-"] {
-  animation: lf-fade-up 0.45s ease both;
-}
-#screen-home .screen-card:nth-child(1), #screen-home [class*="card-"]:nth-child(1) { animation-delay: 0.06s; }
-#screen-home .screen-card:nth-child(2), #screen-home [class*="card-"]:nth-child(2) { animation-delay: 0.12s; }
-#screen-home .screen-card:nth-child(3), #screen-home [class*="card-"]:nth-child(3) { animation-delay: 0.18s; }
-#screen-home .screen-card:nth-child(4), #screen-home [class*="card-"]:nth-child(4) { animation-delay: 0.24s; }
-#screen-home .screen-card:nth-child(5), #screen-home [class*="card-"]:nth-child(5) { animation-delay: 0.30s; }
-
-/* ── Tabs ── */
-.tab-btn { background: rgba(255,255,255,0.04) !important; color: rgba(200,168,75,0.45) !important; border: 1px solid rgba(200,168,75,0.1) !important; }
-.tab-btn.tab-active { background: rgba(200,168,75,0.12) !important; color: #c8a84b !important; border-color: rgba(200,168,75,0.3) !important; }
-
-/* ── Note/draft badges ── */
-.note-badge-draft { background: rgba(200,168,75,0.15) !important; color: #c8a84b !important; }
-.note-badge-done  { background: rgba(16,185,129,0.15) !important; color: #34d399 !important; }
-
-/* ── Note list items ── */
-#notes-list .bg-white, #notes-list [class*="bg-white"] {
-  background: rgba(18,20,28,0.8) !important;
-  border: 1px solid rgba(200,168,75,0.1) !important;
-}
-
-/* ── Dictation screen ── */
-#screen-dictation { background: #0d0f14 !important; }
-#rec-timer { font-family: 'DM Mono', monospace !important; color: #c8a84b !important; font-size: 32px !important; }
-#rec-warn  { color: rgba(200,168,75,0.6) !important; font-family: 'DM Mono', monospace !important; }
-
-/* ── Invoice screen inputs ── */
-#screen-invoice .bg-blue-50 { background: rgba(13,27,62,0.4) !important; border: 1px solid rgba(200,168,75,0.12) !important; }
-#screen-invoice .text-blue-800 { color: #c8a84b !important; }
-#screen-invoice .bg-gray-50 { background: rgba(255,255,255,0.02) !important; }
-#screen-invoice .border-gray-200 { border-color: rgba(200,168,75,0.1) !important; }
-#screen-invoice tfoot { border-top: 1px solid rgba(200,168,75,0.2) !important; }
-
-/* ── Gold primary buttons ── */
-button.bg-blue-600, button[class*="bg-blue-"] {
-  background: linear-gradient(135deg, #c8a84b 0%, #b8963b 100%) !important;
-  color: #0d1b3e !important;
-  font-weight: 700 !important;
-  box-shadow: 0 4px 16px rgba(200,168,75,0.25) !important;
-  border: none !important;
-}
-button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
-  background: linear-gradient(135deg, #d4b55e 0%, #c8a84b 100%) !important;
-  box-shadow: 0 6px 20px rgba(200,168,75,0.35) !important;
-}
-
-/* ── Settings screen ── */
-#screen-settings { background: #0d0f14 !important; }
-
-/* ── Scrollbar styling ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0d0f14; }
-::-webkit-scrollbar-thumb { background: rgba(200,168,75,0.25); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(200,168,75,0.45); }
+/* ---- Welcome / Onboarding ---- */
+.ob-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
+.ob-dot.ob-active{background:#c8a84b;width:24px;border-radius:4px}
+.ob-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:28px 24px}
+.ob-input{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 16px;color:#fff;font-size:16px;outline:none;transition:border-color .2s}
+.ob-input::placeholder{color:rgba(255,255,255,.35)}
+.ob-input:focus{border-color:#c8a84b;background:rgba(255,255,255,.13)}
+.ob-btn-primary{width:100%;background:#c8a84b;color:#0d1b3e;border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:opacity .15s}
+.ob-btn-primary:active{opacity:.85}
+.ob-btn-ghost{background:none;border:none;color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;padding:10px;margin-top:4px}
+.ob-btn-ghost:hover{color:rgba(255,255,255,.7)}
+.ob-bg{background:linear-gradient(160deg,#0a1428 0%,#0d1b3e 45%,#111f45 100%);min-height:100vh}
 </style>
 </head>
 <body>
 <div id="app" class="max-w-lg mx-auto pb-12">
 
+<!-- ===== SPLASH ===== -->
+<div id="screen-splash" class="screen active ob-bg">
+  <div class="flex flex-col items-center justify-center text-white" style="min-height:100vh;gap:0">
+    <div class="splash-logo-anim flex flex-col items-center gap-6">
+      <div class="w-28 h-28 rounded-3xl flex items-center justify-center" style="background:rgba(255,255,255,.1);box-shadow:0 12px 48px rgba(36,84,212,.5)">
+        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <div class="text-center">
+        <h1 class="text-4xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
+        <p class="mt-2 text-sm" style="color:rgba(255,255,255,.45)">Digital Attendance Notes</p>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:120px">
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WELCOME ===== -->
+<div id="screen-welcome" class="screen ob-bg">
+  <div class="flex flex-col items-center justify-between px-8 text-white" style="min-height:100vh;padding-top:80px;padding-bottom:48px">
+    <div class="flex-1 flex flex-col items-center justify-center text-center w-full">
+      <div class="w-24 h-24 rounded-3xl flex items-center justify-center mb-8" style="background:rgba(255,255,255,.1);box-shadow:0 8px 40px rgba(36,84,212,.4)">
+        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <h1 class="text-4xl font-bold tracking-tight mb-3">Legal<span style="color:#c8a84b">Forms</span></h1>
+      <p class="text-lg mb-2 font-medium" style="color:rgba(255,255,255,.7)">Digital Attendance Notes</p>
+      <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.4);max-width:280px">Built for solicitors. Police station, Magistrates &amp; Crown Court — all in one place.</p>
+      <div class="flex gap-4 mt-10 mb-2 text-center">
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-2xl font-bold" style="color:#c8a84b">3</span>
+          <span class="text-xs" style="color:rgba(255,255,255,.4)">Form Types</span>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-2xl font-bold" style="color:#c8a84b">PDF</span>
+          <span class="text-xs" style="color:rgba(255,255,255,.4)">Export Ready</span>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-2xl font-bold" style="color:#c8a84b">🎙️</span>
+          <span class="text-xs" style="color:rgba(255,255,255,.4)">Voice Notes</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-full flex flex-col items-center gap-3">
+      <button onclick="handleGetStarted()" class="ob-btn-primary">Get Started</button>
+      <button onclick="skipOnboarding()" class="ob-btn-ghost">I'll set up later →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ONBOARD STEP 1 ===== -->
+<div id="screen-onboard1" class="screen ob-bg">
+  <div class="flex flex-col px-8 text-white" style="min-height:100vh;padding-top:60px;padding-bottom:48px">
+    <button onclick="showScreen('welcome',-1)" class="self-start mb-8 text-2xl" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer">←</button>
+    <div class="flex gap-2 mb-10">
+      <div class="ob-dot ob-active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+    </div>
+    <h2 class="text-3xl font-bold mb-2">What's your<br>firm's name?</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,.45)">This appears on all your PDF attendance notes.</p>
+    <div class="ob-card flex-1 flex flex-col justify-between">
+      <div>
+        <label class="block text-xs font-bold mb-3 tracking-widest" style="color:rgba(255,255,255,.5);text-transform:uppercase">Law Firm Name</label>
+        <input id="onboard-firm" type="text" class="ob-input" placeholder="e.g. Smith & Partners LLP" autocomplete="organization" />
+      </div>
+      <button onclick="onboardNext1()" class="ob-btn-primary mt-8">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ONBOARD STEP 2 ===== -->
+<div id="screen-onboard2" class="screen ob-bg">
+  <div class="flex flex-col px-8 text-white" style="min-height:100vh;padding-top:60px;padding-bottom:48px">
+    <button onclick="showScreen('onboard1',-1)" class="self-start mb-8 text-2xl" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer">←</button>
+    <div class="flex gap-2 mb-10">
+      <div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div><div class="ob-dot"></div>
+    </div>
+    <h2 class="text-3xl font-bold mb-2">Your name<br>as solicitor?</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,.45)">Pre-fills your name on every attendance note.</p>
+    <div class="ob-card flex-1 flex flex-col justify-between">
+      <div>
+        <label class="block text-xs font-bold mb-3 tracking-widest" style="color:rgba(255,255,255,.5);text-transform:uppercase">Solicitor Name</label>
+        <input id="onboard-solicitor" type="text" class="ob-input" placeholder="e.g. Jane Smith" autocomplete="name" />
+      </div>
+      <button onclick="onboardNext2()" class="ob-btn-primary mt-8">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ONBOARD STEP 3 (Done) ===== -->
+<div id="screen-onboard3" class="screen ob-bg">
+  <div class="flex flex-col items-center justify-between px-8 text-white text-center" style="min-height:100vh;padding-top:80px;padding-bottom:48px">
+    <div class="flex-1 flex flex-col items-center justify-center">
+      <div class="flex gap-2 mb-12">
+        <div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div>
+      </div>
+      <div class="text-6xl mb-6">✅</div>
+      <h2 class="text-3xl font-bold mb-3">You're all set!</h2>
+      <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.5);max-width:260px">Your details are saved. Start by choosing a form type from the home screen.</p>
+    </div>
+    <button onclick="completeOnboarding()" class="ob-btn-primary">Go to LegalForms →</button>
+  </div>
+</div>
+
 <!-- ===== HOME ===== -->
-<div id="screen-home" class="screen active">
+<div id="screen-home" class="screen">
   <div class="hero-hd px-6 pt-14 pb-10 text-white text-center relative overflow-hidden">
     <div class="hero-ring hero-ring-1"></div>
     <div class="hero-ring hero-ring-2"></div>
@@ -307,8 +256,8 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
       <div class="hero-logo w-20 h-20 bg-white/15 rounded-3xl flex items-center justify-center mx-auto mb-5">
         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:46px;font-weight:700;letter-spacing:-0.01em;line-height:1">Legal<span style="color:#c8a84b">Forms</span></h1>
-      <p class="mt-2 subtitle" style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(200,168,75,.55);letter-spacing:.1em;text-transform:uppercase">Digital Attendance Notes</p>
+      <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
+      <p class="mt-2 text-base" style="color:rgba(255,255,255,.55)">Digital Attendance Notes</p>
     </div>
   </div>
   <!-- Quick firm name edit bar -->
@@ -375,7 +324,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
       </div>
       <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
-    <button onclick="showScreen('settings')" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
+    <button onclick="showScreen('settings',1)" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       <span class="font-medium">Settings</span>
     </button>
@@ -399,7 +348,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
 <!-- ===== SETTINGS ===== -->
 <div id="screen-settings" class="screen">
   <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold text-lg">Settings</span>
     <button onclick="saveSettings()" class="bg-white text-[#0d1b3e] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
   </div>
@@ -428,7 +377,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
 <!-- ===== FORM 1: POLICE STATION ===== -->
 <div id="screen-form1" class="screen">
   <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Police Station Attendance</span>
     <button id="save-draft-btn-form1" onclick="saveDraft('form1')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
     <button onclick="generateForm1PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
@@ -703,7 +652,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
 <!-- ===== FORM 2: MAGISTRATES COURT ===== -->
 <div id="screen-form2" class="screen">
   <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Magistrates Court</span>
     <button id="save-draft-btn-form2" onclick="saveDraft('form2')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
     <button onclick="generateForm2PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
@@ -989,7 +938,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
 <!-- ===== FORM 3: CROWN COURT ===== -->
 <div id="screen-form3" class="screen">
   <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Crown Court Attendance</span>
     <button id="save-draft-btn-form3" onclick="saveDraft('form3')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
     <button onclick="generateForm3PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
@@ -1168,7 +1117,7 @@ button.bg-blue-600:hover, button[class*="bg-blue-"]:hover {
 <!-- ===== INVOICE ===== -->
 <div id="screen-invoice" class="screen">
   <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home')" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
+    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Generate Invoice</span>
     <button onclick="generateInvoicePDF()" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
@@ -1231,12 +1180,55 @@ function setToggle(group, val) {
   document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.toggle('on', b.dataset.val === val));
 }
 
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  el('screen-' + name).classList.add('active');
+function showScreen(name, dir) {
+  // dir: 1 = forward (slide in from right), -1 = back (slide in from left), omit = no anim
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'slide-in', 'slide-back');
+  });
+  const next = el('screen-' + name);
+  next.classList.add('active');
+  if (dir === 1) { next.classList.add('slide-in'); setTimeout(() => next.classList.remove('slide-in'), 300); }
+  if (dir === -1) { next.classList.add('slide-back'); setTimeout(() => next.classList.remove('slide-back'), 300); }
   window.scrollTo(0, 0);
   if (name === 'home') { renderDrafts(); updateFirmDisplay(); }
   if (!['form1','form2','form3'].includes(name)) stopAutoSave();
+}
+
+function handleGetStarted() {
+  if (localStorage.getItem('lf-onboarded')) {
+    showScreen('home', 1);
+  } else {
+    showScreen('onboard1', 1);
+  }
+}
+
+function skipOnboarding() {
+  localStorage.setItem('lf-onboarded', '1');
+  showScreen('home', 1);
+}
+
+function onboardNext1() {
+  const firm = el('onboard-firm').value.trim();
+  if (firm) {
+    const s = getSettings(); s.firmName = firm;
+    localStorage.setItem('lf-settings', JSON.stringify(s));
+  }
+  showScreen('onboard2', 1);
+}
+
+function onboardNext2() {
+  const name = el('onboard-solicitor').value.trim();
+  if (name) {
+    const s = getSettings(); s.solicitorName = name;
+    localStorage.setItem('lf-settings', JSON.stringify(s));
+  }
+  showScreen('onboard3', 1);
+}
+
+function completeOnboarding() {
+  localStorage.setItem('lf-onboarded', '1');
+  loadSettings();
+  showScreen('home', 1);
 }
 
 function getSettings() {
@@ -1316,7 +1308,7 @@ function openForm(form) {
     el('f3-solicitor').value = s.solicitorName || '';
     el('f3-firm').value = s.firmName || '';
   }
-  showScreen(form);
+  showScreen(form, 1);
   startAutoSave(form);
 }
 
@@ -1841,12 +1833,12 @@ function openDictation() {
   el('dictation-error').style.display = 'none';
   el('dictation-copy-confirm').style.display = 'none';
   setMicState('idle');
-  showScreen('dictation');
+  showScreen('dictation', 1);
 }
 
 function leaveDictation() {
   if (dictRecording) stopRecording();
-  showScreen('home');
+  showScreen('home', -1);
 }
 
 function dismissPermission() {
@@ -2211,7 +2203,7 @@ function openInvoice() {
   invItemCount = 0;
   el('inv-items-body').innerHTML = '';
   addInvItem(); addInvItem(); addInvItem();
-  showScreen('invoice');
+  showScreen('invoice', 1);
 }
 
 function addInvItem() {
@@ -2354,6 +2346,8 @@ function generateInvoicePDF() {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
+  showScreen('splash');
+  setTimeout(() => showScreen('welcome', 1), 2000);
 });
 </script>
 <script>
