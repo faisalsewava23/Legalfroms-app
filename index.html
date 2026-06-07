@@ -3,2359 +3,544 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LegalForms</title>
+<title>LegalForms — Digital Attendance Notes for Criminal Defence Solicitors</title>
+<meta name="description" content="Replace paper forms at the police station, magistrates court and crown court. Digital attendance notes completed on your phone in under 3 minutes.">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LegalForms">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#2454d4">
+<meta name="theme-color" content="#0C447C">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: '#0C447C',
+        'navy-dark': '#071F3A',
+        teal: '#1D9E75',
+        'teal-dark': '#177a5b',
+        purple: '#6B4FBB',
+        'purple-dark': '#5a3fa0',
+      },
+      fontFamily: {
+        heading: ['"DM Serif Display"', 'Georgia', 'serif'],
+        body: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box}
-html,body{font-size:16px;margin:0;padding:0;background:#f0f4f8}
-input,select,textarea,button{font-size:16px!important;font-family:inherit}
-.screen{display:none}.screen.active{display:block}
+html { scroll-behavior: smooth; }
+body { font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 16px; line-height: 1.7; color: #374151; }
+h1, h2, h3, h4, h5, h6 { font-family: 'DM Serif Display', Georgia, serif; }
 
-/* ---- Inputs ---- */
-.form-input{width:100%;border:1.5px solid #dde3ec;border-radius:10px;padding:11px 13px;background:#fafbfd;color:#111827;transition:border-color .15s,box-shadow .15s}
-.form-input:focus{outline:none;border-color:#2454d4;box-shadow:0 0 0 3px rgba(36,84,212,.12);background:#fff}
-.mini-inp{border:1.5px solid #dde3ec;border-radius:7px;padding:7px 8px;font-size:13px;width:100%;background:#fafbfd}
-.mini-inp:focus{outline:none;border-color:#2454d4}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes bars {
+  0%, 100% { height: 8px; }
+  50% { height: 24px; }
+}
+.pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.bar-animate {
+  animation: bars 1s ease-in-out infinite;
+}
 
-/* ---- Segmented toggle controls ---- */
-.toggle-group{display:flex;gap:0;background:#e8edf5;border-radius:12px;padding:3px}
-.toggle-btn{flex:1;padding:10px 8px;border:none;border-radius:9px;background:transparent;color:#6b7280;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;line-height:1.2}
-.toggle-btn.on{background:#fff;color:#0d1b3e;box-shadow:0 2px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.07)}
-/* Inline yes/no toggles keep a bordered pill style */
-.yn-mini{display:flex;gap:5px}
-.yn-mini .toggle-btn{padding:7px 14px;font-size:14px;border:1.5px solid #dde3ec;background:#fff;color:#374151;border-radius:8px}
-.yn-mini .toggle-btn.on{background:#0d1b3e;border-color:#0d1b3e;color:#fff;box-shadow:none}
-
-/* ---- Section headers ---- */
-.sec-hd{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.05em;border-left:4px solid #c8a84b}
-.sec-bd{background:#fff;border:1.5px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;padding:16px;box-shadow:0 4px 16px rgba(13,27,62,.06)}
-
-/* ---- Field labels ---- */
-.fld{margin-bottom:14px}.fld:last-child{margin-bottom:0}
-.fld-lbl{display:block;font-size:12px;font-weight:700;color:#4b5563;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-
-/* ---- Yes/No rows ---- */
-.yn-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6}
-.yn-row:last-child{border-bottom:none}
-
-/* ---- Checkbox rows ---- */
-.chk-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;border-bottom:1px solid #f3f4f6}
-.chk-row:last-child{border-bottom:none}
-.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#0d1b3e;cursor:pointer}
-
-/* ---- Table headers ---- */
-.tel-hd{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;padding:0 2px;margin-bottom:3px}
-.tel-row-g{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;margin-bottom:5px;align-items:center}
-.tbl-hd{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase}
-.tr-hd{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;padding:0 2px;margin-bottom:3px}
-.tr-row-g{display:grid;grid-template-columns:90px 52px 52px 52px 52px 48px 1fr;gap:4px;margin-bottom:5px;align-items:center}
-
-/* ---- Misc UI ---- */
-.fc-flag{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:700;margin-top:8px}
-.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#0d1b3e}
-.det-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6}
-.det-row:last-child{border-bottom:none}
-.narrative-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:#1e293b}
-.spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ---- Dictation ---- */
-@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 22px rgba(239,68,68,0)}}
-.mic-idle{background:#0d1b3e;color:#fff;border:none}
-.mic-recording{background:#ef4444!important;color:#fff;animation:mic-pulse 1.4s ease-in-out infinite}
-.mic-processing{background:#64748b!important;color:#fff}
-.dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
-.dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s;active:opacity-80}
-
-/* ---- Travel time table ---- */
-.time-cell-inp{width:100%;border:none;padding:5px 2px;font-size:13px;background:transparent;text-align:center;min-width:0;color:#111827}
-.time-cell-inp:focus{outline:2px solid #0d1b3e;border-radius:3px}
-.ttime-th-group{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #162550}
-.ttime-th-sub{border:1px solid #d1d5db;background:#f9fafb;text-align:center;padding:5px 3px;font-size:12px;color:#4b5563;font-weight:600}
-.ttime-td{border:1px solid #d1d5db;padding:2px}
-.ttime-tot{background:#eef4fb;border-radius:10px;padding:11px 12px;border:1px solid #c8d8ea}
-.ttime-tot p:first-child{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px}
-.ttime-tot .tval{font-weight:700;color:#0d1b3e;font-size:16px;margin:0}
-
-/* ---- Nav bar depth ---- */
-.sticky.top-0{box-shadow:0 2px 10px rgba(0,0,0,.2)}
-
-/* ---- Home hero gradient ---- */
-.hero-hd{background:linear-gradient(160deg,#0d1b3e 0%,#162550 55%,#0a1428 100%)}
-.hero-ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none}
-.hero-ring-1{width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%)}
-.hero-ring-2{width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%)}
-.hero-logo{box-shadow:0 8px 32px rgba(36,84,212,.35)}
-
-/* ---- Home card left-border accents ---- */
-.card-police{border-left:4px solid #dc2626!important}
-.card-mags{border-left:4px solid #4f46e5!important}
-.card-crown{border-left:4px solid #d97706!important}
-.card-dictate{border-left:4px solid #059669!important}
-.card-invoice{border-left:4px solid #7c3aed!important}
-.tab-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:999px;background:#f0f4f8;color:#6b7280;border:none;cursor:pointer;transition:all .2s}
-.tab-btn.tab-active{background:#0d1b3e;color:#fff}
-.note-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;flex-shrink:0}
-.note-badge-draft{background:#fef3c7;color:#92400e}
-.note-badge-done{background:#d1fae5;color:#065f46}
-.saved-flash{background:#c8a84b!important;color:#0d1b3e!important}
-.firm-edit-wrap{display:none}
-
-/* ---- Screen transitions ---- */
-#app{overflow-x:hidden}
-.screen.slide-in{animation:slideIn .28s cubic-bezier(.4,0,.2,1) forwards}
-.screen.slide-back{animation:slideBack .28s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes slideIn{from{transform:translateX(32px);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes slideBack{from{transform:translateX(-32px);opacity:0}to{transform:translateX(0);opacity:1}}
-
-/* ---- Splash ---- */
-@keyframes splashFadeOut{0%{opacity:1}80%{opacity:1}100%{opacity:0;pointer-events:none}}
-@keyframes splashLogoIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes splashBarGrow{from{width:0}to{width:100%}}
-.splash-logo-anim{animation:splashLogoIn .5s cubic-bezier(.34,1.56,.64,1) forwards}
-.splash-bar{height:3px;background:#c8a84b;border-radius:3px;animation:splashBarGrow 2s linear forwards}
-
-/* ---- Welcome / Onboarding ---- */
-.ob-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
-.ob-dot.ob-active{background:#c8a84b;width:24px;border-radius:4px}
-.ob-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:28px 24px}
-.ob-input{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 16px;color:#fff;font-size:16px;outline:none;transition:border-color .2s}
-.ob-input::placeholder{color:rgba(255,255,255,.35)}
-.ob-input:focus{border-color:#c8a84b;background:rgba(255,255,255,.13)}
-.ob-btn-primary{width:100%;background:#c8a84b;color:#0d1b3e;border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:opacity .15s}
-.ob-btn-primary:active{opacity:.85}
-.ob-btn-ghost{background:none;border:none;color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;padding:10px;margin-top:4px}
-.ob-btn-ghost:hover{color:rgba(255,255,255,.7)}
-.ob-bg{background:linear-gradient(160deg,#0a1428 0%,#0d1b3e 45%,#111f45 100%);min-height:100vh}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 </head>
-<body>
-<div id="app" class="max-w-lg mx-auto pb-12">
+<body class="bg-white">
 
-<!-- ===== SPLASH ===== -->
-<div id="screen-splash" class="screen active ob-bg">
-  <div class="flex flex-col items-center justify-center text-white" style="min-height:100vh;gap:0">
-    <div class="splash-logo-anim flex flex-col items-center gap-6">
-      <div class="w-28 h-28 rounded-3xl flex items-center justify-center" style="background:rgba(255,255,255,.1);box-shadow:0 12px 48px rgba(36,84,212,.5)">
-        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-      </div>
-      <div class="text-center">
-        <h1 class="text-4xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
-        <p class="mt-2 text-sm" style="color:rgba(255,255,255,.45)">Digital Attendance Notes</p>
-      </div>
-    </div>
-    <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:120px">
-      <div class="splash-bar"></div>
-    </div>
-  </div>
-</div>
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-navy shadow-lg">
+  <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="text-white font-bold text-xl font-heading tracking-wide">LegalForms</a>
 
-<!-- ===== WELCOME ===== -->
-<div id="screen-welcome" class="screen ob-bg">
-  <div class="flex flex-col items-center justify-between px-8 text-white" style="min-height:100vh;padding-top:80px;padding-bottom:48px">
-    <div class="flex-1 flex flex-col items-center justify-center text-center w-full">
-      <div class="w-24 h-24 rounded-3xl flex items-center justify-center mb-8" style="background:rgba(255,255,255,.1);box-shadow:0 8px 40px rgba(36,84,212,.4)">
-        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-      </div>
-      <h1 class="text-4xl font-bold tracking-tight mb-3">Legal<span style="color:#c8a84b">Forms</span></h1>
-      <p class="text-lg mb-2 font-medium" style="color:rgba(255,255,255,.7)">Digital Attendance Notes</p>
-      <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.4);max-width:280px">Built for solicitors. Police station, Magistrates &amp; Crown Court — all in one place.</p>
-      <div class="flex gap-4 mt-10 mb-2 text-center">
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">3</span>
-          <span class="text-xs" style="color:rgba(255,255,255,.4)">Form Types</span>
-        </div>
-        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">PDF</span>
-          <span class="text-xs" style="color:rgba(255,255,255,.4)">Export Ready</span>
-        </div>
-        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">🎙️</span>
-          <span class="text-xs" style="color:rgba(255,255,255,.4)">Voice Notes</span>
-        </div>
-      </div>
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#features" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Features</a>
+      <a href="#pricing" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Pricing</a>
+      <a href="#contact" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Contact</a>
+      <a href="#pricing" class="bg-teal hover:bg-teal-dark text-white font-bold px-5 py-2.5 rounded-lg transition transform hover:scale-105 text-sm">Start Free Trial</a>
     </div>
-    <div class="w-full flex flex-col items-center gap-3">
-      <button onclick="handleGetStarted()" class="ob-btn-primary">Get Started</button>
-      <button onclick="skipOnboarding()" class="ob-btn-ghost">I'll set up later →</button>
-    </div>
-  </div>
-</div>
 
-<!-- ===== ONBOARD STEP 1 ===== -->
-<div id="screen-onboard1" class="screen ob-bg">
-  <div class="flex flex-col px-8 text-white" style="min-height:100vh;padding-top:60px;padding-bottom:48px">
-    <button onclick="showScreen('welcome',-1)" class="self-start mb-8 text-2xl" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer">←</button>
-    <div class="flex gap-2 mb-10">
-      <div class="ob-dot ob-active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
-    </div>
-    <h2 class="text-3xl font-bold mb-2">What's your<br>firm's name?</h2>
-    <p class="text-sm mb-10" style="color:rgba(255,255,255,.45)">This appears on all your PDF attendance notes.</p>
-    <div class="ob-card flex-1 flex flex-col justify-between">
-      <div>
-        <label class="block text-xs font-bold mb-3 tracking-widest" style="color:rgba(255,255,255,.5);text-transform:uppercase">Law Firm Name</label>
-        <input id="onboard-firm" type="text" class="ob-input" placeholder="e.g. Smith & Partners LLP" autocomplete="organization" />
-      </div>
-      <button onclick="onboardNext1()" class="ob-btn-primary mt-8">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== ONBOARD STEP 2 ===== -->
-<div id="screen-onboard2" class="screen ob-bg">
-  <div class="flex flex-col px-8 text-white" style="min-height:100vh;padding-top:60px;padding-bottom:48px">
-    <button onclick="showScreen('onboard1',-1)" class="self-start mb-8 text-2xl" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer">←</button>
-    <div class="flex gap-2 mb-10">
-      <div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div><div class="ob-dot"></div>
-    </div>
-    <h2 class="text-3xl font-bold mb-2">Your name<br>as solicitor?</h2>
-    <p class="text-sm mb-10" style="color:rgba(255,255,255,.45)">Pre-fills your name on every attendance note.</p>
-    <div class="ob-card flex-1 flex flex-col justify-between">
-      <div>
-        <label class="block text-xs font-bold mb-3 tracking-widest" style="color:rgba(255,255,255,.5);text-transform:uppercase">Solicitor Name</label>
-        <input id="onboard-solicitor" type="text" class="ob-input" placeholder="e.g. Jane Smith" autocomplete="name" />
-      </div>
-      <button onclick="onboardNext2()" class="ob-btn-primary mt-8">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== ONBOARD STEP 3 (Done) ===== -->
-<div id="screen-onboard3" class="screen ob-bg">
-  <div class="flex flex-col items-center justify-between px-8 text-white text-center" style="min-height:100vh;padding-top:80px;padding-bottom:48px">
-    <div class="flex-1 flex flex-col items-center justify-center">
-      <div class="flex gap-2 mb-12">
-        <div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div><div class="ob-dot ob-active"></div>
-      </div>
-      <div class="text-6xl mb-6">✅</div>
-      <h2 class="text-3xl font-bold mb-3">You're all set!</h2>
-      <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.5);max-width:260px">Your details are saved. Start by choosing a form type from the home screen.</p>
-    </div>
-    <button onclick="completeOnboarding()" class="ob-btn-primary">Go to LegalForms →</button>
-  </div>
-</div>
-
-<!-- ===== HOME ===== -->
-<div id="screen-home" class="screen">
-  <div class="hero-hd px-6 pt-14 pb-10 text-white text-center relative overflow-hidden">
-    <div class="hero-ring hero-ring-1"></div>
-    <div class="hero-ring hero-ring-2"></div>
-    <div class="relative" style="z-index:1">
-      <div class="hero-logo w-20 h-20 bg-white/15 rounded-3xl flex items-center justify-center mx-auto mb-5">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-      </div>
-      <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
-      <p class="mt-2 text-base" style="color:rgba(255,255,255,.55)">Digital Attendance Notes</p>
-    </div>
-  </div>
-  <!-- Quick firm name edit bar -->
-  <div class="px-4 pt-3">
-    <div id="firm-display" class="flex items-center gap-2.5 bg-white rounded-2xl px-4 py-3 border border-gray-100 shadow-sm cursor-pointer" onclick="startFirmEdit()">
-      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-      <span id="firm-name-display" class="flex-1 text-sm font-medium text-gray-700 truncate">Set firm name…</span>
-      <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-    </div>
-    <div id="firm-edit" class="firm-edit-wrap flex gap-2 items-center">
-      <input type="text" id="firm-quick-input" class="form-input flex-1" placeholder="Law Firm Name">
-      <button onclick="saveFirmName()" class="bg-[#0d1b3e] text-white px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">Save</button>
-    </div>
-  </div>
-
-  <div class="p-4 space-y-3 mt-1">
-    <button onclick="openForm('form1')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-police">
-      <div class="w-14 h-14 bg-red-700 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-lg">Police Station</p>
-        <p class="text-gray-400 text-sm mt-0.5">Custody attendance note</p>
-      </div>
-      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <button onclick="openForm('form2')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-mags">
-      <div class="w-14 h-14 bg-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-lg">Magistrates Court</p>
-        <p class="text-gray-400 text-sm mt-0.5">Court attendance note</p>
-      </div>
-      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <button onclick="openForm('form3')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-crown">
-      <div class="w-14 h-14 bg-amber-600 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-lg">Crown Court</p>
-        <p class="text-gray-400 text-sm mt-0.5">Attendance note</p>
-      </div>
-      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <button onclick="openDictation()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-dictate">
-      <div class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-lg">🎙️ Voice Dictation</p>
-        <p class="text-gray-400 text-sm mt-0.5">Speak your notes — get instant text</p>
-      </div>
-      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <button onclick="openInvoice()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50 card-invoice">
-      <div class="w-14 h-14 bg-violet-600 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-lg">Generate Invoice</p>
-        <p class="text-gray-400 text-sm mt-0.5">Professional PDF invoices</p>
-      </div>
-      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <button onclick="showScreen('settings',1)" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      <span class="font-medium">Settings</span>
+    <!-- Hamburger -->
+    <button id="menu-btn" class="md:hidden text-white focus:outline-none" aria-label="Toggle menu">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
     </button>
   </div>
 
-  <!-- My Notes -->
-  <div class="px-4 pb-6 mt-1">
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="font-bold text-gray-600 text-xs uppercase tracking-wider">My Notes</h2>
-      <div class="flex gap-1">
-        <button onclick="showDraftsTab('draft')" id="tab-draft" class="tab-btn tab-active">Drafts</button>
-        <button onclick="showDraftsTab('completed')" id="tab-completed" class="tab-btn">Completed</button>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-navy border-t border-white/10 px-6 pb-4">
+    <a href="#features" class="block py-3 text-white/90 hover:text-white font-semibold">Features</a>
+    <a href="#pricing" class="block py-3 text-white/90 hover:text-white font-semibold">Pricing</a>
+    <a href="#contact" class="block py-3 text-white/90 hover:text-white font-semibold">Contact</a>
+    <a href="#pricing" class="block mt-3 bg-teal text-white font-bold px-5 py-3 rounded-lg text-center">Start Free Trial</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="bg-navy min-h-[90vh] flex items-center pt-20" id="hero">
+  <div class="max-w-[1200px] mx-auto px-6 py-16 text-center w-full">
+    <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+      Go Paperless at the<br>Police Station and Court
+    </h1>
+    <p class="text-teal text-xl md:text-2xl font-semibold mb-6">
+      Digital attendance notes for<br>criminal defence solicitors
+    </p>
+    <p class="text-white/80 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+      Replace the paper forms you fill out at the police station, magistrates court and crown court.
+      Completed digitally on your phone in under 3 minutes. Professional PDF generated automatically.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+      <a href="#pricing" class="bg-teal hover:bg-teal-dark text-white font-bold text-lg px-8 py-4 rounded-lg transition transform hover:scale-105 shadow-xl">
+        Start Free 1 Week Trial
+      </a>
+      <a href="#how-it-works" class="border-2 border-white text-white font-bold text-lg px-8 py-4 rounded-lg hover:bg-white/10 transition">
+        See How It Works
+      </a>
+    </div>
+
+    <p class="text-white/60 text-sm mb-12">No card required &nbsp;•&nbsp; No contract &nbsp;•&nbsp; Cancel any time</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
+        <div class="text-teal text-3xl font-bold">3 minutes</div>
+        <div class="text-white/70 text-sm mt-1">Per attendance note</div>
+      </div>
+      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
+        <div class="text-teal text-3xl font-bold">3 forms</div>
+        <div class="text-white/70 text-sm mt-1">All covered in one app</div>
+      </div>
+      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
+        <div class="text-teal text-3xl font-bold">£19/user</div>
+        <div class="text-white/70 text-sm mt-1">Starting from per month</div>
       </div>
     </div>
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div id="notes-list"><p class="text-center text-gray-400 text-sm py-5 px-4">No drafts yet — open a form and tap Save</p></div>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="bg-white py-20 px-6" id="features">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <h2 class="text-navy text-3xl md:text-4xl font-bold mb-6">Still filling out paper forms<br>in custody suites?</h2>
+      <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+        Criminal defence solicitors spend 20 to 30 minutes per attendance filling out the same paper forms
+        by hand — under pressure, often in noisy environments, with no way to save or search past notes.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
+        <div class="text-4xl mb-4">⏱️</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">20 to 30 minutes per form</h3>
+        <p class="text-gray-500">Handwriting attendance notes at the police station, magistrates court and crown court eats into time you do not have</p>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
+        <div class="text-4xl mb-4">📋</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Three different paper forms</h3>
+        <p class="text-gray-500">Each court and the police station require separate forms — all filled by hand every single visit</p>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
+        <div class="text-4xl mb-4">🔍</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">No way to search past notes</h3>
+        <p class="text-gray-500">Paper forms pile up and finding a previous attendance note means searching through physical files</p>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ===== SETTINGS ===== -->
-<div id="screen-settings" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <span class="flex-1 font-bold text-lg">Settings</span>
-    <button onclick="saveSettings()" class="bg-white text-[#0d1b3e] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
-  </div>
-  <div class="p-4">
-    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <h2 class="font-bold text-gray-900 mb-4 text-lg">Practice Details</h2>
-      <div class="space-y-4">
-        <div class="fld">
-          <label class="fld-lbl">Solicitor Name</label>
-          <input type="text" id="settings-solicitor" class="form-input" placeholder="e.g. Jane Smith">
-        </div>
-        <div class="fld">
-          <label class="fld-lbl">Law Firm Name</label>
-          <input type="text" id="settings-firm" class="form-input" placeholder="e.g. Smith and Partners Solicitors">
-        </div>
-        <div class="fld">
-          <label class="fld-lbl">Firm Address</label>
-          <textarea id="settings-address" rows="3" class="form-input resize-none" placeholder="Enter firm address"></textarea>
-        </div>
+<!-- THE SOLUTION -->
+<section class="bg-[#F5F5F5] py-20 px-6">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <h2 class="text-navy text-3xl md:text-4xl font-bold">LegalForms — all three forms<br>on your phone</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
+        <div class="text-4xl mb-4">🚔</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Police Station Attendance Form</h3>
+        <p class="text-gray-500">All fields from the paper custody form — completed digitally. Client details, police disclosure, interview notes, advice given and result. Professional PDF ready in under 3 minutes.</p>
+      </div>
+      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
+        <div class="text-4xl mb-4">⚖️</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Magistrates Court Attendance Form</h3>
+        <p class="text-gray-500">Full magistrates court attendance note covering arrest details, client instructions, advice given, interview details and court result. Done on your phone.</p>
+      </div>
+      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
+        <div class="text-4xl mb-4">🏛️</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Crown Court Attendance Note</h3>
+        <p class="text-gray-500">Crown court attendance note with hearing details, parties present, orders made, stage dates and post hearing conference notes. Generated as a professional PDF.</p>
       </div>
     </div>
-    <p id="settings-msg" class="text-center text-green-600 font-semibold mt-4 hidden">✓ Settings saved</p>
   </div>
-</div>
+</section>
 
-<!-- ===== FORM 1: POLICE STATION ===== -->
-<div id="screen-form1" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <span class="flex-1 font-bold">Police Station Attendance</span>
-    <button id="save-draft-btn-form1" onclick="saveDraft('form1')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm1PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+<!-- VOICE DICTATION -->
+<section class="bg-navy py-20 px-6">
+  <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <!-- Left -->
+    <div class="fade-up">
+      <span class="inline-block bg-teal/20 text-teal font-bold text-sm px-4 py-1.5 rounded-full mb-5 tracking-wide uppercase">New Feature</span>
+      <h2 class="text-white text-3xl md:text-4xl font-bold mb-6">🎙️ AI Voice Dictation</h2>
+      <p class="text-white/80 text-lg leading-relaxed mb-6">
+        Speak your notes out loud and have them transcribed instantly with legal accuracy — powered by OpenAI Whisper.
+      </p>
+      <p class="text-white/80 text-lg leading-relaxed mb-6">
+        No more typing on a small screen in a noisy custody suite. Tap the mic, speak freely, and watch your notes appear automatically.
+      </p>
+      <p class="text-white/80 text-lg leading-relaxed mb-8">
+        Perfect for interview notes, advice given and client instructions.
+      </p>
+      <ul class="space-y-3">
+        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Legal terminology recognised accurately</li>
+        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Works even with background noise</li>
+        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Tap to start — tap to stop</li>
+      </ul>
+    </div>
+
+    <!-- Right — Phone Mockup -->
+    <div class="flex justify-center fade-up">
+      <div class="relative">
+        <!-- Phone Frame -->
+        <div class="w-[280px] h-[560px] bg-navy-dark rounded-[3rem] border-4 border-white/20 shadow-2xl p-3 relative overflow-hidden">
+          <!-- Notch -->
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-navy-dark rounded-b-2xl z-10"></div>
+          <!-- Screen -->
+          <div class="w-full h-full bg-white rounded-[2.2rem] flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- Mic Button -->
+            <div class="relative flex items-center justify-center mb-6">
+              <div class="absolute w-28 h-28 rounded-full border-4 border-red-400 pulse-ring"></div>
+              <div class="absolute w-24 h-24 rounded-full border-2 border-red-300 pulse-ring" style="animation-delay: 0.5s;"></div>
+              <div class="w-20 h-20 bg-teal rounded-full flex items-center justify-center shadow-xl relative z-10">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                </svg>
+              </div>
+            </div>
+            <p class="text-red-500 font-bold text-sm tracking-wider uppercase">Recording...</p>
+            <!-- Waveform -->
+            <div class="flex items-end gap-1 mt-4 h-8">
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.1s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.2s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.3s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.4s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.15s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.25s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.35s;"></div>
+              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.05s;"></div>
+            </div>
+          </div>
+        </div>
+        <p class="text-white/60 text-center text-sm mt-4">Works on iPhone and Android</p>
+      </div>
+    </div>
   </div>
-  <div class="p-4 space-y-4">
+</section>
 
-    <!-- S1: Header -->
-    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Date</label><input type="date" id="f1-date" class="form-input"></div>
-        <div><label class="fld-lbl">UFN</label><input type="text" id="f1-ufn" class="form-input" placeholder="UFN"></div>
+<!-- HOW IT WORKS -->
+<section class="bg-white py-20 px-6" id="how-it-works">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <h2 class="text-navy text-3xl md:text-4xl font-bold">Up and running in 3 steps</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <!-- Dotted connector lines (desktop only) -->
+      <div class="hidden md:block absolute top-12 left-[33%] right-[33%] border-t-2 border-dashed border-gray-300"></div>
+
+      <div class="text-center fade-up relative">
+        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">1</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Install on your phone</h3>
+        <p class="text-gray-500">Open legalformsapp.co.uk in Safari on iPhone or Chrome on Android. Tap Add to Home Screen for instant app access — no App Store needed.</p>
       </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">DSCC Reference</label><input type="text" id="f1-dscc" class="form-input"></div>
-        <div><label class="fld-lbl">Custody Number</label><input type="text" id="f1-custody" class="form-input"></div>
+      <div class="text-center fade-up relative">
+        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">2</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Fill in your form</h3>
+        <p class="text-gray-500">Choose your form type — police station, magistrates or crown court. Fill in the fields or use voice dictation to speak your notes.</p>
       </div>
-      <div class="fld"><label class="fld-lbl">Police Station</label><input type="text" id="f1-station" class="form-input" placeholder="Name of police station"></div>
-      <div class="fld"><label class="fld-lbl">Case Type</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f1-case-type" data-val="Own" onclick="setToggle('f1-case-type','Own')">Own</button>
-          <button class="toggle-btn" data-group="f1-case-type" data-val="Duty" onclick="setToggle('f1-case-type','Duty')">Duty</button>
+      <div class="text-center fade-up relative">
+        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">3</div>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Generate your PDF</h3>
+        <p class="text-gray-500">Tap Generate and your professional attendance note PDF is ready instantly — with your firm name at the top. Save, share or email directly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="bg-[#F5F5F5] py-20 px-6">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <h2 class="text-navy text-3xl md:text-4xl font-bold">What is coming next</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-purple fade-up">
+        <div class="text-4xl mb-3">🔗</div>
+        <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wide">Coming Soon</span>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">LEAP Integration</h3>
+        <p class="text-gray-500 mb-4">Upload completed attendance notes directly into your LEAP matter with one tap. No switching between apps. No manual filing. Currently awaiting LEAP API approval.</p>
+        <a href="#contact" class="text-purple font-semibold hover:underline text-sm">Join the waitlist →</a>
+      </div>
+      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-purple fade-up">
+        <div class="text-4xl mb-3">💾</div>
+        <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wide">Coming Soon</span>
+        <h3 class="text-navy text-xl font-bold mb-3 font-body">Saved Notes Library</h3>
+        <p class="text-gray-500 mb-4">Access all your past attendance notes in one searchable library. Find any note by client name, date or case type in seconds.</p>
+        <a href="#contact" class="text-purple font-semibold hover:underline text-sm">Join the waitlist →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="bg-white py-20 px-6" id="pricing">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <h2 class="text-navy text-3xl md:text-4xl font-bold mb-4">Simple honest pricing</h2>
+      <p class="text-gray-500 text-lg">Pay only for what you need. No hidden fees. Cancel any time.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Starter -->
+      <div class="bg-white rounded-xl p-8 border-t-4 border-gray-300 shadow-md fade-up">
+        <p class="text-gray-500 font-semibold text-sm uppercase tracking-wide mb-2">Starter</p>
+        <div class="mb-6">
+          <span class="text-navy text-5xl font-bold">£19</span>
+          <span class="text-gray-500">/user/month</span>
         </div>
+        <ul class="space-y-3 mb-6 text-sm">
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> All 3 attendance forms</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> PDF generation</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Invoicing</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Firm name on all PDFs</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> 100 minutes transcription/month</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Cancel any time</li>
+          <li class="flex items-center gap-2"><span class="text-red-400">❌</span> Full voice transcription</li>
+        </ul>
+        <p class="text-gray-400 text-xs italic mb-6">100 min/month transcription token included</p>
+        <a href="#pricing" class="block w-full text-center border-2 border-gray-300 text-navy font-bold py-3 rounded-lg hover:bg-gray-50 transition">Start Free Trial</a>
       </div>
-      <div class="fld"><label class="fld-lbl">Representative Name</label><input type="text" id="f1-rep" class="form-input" placeholder="Auto-filled from settings"></div>
-    </div></div>
 
-    <!-- S2: Client Details -->
-    <div><div class="sec-hd">CLIENT DETAILS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Full Name</label><input type="text" id="f1-client-name" class="form-input"></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Date of Birth</label><input type="date" id="f1-dob" class="form-input" oninput="calcAge('f1-dob','f1-age')"></div>
-        <div><label class="fld-lbl">Age</label><input type="number" id="f1-age" class="form-input" placeholder="Auto" readonly></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Address</label><textarea id="f1-address" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Phone</label><input type="tel" id="f1-phone" class="form-input"></div>
-        <div><label class="fld-lbl">Email</label><input type="email" id="f1-email" class="form-input"></div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Gender</label>
-          <select id="f1-gender" class="form-input">
-            <option value="">Select</option><option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
-          </select>
+      <!-- Pro -->
+      <div class="bg-white rounded-xl p-8 border-t-4 border-navy shadow-xl relative fade-up scale-[1.02]">
+        <div class="absolute top-4 right-4 bg-teal text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</div>
+        <p class="text-navy font-bold text-sm uppercase tracking-wide mb-2">Pro</p>
+        <div class="mb-6">
+          <span class="text-navy text-5xl font-bold">£35</span>
+          <span class="text-gray-500">/user/month</span>
         </div>
-        <div><label class="fld-lbl">Nationality</label><input type="text" id="f1-nationality" class="form-input"></div>
+        <ul class="space-y-3 mb-6 text-sm">
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Everything in Starter</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Full voice transcription</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> 1,000 minutes/month included</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Overage at £0.02/min</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Priority support</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Cancel any time</li>
+        </ul>
+        <a href="#pricing" class="block w-full text-center bg-navy text-white font-bold py-3 rounded-lg hover:bg-navy-dark transition">Start Free Trial</a>
       </div>
-      <div class="fld"><label class="fld-lbl">Ethnicity</label>
-        <select id="f1-ethnicity" class="form-input">
-          <option value="">Select ethnicity</option>
-          <option>White - British</option><option>White - Irish</option><option>White - Other</option>
-          <option>Mixed - White and Black Caribbean</option><option>Mixed - White and Black African</option>
-          <option>Mixed - White and Asian</option><option>Mixed - Other</option>
-          <option>Asian or Asian British - Indian</option><option>Asian or Asian British - Pakistani</option>
-          <option>Asian or Asian British - Bangladeshi</option><option>Asian or Asian British - Chinese</option>
-          <option>Asian or Asian British - Other</option>
-          <option>Black or Black British - Caribbean</option><option>Black or Black British - African</option>
-          <option>Black or Black British - Other</option>
-          <option>Arab</option><option>Other ethnic group</option><option>Prefer not to say</option>
-        </select>
-      </div>
-      <div class="fld"><label class="fld-lbl">NI Number</label><input type="text" id="f1-ni" class="form-input" placeholder="XX 00 00 00 X"></div>
-      <div class="fld"><label class="fld-lbl">Youth Client</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f1-youth" data-val="Yes" onclick="setToggle('f1-youth','Yes')">Yes (Under 18)</button>
-          <button class="toggle-btn on" data-group="f1-youth" data-val="No" onclick="setToggle('f1-youth','No')">No</button>
+
+      <!-- Premium -->
+      <div class="bg-white rounded-xl p-8 border-t-4 border-purple shadow-md fade-up">
+        <div class="absolute top-4 right-4 bg-purple text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Coming Soon</div>
+        <p class="text-purple font-bold text-sm uppercase tracking-wide mb-2">Premium</p>
+        <div class="mb-6">
+          <span class="text-navy text-3xl font-bold">Contact us</span>
         </div>
+        <ul class="space-y-3 mb-6 text-sm">
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Everything in Pro</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> LEAP integration</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Direct upload to LEAP matter</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Dedicated account manager</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Custom onboarding</li>
+          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Unlimited transcription</li>
+        </ul>
+        <a href="#contact" class="block w-full text-center bg-purple text-white font-bold py-3 rounded-lg hover:bg-purple-dark transition">Get in Touch</a>
       </div>
-    </div></div>
+    </div>
 
-    <!-- S3: Police Details -->
-    <div><div class="sec-hd">POLICE DETAILS</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Arrest Date</label><input type="date" id="f1-arrest-date" class="form-input"></div>
-        <div><label class="fld-lbl">Arrest Time</label><input type="time" id="f1-arrest-time" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Place of Arrest</label><input type="text" id="f1-arrest-place" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Offence(s)</label><textarea id="f1-offence" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="fld">
-        <label class="fld-lbl">Attendance Type</label>
-        <label class="chk-row"><input type="checkbox" id="f1-interview-cb"><span>Interview</span></label>
-        <label class="chk-row"><input type="checkbox" id="f1-idparade-cb"><span>ID Parade</span></label>
-      </div>
-      <div class="fld"><label class="fld-lbl">Officer Name(s)</label><input type="text" id="f1-officers" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Attendance</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f1-vol-arrest" data-val="Voluntary" onclick="setToggle('f1-vol-arrest','Voluntary')">Voluntary</button>
-          <button class="toggle-btn" data-group="f1-vol-arrest" data-val="Arrested" onclick="setToggle('f1-vol-arrest','Arrested')">Arrested</button>
-        </div>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Additional Flags</label>
-        <label class="chk-row"><input type="checkbox" id="f1-access-delayed"><span>Access Delayed</span></label>
-        <label class="chk-row"><input type="checkbox" id="f1-vulnerable"><span>Vulnerable Client</span></label>
-        <label class="chk-row"><input type="checkbox" id="f1-fme"><span>FME Requested</span></label>
-      </div>
-      <div class="fld"><label class="fld-lbl">Fit for Interview</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f1-fit" data-val="Yes" onclick="setToggle('f1-fit','Yes')">Yes</button>
-          <button class="toggle-btn" data-group="f1-fit" data-val="No" onclick="setToggle('f1-fit','No')">No</button>
-          <button class="toggle-btn" data-group="f1-fit" data-val="Pending" onclick="setToggle('f1-fit','Pending')">Pending</button>
-        </div>
-      </div>
-    </div></div>
+    <p class="text-center text-gray-400 text-sm mb-14">1 week free trial on Starter and Pro — no card required. All prices exclude VAT.</p>
 
-    <!-- S4: Co-Defendants -->
-    <div><div class="sec-hd">CO-DEFENDANTS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Conflict of Interest</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f1-conflict" data-val="Yes" onclick="setToggle('f1-conflict','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f1-conflict" data-val="No" onclick="setToggle('f1-conflict','No')">No</button>
-        </div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Co-Defendant Name</label><input type="text" id="f1-codef-name" class="form-input"></div>
-        <div><label class="fld-lbl">Custody Number</label><input type="text" id="f1-codef-custody" class="form-input"></div>
-      </div>
-    </div></div>
-
-    <!-- S5: Police Information -->
-    <div><div class="sec-hd">POLICE INFORMATION</div><div class="sec-bd">
-      <label class="chk-row"><input type="checkbox" id="f1-custody-record"><span>Custody Record Viewed</span></label>
-      <label class="chk-row"><input type="checkbox" id="f1-prev-interview"><span>Previous Interview(s)</span></label>
-      <label class="chk-row"><input type="checkbox" id="f1-samples-taken"><span>Samples Taken</span></label>
-      <div class="fld mt-3"><label class="fld-lbl">Previous Interview — Client's Position</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f1-silence-stmt" data-val="Silence" onclick="setToggle('f1-silence-stmt','Silence')">Silence</button>
-          <button class="toggle-btn" data-group="f1-silence-stmt" data-val="Statement" onclick="setToggle('f1-silence-stmt','Statement')">Statement</button>
-          <button class="toggle-btn" data-group="f1-silence-stmt" data-val="N/A" onclick="setToggle('f1-silence-stmt','N/A')">N/A</button>
-        </div>
-      </div>
-    </div></div>
-
-    <!-- S6: Pre-Interview Advice -->
-    <div><div class="sec-hd">PRE-INTERVIEW ADVICE GIVEN</div><div class="sec-bd">
-      <div class="yn-row"><span>Caution Explained</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-caution" data-val="Yes" onclick="setToggle('f1-adv-caution','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-caution" data-val="No" onclick="setToggle('f1-adv-caution','No')">No</button></div></div>
-      <div class="yn-row"><span>Options Advised</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-options" data-val="Yes" onclick="setToggle('f1-adv-options','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-options" data-val="No" onclick="setToggle('f1-adv-options','No')">No</button></div></div>
-      <div class="yn-row"><span>Evidence Discussed</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-evidence" data-val="Yes" onclick="setToggle('f1-adv-evidence','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-evidence" data-val="No" onclick="setToggle('f1-adv-evidence','No')">No</button></div></div>
-      <div class="yn-row"><span>Samples Procedure</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-samples" data-val="Yes" onclick="setToggle('f1-adv-samples','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-samples" data-val="No" onclick="setToggle('f1-adv-samples','No')">No</button></div></div>
-      <div class="yn-row"><span>ID Procedures</span><div class="yn-mini toggle-group"><button class="toggle-btn on" data-group="f1-adv-id" data-val="Yes" onclick="setToggle('f1-adv-id','Yes')">Yes</button><button class="toggle-btn" data-group="f1-adv-id" data-val="No" onclick="setToggle('f1-adv-id','No')">No</button></div></div>
-    </div></div>
-
-    <!-- S7: Client Instructions -->
-    <div><div class="sec-hd">CLIENT INSTRUCTIONS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Previous Convictions</label><textarea id="f1-prev-convictions" rows="2" class="form-input resize-none" placeholder="List any known previous convictions"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Version of Events</label><textarea id="f1-version-events" rows="4" class="form-input resize-none" placeholder="Client's account of events"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Alibi</label><textarea id="f1-alibi" rows="2" class="form-input resize-none" placeholder="Any alibi details"></textarea></div>
-    </div></div>
-
-    <!-- S8: Interview Advice -->
-    <div><div class="sec-hd">INTERVIEW ADVICE</div><div class="sec-bd">
-      <div class="fld">
-        <label class="fld-lbl">Advice Given</label>
-        <label class="chk-row"><input type="checkbox" id="f1-ia-nocomment"><span>No Comment</span></label>
-        <label class="chk-row"><input type="checkbox" id="f1-ia-comment"><span>Comment / Answer Questions</span></label>
-        <label class="chk-row"><input type="checkbox" id="f1-ia-statement"><span>Prepared Statement</span></label>
-      </div>
-      <div class="fld"><label class="fld-lbl">Reason for Advice</label><textarea id="f1-ia-reason" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Agreed Action</label><input type="text" id="f1-ia-action" class="form-input"></div>
-    </div></div>
-
-    <!-- S9: Interview Section -->
-    <div><div class="sec-hd">INTERVIEW</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Attended Interview</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f1-int-attended" data-val="Yes" onclick="setToggle('f1-int-attended','Yes')">Yes</button>
-          <button class="toggle-btn" data-group="f1-int-attended" data-val="No" onclick="setToggle('f1-int-attended','No')">No</button>
-        </div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Start Time</label><input type="time" id="f1-int-start" class="form-input"></div>
-        <div><label class="fld-lbl">End Time</label><input type="time" id="f1-int-end" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Interview Notes</label><textarea id="f1-int-notes" rows="3" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S10: Result -->
-    <div><div class="sec-hd">RESULT</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Outcome</label>
-        <select id="f1-result" class="form-input">
-          <option value="">Select outcome</option>
-          <option>Bailed</option><option>Charged</option><option>NFA (No Further Action)</option>
-          <option>RUI (Released Under Investigation)</option><option>Remanded in Custody</option>
-        </select>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Court Name</label><input type="text" id="f1-court-name" class="form-input"></div>
-        <div><label class="fld-lbl">Court Date</label><input type="date" id="f1-court-date" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Bail Conditions</label><textarea id="f1-bail-conditions" rows="2" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S11: Travel and Time -->
-    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd" style="padding:12px 10px">
-      <div class="overflow-x-auto" style="margin:0 -10px;padding:0 10px">
-        <table style="min-width:516px;width:100%;border-collapse:collapse">
+    <!-- Comparison Table -->
+    <div class="fade-up">
+      <h3 class="text-navy text-2xl font-bold text-center mb-8 font-body">Full feature comparison</h3>
+      <div class="overflow-x-auto rounded-xl shadow-md border border-gray-200">
+        <table class="w-full text-sm">
           <thead>
-            <tr>
-              <th colspan="2" class="ttime-th-group">Travel Time</th>
-              <th colspan="2" class="ttime-th-group">Waiting Time</th>
-              <th colspan="2" class="ttime-th-group">Attendance Time</th>
-            </tr>
-            <tr>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
+            <tr class="bg-navy text-white">
+              <th class="text-left px-6 py-4 font-semibold">Feature</th>
+              <th class="text-center px-6 py-4 font-semibold">Starter</th>
+              <th class="text-center px-6 py-4 font-semibold">Pro</th>
+              <th class="text-center px-6 py-4 font-semibold">Premium</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f1-tv-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-tv-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-f1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-t1" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            <tr class="bg-white">
+              <td class="px-6 py-3">All 3 forms</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
             </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f1-tv-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-tv-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-f2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-t2" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-3">PDF generation</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
             </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f1-tv-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-tv-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-f3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-t3" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            <tr class="bg-white">
+              <td class="px-6 py-3">Invoicing</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
             </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f1-tv-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-tv-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-wt-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-f4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
-              <td class="ttime-td"><input type="time" id="f1-at-t4" class="time-cell-inp" oninput="calcTravelTotals('f1')"></td>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-3">Firm name on PDFs</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+              <td class="text-center px-6 py-3 text-teal">✅</td>
+            </tr>
+            <tr class="bg-white">
+              <td class="px-6 py-3">Voice transcription</td>
+              <td class="text-center px-6 py-3">100 min</td>
+              <td class="text-center px-6 py-3">1,000 min</td>
+              <td class="text-center px-6 py-3">Unlimited</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-3">Overage rate</td>
+              <td class="text-center px-6 py-3">—</td>
+              <td class="text-center px-6 py-3">£0.02/min</td>
+              <td class="text-center px-6 py-3">Included</td>
+            </tr>
+            <tr class="bg-white">
+              <td class="px-6 py-3">LEAP integration</td>
+              <td class="text-center px-6 py-3 text-red-400">❌</td>
+              <td class="text-center px-6 py-3 text-red-400">❌</td>
+              <td class="text-center px-6 py-3 text-teal">✅ Soon</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="px-6 py-3">Support</td>
+              <td class="text-center px-6 py-3">Standard</td>
+              <td class="text-center px-6 py-3">Priority</td>
+              <td class="text-center px-6 py-3">Dedicated</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-      </div>
-    </div></div>
-
-    <!-- S12: Telephone Calls -->
-    <div><div class="sec-hd">TELEPHONE CALLS</div><div class="sec-bd">
-      <div class="tel-hd">
-        <span class="tbl-hd">Date</span>
-        <span class="tbl-hd">Time</span>
-        <span class="tbl-hd">Person</span>
-        <span class="tbl-hd">Type</span>
-        <span class="tbl-hd">Dur.</span>
-        <span></span>
-      </div>
-      <div id="f1-tel-body"></div>
-      <button onclick="addTelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Call</button>
-    </div></div>
-
-    <button onclick="generateForm1PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- ===== FORM 2: MAGISTRATES COURT ===== -->
-<div id="screen-form2" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <span class="flex-1 font-bold">Magistrates Court</span>
-    <button id="save-draft-btn-form2" onclick="saveDraft('form2')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm2PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+<!-- FINAL CTA -->
+<section class="bg-teal py-20 px-6">
+  <div class="max-w-[1200px] mx-auto text-center">
+    <h2 class="text-white text-3xl md:text-4xl font-bold mb-4">Ready to go paperless?</h2>
+    <p class="text-white/80 text-lg mb-10">Join criminal defence solicitors saving 20 minutes per attendance note</p>
+    <a href="#pricing" class="inline-block bg-white text-navy font-bold text-lg px-10 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-xl">
+      Start Your Free 1 Week Trial
+    </a>
+    <p class="text-white/60 text-sm mt-6">No card required &nbsp;•&nbsp; No contract &nbsp;•&nbsp; 1 week free &nbsp;•&nbsp; Cancel any time</p>
   </div>
-  <div class="p-4 space-y-4">
+</section>
 
-    <!-- S1: Header -->
-    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Court</label><input type="text" id="f2-court" class="form-input" placeholder="Court name"></div>
-        <div><label class="fld-lbl">Date</label><input type="date" id="f2-date" class="form-input"></div>
+<!-- FOOTER -->
+<footer class="bg-navy-dark py-16 px-6" id="contact">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+      <!-- Col 1 -->
+      <div>
+        <h3 class="text-white text-xl font-bold font-heading mb-1">LegalForms</h3>
+        <p class="text-gray-400 text-sm mb-3">by TechBusy</p>
+        <p class="text-gray-400 text-sm">Digital attendance notes for criminal defence solicitors</p>
       </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Case Reference</label><input type="text" id="f2-case-ref" class="form-input"></div>
-        <div><label class="fld-lbl">DSCC Reference</label><input type="text" id="f2-dscc" class="form-input"></div>
+      <!-- Col 2 -->
+      <div>
+        <h4 class="text-white font-bold mb-4 font-body">Product</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+          <li><a href="#pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
+          <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How it works</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition">Coming soon</a></li>
+        </ul>
       </div>
-      <div class="fld"><label class="fld-lbl">Fee Earner</label><input type="text" id="f2-fee-earner" class="form-input" placeholder="Auto-filled from settings"></div>
-    </div></div>
-
-    <!-- S2: Client Details -->
-    <div><div class="sec-hd">CLIENT DETAILS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Full Name</label><input type="text" id="f2-client-name" class="form-input"></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Date of Birth</label><input type="date" id="f2-dob" class="form-input" oninput="calcAge('f2-dob','f2-age')"></div>
-        <div><label class="fld-lbl">Age</label><input type="number" id="f2-age" class="form-input" readonly placeholder="Auto"></div>
+      <!-- Col 3 -->
+      <div>
+        <h4 class="text-white font-bold mb-4 font-body">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
+        </ul>
       </div>
-      <div class="fld"><label class="fld-lbl">Ethnicity</label>
-        <select id="f2-ethnicity" class="form-input">
-          <option value="">Select</option>
-          <option>White - British</option><option>White - Irish</option><option>White - Other</option>
-          <option>Mixed - White and Black Caribbean</option><option>Mixed - White and Black African</option>
-          <option>Mixed - White and Asian</option><option>Mixed - Other</option>
-          <option>Asian or Asian British - Indian</option><option>Asian or Asian British - Pakistani</option>
-          <option>Asian or Asian British - Bangladeshi</option><option>Asian or Asian British - Chinese</option>
-          <option>Asian or Asian British - Other</option>
-          <option>Black or Black British - Caribbean</option><option>Black or Black British - African</option>
-          <option>Black or Black British - Other</option>
-          <option>Arab</option><option>Other ethnic group</option><option>Prefer not to say</option>
-        </select>
-      </div>
-      <div class="fld"><label class="fld-lbl">Address</label><textarea id="f2-address" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Contact</label><input type="tel" id="f2-contact" class="form-input"></div>
-        <div><label class="fld-lbl">NI Number</label><input type="text" id="f2-ni" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Income / Employment</label><input type="text" id="f2-income" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Allegations</label><textarea id="f2-allegations" rows="2" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S3: Arrest Details -->
-    <div><div class="sec-hd">ARREST DETAILS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Custody Reference</label><input type="text" id="f2-custody-ref" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Attendance</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f2-arrested" data-val="Arrested" onclick="setToggle('f2-arrested','Arrested')">Arrested</button>
-          <button class="toggle-btn" data-group="f2-arrested" data-val="Voluntary" onclick="setToggle('f2-arrested','Voluntary')">Voluntary</button>
-        </div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Arresting Officer</label><input type="text" id="f2-officer" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Place of Arrest</label><input type="text" id="f2-arrest-place" class="form-input"></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Arrest Date</label><input type="date" id="f2-arrest-date" class="form-input" oninput="calcF2Detention()"></div>
-        <div><label class="fld-lbl">Arrest Time</label><input type="time" id="f2-arrest-time" class="form-input" oninput="calcF2Detention()"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Detention Authorised</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f2-det-auth" data-val="Yes" onclick="setToggle('f2-det-auth','Yes')">Yes</button>
-          <button class="toggle-btn" data-group="f2-det-auth" data-val="No" onclick="setToggle('f2-det-auth','No')">No</button>
-        </div>
-      </div>
-      <div class="fld"><label class="fld-lbl">OIC Details</label><input type="text" id="f2-oic" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Warrants / Bail Conditions</label><textarea id="f2-warrants" rows="2" class="form-input resize-none"></textarea></div>
-      <label class="chk-row"><input type="checkbox" id="f2-access-delayed"><span>Access Delayed</span></label>
-    </div></div>
-
-    <!-- S4: First Contact Times -->
-    <div><div class="sec-hd">FIRST CONTACT TIMES</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Notified</label><input type="time" id="f2-fc-notified" class="form-input" oninput="checkF2FC()"></div>
-        <div><label class="fld-lbl">First Contact</label><input type="time" id="f2-fc-contact" class="form-input" oninput="checkF2FC()"></div>
-      </div>
-      <div id="f2-fc-flag" class="fc-flag">⚠ Over 45 minutes between notification and first contact</div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Advised Attending</label><input type="time" id="f2-fc-advised" class="form-input"></div>
-        <div><label class="fld-lbl">Requested</label><input type="time" id="f2-fc-requested" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Arrived</label><input type="time" id="f2-fc-arrived" class="form-input"></div>
-    </div></div>
-
-    <!-- S5: Travel and Time -->
-    <div><div class="sec-hd">TRAVEL AND TIME</div><div class="sec-bd" style="padding:12px 10px">
-      <div class="overflow-x-auto" style="margin:0 -10px;padding:0 10px">
-        <table style="min-width:516px;width:100%;border-collapse:collapse">
-          <thead>
-            <tr>
-              <th colspan="2" class="ttime-th-group">Travel Time</th>
-              <th colspan="2" class="ttime-th-group">Waiting Time</th>
-              <th colspan="2" class="ttime-th-group">Attendance Time</th>
-            </tr>
-            <tr>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
-              <th class="ttime-th-sub">From</th><th class="ttime-th-sub">To</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f2-tv-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-tv-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-f1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-t1" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-            </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f2-tv-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-tv-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-f2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-t2" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-            </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f2-tv-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-tv-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-f3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-t3" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-            </tr>
-            <tr>
-              <td class="ttime-td"><input type="time" id="f2-tv-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-tv-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-wt-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-f4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-              <td class="ttime-td"><input type="time" id="f2-at-t4" class="time-cell-inp" oninput="calcTravelTotals('f2')"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-      </div>
-    </div></div>
-
-    <!-- S6: Detention Reviews -->
-    <div><div class="sec-hd">DETENTION REVIEWS</div><div class="sec-bd">
-      <p class="text-xs text-gray-400 mb-3">Auto-calculated from arrest date/time</p>
-      <div class="det-row"><span class="text-gray-700 font-medium">6-hour review</span><span id="f2-det-6" class="det-pill">—</span></div>
-      <div class="det-row"><span class="text-gray-700 font-medium">15-hour review</span><span id="f2-det-15" class="det-pill">—</span></div>
-      <div class="det-row"><span class="text-gray-700 font-medium">24-hour review</span><span id="f2-det-24" class="det-pill">—</span></div>
-    </div></div>
-
-    <!-- S7: Disclosure -->
-    <div><div class="sec-hd">DISCLOSURE</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Officer</label><input type="text" id="f2-disc-officer" class="form-input"></div>
-        <div><label class="fld-lbl">Time</label><input type="time" id="f2-disc-time" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Details</label><textarea id="f2-disc-details" rows="3" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S8: Samples -->
-    <div><div class="sec-hd">SAMPLES</div><div class="sec-bd">
-      <label class="chk-row"><input type="checkbox" id="f2-samp-taken"><span>Samples Taken</span></label>
-      <label class="chk-row"><input type="checkbox" id="f2-samp-consent"><span>Consent Given</span></label>
-      <label class="chk-row"><input type="checkbox" id="f2-samp-nonintimate"><span>Non-Intimate Samples</span></label>
-      <label class="chk-row"><input type="checkbox" id="f2-samp-searches"><span>Searches Conducted</span></label>
-    </div></div>
-
-    <!-- S9: Co-Accused -->
-    <div><div class="sec-hd">CO-ACCUSED</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Co-Accused Present</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f2-coaccused" data-val="Yes" onclick="setToggle('f2-coaccused','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f2-coaccused" data-val="No" onclick="setToggle('f2-coaccused','No')">No</button>
-        </div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Name(s)</label><input type="text" id="f2-co-names" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Represented By</label><input type="text" id="f2-co-rep" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Implicates Client</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f2-co-implicate" data-val="Yes" onclick="setToggle('f2-co-implicate','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f2-co-implicate" data-val="No" onclick="setToggle('f2-co-implicate','No')">No</button>
-        </div>
-      </div>
-    </div></div>
-
-    <!-- S10: Client Instructions -->
-    <div><div class="sec-hd">CLIENT INSTRUCTIONS</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Start Time</label><input type="time" id="f2-ci-start" class="form-input"></div>
-        <div><label class="fld-lbl">End Time</label><input type="time" id="f2-ci-end" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Instructions</label><textarea id="f2-ci-instructions" rows="4" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Previous Convictions</label><textarea id="f2-ci-prevconv" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Bail Status</label><input type="text" id="f2-ci-bail" class="form-input"></div>
-    </div></div>
-
-    <!-- S11: Advice Given -->
-    <div><div class="sec-hd">ADVICE GIVEN</div><div class="sec-bd">
-      <label class="chk-row"><input type="checkbox" id="f2-adv-detention"><span>Detention Rights Explained</span></label>
-      <label class="chk-row"><input type="checkbox" id="f2-adv-caution"><span>Caution Explained</span></label>
-      <label class="chk-row"><input type="checkbox" id="f2-adv-warnings"><span>Special Warnings Explained</span></label>
-      <div class="fld mt-3"><label class="fld-lbl">Advice Notes</label><textarea id="f2-adv-text" rows="3" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S12: Medical -->
-    <div><div class="sec-hd">MEDICAL</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Complaint / Condition</label><input type="text" id="f2-med-complaint" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Injuries</label><input type="text" id="f2-med-injuries" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Drug / Alcohol Dependency</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f2-addict" data-val="Yes" onclick="setToggle('f2-addict','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f2-addict" data-val="No" onclick="setToggle('f2-addict','No')">No</button>
-        </div>
-      </div>
-      <div class="fld"><label class="fld-lbl">FME Requested</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f2-fme" data-val="Yes" onclick="setToggle('f2-fme','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f2-fme" data-val="No" onclick="setToggle('f2-fme','No')">No</button>
-        </div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Fit to Detain</label>
-          <div class="toggle-group">
-            <button class="toggle-btn on" data-group="f2-fit-detain" data-val="Yes" onclick="setToggle('f2-fit-detain','Yes')">Yes</button>
-            <button class="toggle-btn" data-group="f2-fit-detain" data-val="No" onclick="setToggle('f2-fit-detain','No')">No</button>
-          </div>
-        </div>
-        <div><label class="fld-lbl">Fit to Interview</label>
-          <div class="toggle-group">
-            <button class="toggle-btn on" data-group="f2-fit-interview" data-val="Yes" onclick="setToggle('f2-fit-interview','Yes')">Yes</button>
-            <button class="toggle-btn" data-group="f2-fit-interview" data-val="No" onclick="setToggle('f2-fit-interview','No')">No</button>
-          </div>
-        </div>
-      </div>
-    </div></div>
-
-    <!-- S13: Interview Details -->
-    <div><div class="sec-hd">INTERVIEW DETAILS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Persons Present</label><input type="text" id="f2-int-persons" class="form-input"></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Start Time</label><input type="time" id="f2-int-start" class="form-input"></div>
-        <div><label class="fld-lbl">End Time</label><input type="time" id="f2-int-end" class="form-input"></div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Reference</label><input type="text" id="f2-int-ref" class="form-input"></div>
-        <div><label class="fld-lbl">Seal Number</label><input type="text" id="f2-int-seal" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Notes</label><textarea id="f2-int-notes" rows="3" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S14: Result -->
-    <div><div class="sec-hd">RESULT</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Outcome</label>
-        <select id="f2-result" class="form-input">
-          <option value="">Select outcome</option>
-          <option>Bailed</option><option>Charged</option><option>NFA (No Further Action)</option>
-          <option>RUI (Released Under Investigation)</option><option>Remanded in Custody</option>
-        </select>
-      </div>
-      <div class="fld"><label class="fld-lbl">Court</label><input type="text" id="f2-result-court" class="form-input"></div>
-      <div class="fld"><label class="fld-lbl">Bail Conditions</label><textarea id="f2-bail-conditions" rows="2" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Outcome Explained to Client</label>
-        <div class="toggle-group">
-          <button class="toggle-btn on" data-group="f2-outcome-explained" data-val="Yes" onclick="setToggle('f2-outcome-explained','Yes')">Yes</button>
-          <button class="toggle-btn" data-group="f2-outcome-explained" data-val="No" onclick="setToggle('f2-outcome-explained','No')">No</button>
-        </div>
-      </div>
-    </div></div>
-
-    <button onclick="generateForm2PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
-  </div>
-</div>
-
-<!-- ===== FORM 3: CROWN COURT ===== -->
-<div id="screen-form3" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <span class="flex-1 font-bold">Crown Court Attendance</span>
-    <button id="save-draft-btn-form3" onclick="saveDraft('form3')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm3PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
-  </div>
-  <div class="p-4 space-y-4">
-
-    <!-- S1: Header -->
-    <div><div class="sec-hd">HEADER</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Court Name</label>
-        <input list="crown-courts" id="f3-court" class="form-input" placeholder="Type or select court">
-        <datalist id="crown-courts">
-          <option>Central Criminal Court (Old Bailey)</option>
-          <option>Southwark Crown Court</option><option>Woolwich Crown Court</option>
-          <option>Inner London Crown Court</option><option>Kingston Crown Court</option>
-          <option>Isleworth Crown Court</option><option>Snaresbrook Crown Court</option>
-          <option>Harrow Crown Court</option><option>Wood Green Crown Court</option>
-          <option>Croydon Crown Court</option><option>Guildford Crown Court</option>
-          <option>Reading Crown Court</option><option>Winchester Crown Court</option>
-          <option>Maidstone Crown Court</option><option>Canterbury Crown Court</option>
-          <option>Lewes Crown Court</option><option>Birmingham Crown Court</option>
-          <option>Coventry Crown Court</option><option>Leicester Crown Court</option>
-          <option>Nottingham Crown Court</option>
-          <option>Manchester Crown Court (Minshull Street)</option>
-          <option>Manchester Crown Court (Crown Square)</option>
-          <option>Liverpool Crown Court</option><option>Leeds Crown Court</option>
-          <option>Sheffield Crown Court</option><option>Newcastle Crown Court</option>
-          <option>Bristol Crown Court</option><option>Cardiff Crown Court</option>
-        </datalist>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Defendant</label><input type="text" id="f3-defendant" class="form-input" oninput="updateCaseName()"></div>
-        <div><label class="fld-lbl">Case Name</label><input type="text" id="f3-case-name" class="form-input" placeholder="Regina v ..."></div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Judge</label><input type="text" id="f3-judge" class="form-input" placeholder="HHJ / Mr Justice ..."></div>
-        <div><label class="fld-lbl">Date</label><input type="date" id="f3-date" class="form-input"></div>
-      </div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Prosecution Counsel</label><input type="text" id="f3-pros-counsel" class="form-input"></div>
-        <div><label class="fld-lbl">Defence Counsel</label><input type="text" id="f3-def-counsel" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Hearing Type</label>
-        <select id="f3-hearing-type" class="form-input" onchange="togglePTPH()">
-          <option value="">Select type</option>
-          <option value="PTPH">PTPH (Plea &amp; Trial Preparation Hearing)</option>
-          <option value="Trial">Trial</option>
-          <option value="Sentence">Sentence</option>
-          <option value="Appeal">Appeal</option>
-          <option value="Mention">Mention</option>
-          <option value="PTR">PTR (Pre-Trial Review)</option>
-          <option value="Plea">Plea</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-    </div></div>
-
-    <!-- S2: Hearing Details -->
-    <div><div class="sec-hd">HEARING DETAILS</div><div class="sec-bd">
-      <div class="fld">
-        <label class="fld-lbl">Parties Present</label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-defendant"><span>Defendant</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-prosecution"><span>Prosecution Counsel</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-defence"><span>Defence Counsel</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-judge"><span>Judge</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-interpreter"><span>Interpreter</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-probation"><span>Probation</span></label>
-        <label class="chk-row"><input type="checkbox" id="f3-p-yot"><span>YOT</span></label>
-      </div>
-      <div class="fld"><label class="fld-lbl">Hearing Summary</label><textarea id="f3-summary" rows="5" class="form-input resize-none" placeholder="Summary of what occurred at the hearing"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Orders Made</label><textarea id="f3-orders" rows="3" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Next Hearing Date</label><input type="date" id="f3-next-hearing" class="form-input"></div>
-    </div></div>
-
-    <!-- S3: Stage Dates (PTPH only) -->
-    <div id="f3-ptph-section" style="display:none">
-      <div class="sec-hd">STAGE DATES (PTPH)</div><div class="sec-bd">
-        <div class="row2 fld">
-          <div><label class="fld-lbl">Stage 1</label><input type="date" id="f3-stage1" class="form-input"></div>
-          <div><label class="fld-lbl">Stage 2</label><input type="date" id="f3-stage2" class="form-input"></div>
-        </div>
-        <div class="row2 fld">
-          <div><label class="fld-lbl">Stage 3</label><input type="date" id="f3-stage3" class="form-input"></div>
-          <div><label class="fld-lbl">Stage 4</label><input type="date" id="f3-stage4" class="form-input"></div>
-        </div>
-        <div class="row3 fld">
-          <div><label class="fld-lbl">COTR</label><input type="date" id="f3-cotr" class="form-input"></div>
-          <div><label class="fld-lbl">Trial Warned</label><input type="date" id="f3-trial-warned" class="form-input"></div>
-          <div><label class="fld-lbl">Trial Date</label><input type="date" id="f3-trial-date" class="form-input"></div>
-        </div>
+      <!-- Col 4 -->
+      <div>
+        <h4 class="text-white font-bold mb-4 font-body">Contact</h4>
+        <p class="text-gray-400 text-sm mb-2">Questions or feedback?</p>
+        <a href="mailto:hello@legalformsapp.co.uk" class="text-teal hover:underline text-sm">hello@legalformsapp.co.uk</a>
+        <p class="mt-3"><a href="#" class="text-gray-400 hover:text-white transition text-sm">Follow us on LinkedIn</a></p>
       </div>
     </div>
 
-    <!-- S5: Post Hearing -->
-    <div><div class="sec-hd">POST HEARING</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Conference Held with Client</label>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-group="f3-conference" data-val="Yes" onclick="setToggle('f3-conference','Yes')">Yes</button>
-          <button class="toggle-btn on" data-group="f3-conference" data-val="No" onclick="setToggle('f3-conference','No')">No</button>
-        </div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Notes</label><textarea id="f3-post-notes" rows="3" class="form-input resize-none"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Further Instructions</label><textarea id="f3-further-instructions" rows="3" class="form-input resize-none"></textarea></div>
-    </div></div>
-
-    <!-- S6: Solicitor Sign Off -->
-    <div><div class="sec-hd">SOLICITOR SIGN OFF</div><div class="sec-bd">
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Solicitor Name</label><input type="text" id="f3-solicitor" class="form-input" placeholder="Auto-filled from settings"></div>
-        <div><label class="fld-lbl">Date</label><input type="date" id="f3-sign-date" class="form-input"></div>
-      </div>
-      <div class="fld"><label class="fld-lbl">Firm</label><input type="text" id="f3-firm" class="form-input" readonly></div>
-    </div></div>
-
-    <button onclick="generateForm3PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
-  </div>
-</div>
-
-<!-- ===== DICTATION SCREEN ===== -->
-<div id="screen-dictation" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="leaveDictation()" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <div class="flex-1">
-      <p class="font-bold text-lg leading-tight">Voice Dictation</p>
-      <p class="text-blue-200 text-sm leading-tight">Tap the mic and speak freely</p>
+    <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
+      <p>&copy; 2026 TechBusy Ltd. All rights reserved.</p>
+      <p>legalformsapp.co.uk</p>
     </div>
   </div>
+</footer>
 
-  <div class="p-5 flex flex-col items-center" style="min-height:calc(100vh - 68px)">
-
-    <!-- One-time permission notice -->
-    <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
-      <p class="font-bold mb-1">🔒 Microphone access</p>
-      <p>This app uses your microphone <strong>only</strong> to transcribe your spoken notes. Audio is processed securely via OpenAI Whisper and is never stored anywhere.</p>
-      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#0d1b3e] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
-    </div>
-
-    <!-- Mic button -->
-    <div class="flex flex-col items-center mt-6 mb-6 w-full">
-      <button id="mic-btn" onclick="toggleRecording()"
-        class="mic-idle rounded-full flex items-center justify-center transition-all duration-200 active:scale-95"
-        style="width:130px;height:130px;min-width:130px;min-height:130px">
-        <svg id="mic-icon" style="width:56px;height:56px" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-        </svg>
-      </button>
-      <p id="mic-status" class="mt-4 text-gray-500 font-semibold text-base text-center">Tap to start recording</p>
-      <p id="rec-timer" class="font-mono font-bold text-xl text-red-500 mt-1 text-center" style="display:none">0:00</p>
-      <p id="rec-warn" class="text-xs font-semibold text-amber-600 mt-1 text-center px-4" style="display:none">Long recordings may take a few seconds to transcribe</p>
-    </div>
-
-    <!-- Transcript area -->
-    <div class="w-full flex-1">
-      <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Transcribed Notes</label>
-      <textarea id="dictation-transcript"
-        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#0d1b3e] text-gray-900 leading-relaxed"
-        style="min-height:300px;font-size:18px"
-        placeholder="Your transcribed notes will appear here…"></textarea>
-      <p id="dictation-error" class="mt-2 text-red-500 font-semibold text-sm text-center" style="display:none">
-        Could not transcribe — please try again
-      </p>
-      <p id="dictation-copy-confirm" class="mt-2 text-green-600 font-semibold text-sm text-center" style="display:none">
-        ✓ Copied to clipboard
-      </p>
-    </div>
-
-    <!-- Action buttons -->
-    <div class="flex gap-3 w-full mt-5">
-      <button onclick="dictationCopy()" class="dct-action-btn bg-[#0d1b3e] text-white">Copy</button>
-      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#0d1b3e]">New Recording</button>
-      <button onclick="dictationClear()" class="dct-action-btn bg-[#fee2e2] text-red-700">Clear</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ===== INVOICE ===== -->
-<div id="screen-invoice" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
-    <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
-    <span class="flex-1 font-bold">Generate Invoice</span>
-    <button onclick="generateInvoicePDF()" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
-  </div>
-  <div class="p-4 space-y-4">
-
-    <div><div class="sec-hd">INVOICE DETAILS</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Client Name</label><input type="text" id="inv-client" class="form-input" placeholder="e.g. John Smith"></div>
-      <div class="fld"><label class="fld-lbl">Matter Reference</label><input type="text" id="inv-matter" class="form-input" placeholder="e.g. JS/2024/001"></div>
-      <div class="row2 fld">
-        <div><label class="fld-lbl">Invoice Date</label><input type="date" id="inv-date" class="form-input"></div>
-        <div><label class="fld-lbl">Invoice No.</label><input type="text" id="inv-number" class="form-input" placeholder="INV-001"></div>
-      </div>
-    </div></div>
-
-    <div><div class="sec-hd">LINE ITEMS</div><div class="sec-bd">
-      <div class="grid gap-2 mb-2" style="grid-template-columns:1fr 90px 28px">
-        <span class="fld-lbl">Description</span><span class="fld-lbl text-right">Amount £</span><span></span>
-      </div>
-      <div id="inv-items-body"></div>
-      <button onclick="addInvItem()" class="mt-2 text-sm font-semibold flex items-center gap-1.5" style="color:#0d1b3e;background:none;border:none;cursor:pointer;padding:0">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-        Add line item
-      </button>
-    </div></div>
-
-    <div><div class="sec-hd">TOTALS</div><div class="sec-bd">
-      <div class="yn-row">
-        <span class="text-sm font-semibold text-gray-700">Include VAT (20%)</span>
-        <div class="yn-mini">
-          <button class="toggle-btn" data-group="inv-vat" data-val="Yes" onclick="setToggle('inv-vat','Yes');calcInvTotals()">Yes</button>
-          <button class="toggle-btn on" data-group="inv-vat" data-val="No" onclick="setToggle('inv-vat','No');calcInvTotals()">No</button>
-        </div>
-      </div>
-      <div class="det-row"><span class="text-sm text-gray-600">Subtotal</span><span id="inv-subtotal" class="font-bold text-gray-900">£0.00</span></div>
-      <div id="inv-vat-row" class="det-row" style="display:none"><span class="text-sm text-gray-600">VAT (20%)</span><span id="inv-vat-amt" class="font-bold text-gray-900">£0.00</span></div>
-      <div class="det-row" style="border-bottom:none"><span class="font-bold text-[#0d1b3e]">Total Due</span><span id="inv-total" class="font-bold text-[#0d1b3e] text-xl">£0.00</span></div>
-    </div></div>
-
-    <div><div class="sec-hd">PAYMENT</div><div class="sec-bd">
-      <div class="fld"><label class="fld-lbl">Payment Link (optional)</label><input type="url" id="inv-payment-link" class="form-input" placeholder="https://..."></div>
-      <div class="fld"><label class="fld-lbl">Payment Terms</label><input type="text" id="inv-terms" class="form-input" placeholder="e.g. Payment due within 30 days"></div>
-      <div class="fld"><label class="fld-lbl">Notes / Bank Details</label><textarea id="inv-notes" rows="3" class="form-input resize-none" placeholder="Bank details, reference to quote, etc."></textarea></div>
-    </div></div>
-
-  </div>
-</div>
-
-</div><!-- end #app -->
-
+<!-- Scripts -->
 <script>
-// ============================================================
-// UTILITIES
-// ============================================================
-const v = id => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
-const cb = id => { const e = document.getElementById(id); return e ? e.checked : false; };
-const gt = group => { const e = document.querySelector(`[data-group="${group}"].on`); return e ? e.dataset.val : ''; };
-const el = id => document.getElementById(id);
-
-function setToggle(group, val) {
-  document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.toggle('on', b.dataset.val === val));
-}
-
-function showScreen(name, dir) {
-  // dir: 1 = forward (slide in from right), -1 = back (slide in from left), omit = no anim
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active', 'slide-in', 'slide-back');
-  });
-  const next = el('screen-' + name);
-  next.classList.add('active');
-  if (dir === 1) { next.classList.add('slide-in'); setTimeout(() => next.classList.remove('slide-in'), 300); }
-  if (dir === -1) { next.classList.add('slide-back'); setTimeout(() => next.classList.remove('slide-back'), 300); }
-  window.scrollTo(0, 0);
-  if (name === 'home') { renderDrafts(); updateFirmDisplay(); }
-  if (!['form1','form2','form3'].includes(name)) stopAutoSave();
-}
-
-function handleGetStarted() {
-  if (localStorage.getItem('lf-onboarded')) {
-    showScreen('home', 1);
-  } else {
-    showScreen('onboard1', 1);
-  }
-}
-
-function skipOnboarding() {
-  localStorage.setItem('lf-onboarded', '1');
-  showScreen('home', 1);
-}
-
-function onboardNext1() {
-  const firm = el('onboard-firm').value.trim();
-  if (firm) {
-    const s = getSettings(); s.firmName = firm;
-    localStorage.setItem('lf-settings', JSON.stringify(s));
-  }
-  showScreen('onboard2', 1);
-}
-
-function onboardNext2() {
-  const name = el('onboard-solicitor').value.trim();
-  if (name) {
-    const s = getSettings(); s.solicitorName = name;
-    localStorage.setItem('lf-settings', JSON.stringify(s));
-  }
-  showScreen('onboard3', 1);
-}
-
-function completeOnboarding() {
-  localStorage.setItem('lf-onboarded', '1');
-  loadSettings();
-  showScreen('home', 1);
-}
-
-function getSettings() {
-  return JSON.parse(localStorage.getItem('lf-settings') || '{}');
-}
-
-function saveSettings() {
-  const s = { solicitorName: v('settings-solicitor'), firmName: v('settings-firm'), firmAddress: v('settings-address') };
-  localStorage.setItem('lf-settings', JSON.stringify(s));
-  el('settings-msg').classList.remove('hidden');
-  setTimeout(() => el('settings-msg').classList.add('hidden'), 2000);
-}
-
-function loadSettings() {
-  const s = getSettings();
-  if (s.solicitorName) el('settings-solicitor').value = s.solicitorName;
-  if (s.firmName) el('settings-firm').value = s.firmName;
-  if (s.firmAddress) el('settings-address').value = s.firmAddress;
-  updateFirmDisplay();
-  renderDrafts();
-}
-
-function today() { return new Date().toISOString().split('T')[0]; }
-
-function fmtDate(d) {
-  if (!d) return '—';
-  const p = d.split('-');
-  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
-}
-
-function calcAge(dobId, ageId) {
-  const dob = new Date(el(dobId).value);
-  if (isNaN(dob)) return;
-  const now = new Date();
-  let age = now.getFullYear() - dob.getFullYear();
-  if (now.getMonth() < dob.getMonth() || (now.getMonth() === dob.getMonth() && now.getDate() < dob.getDate())) age--;
-  el(ageId).value = age;
-}
-
-function addDurs(...vals) {
-  let total = 0;
-  vals.forEach(v => {
-    if (!v) return;
-    const parts = v.split(':');
-    total += (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
-  });
-  return total > 0 ? `${Math.floor(total/60)}h ${total%60}m` : '—';
-}
-
-function formatDT(dt) {
-  if (!dt || isNaN(dt)) return '—';
-  return dt.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-}
-
-// ============================================================
-// FORM OPEN
-// ============================================================
-function openForm(form) {
-  currentDraftId[form] = null;
-  const s = getSettings();
-  const t = today();
-  if (form === 'form1') {
-    el('f1-date').value = t;
-    el('f1-rep').value = s.solicitorName || '';
-    f1TelCount = 0;
-    el('f1-tel-body').innerHTML = '';
-    addTelRow();
-  }
-  if (form === 'form2') {
-    el('f2-date').value = t;
-    el('f2-fee-earner').value = s.solicitorName || '';
-    calcF2Detention();
-  }
-  if (form === 'form3') {
-    el('f3-date').value = t;
-    el('f3-sign-date').value = t;
-    el('f3-solicitor').value = s.solicitorName || '';
-    el('f3-firm').value = s.firmName || '';
-  }
-  showScreen(form, 1);
-  startAutoSave(form);
-}
-
-// ============================================================
-// FORM 1 — TELEPHONE CALLS TABLE
-// ============================================================
-let f1TelCount = 0;
-function addTelRow() {
-  f1TelCount++;
-  const n = f1TelCount;
-  const div = document.createElement('div');
-  div.className = 'tel-row-g';
-  div.id = `f1-tel-row-${n}`;
-  div.innerHTML = `
-    <input type="date" id="f1-td-${n}" class="mini-inp">
-    <input type="time" id="f1-tt-${n}" class="mini-inp">
-    <input type="text" id="f1-tp-${n}" class="mini-inp" placeholder="Person">
-    <select id="f1-ttype-${n}" class="mini-inp"><option>Advice</option><option>Routine</option></select>
-    <input type="text" id="f1-tdur-${n}" class="mini-inp" placeholder="mins">
-    <button onclick="removeTelRow(${n})" class="text-red-400 font-bold text-lg leading-none">×</button>
-  `;
-  el('f1-tel-body').appendChild(div);
-}
-function removeTelRow(n) {
-  const r = el(`f1-tel-row-${n}`);
-  if (r) r.remove();
-}
-
-// ============================================================
-// TRAVEL TIME TABLE — shared by Form 1 and Form 2
-// ============================================================
-function timeDiffMins(from, to) {
-  if (!from || !to) return 0;
-  const [fh, fm] = from.split(':').map(Number);
-  const [th, tm] = to.split(':').map(Number);
-  const diff = (th * 60 + tm) - (fh * 60 + fm);
-  return diff < 0 ? diff + 1440 : diff; // handle overnight
-}
-
-function fmtDuration(mins) {
-  if (mins <= 0) return '—';
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  if (h === 0) return `${m} min${m !== 1 ? 's' : ''}`;
-  if (m === 0) return `${h}hr${h !== 1 ? 's' : ''}`;
-  return `${h}hr${h !== 1 ? 's' : ''} ${m} min${m !== 1 ? 's' : ''}`;
-}
-
-function calcTravelTotals(px) {
-  let travel = 0, wait = 0, attend = 0;
-  let arrival = '', departure = '';
-  for (let i = 1; i <= 4; i++) {
-    travel  += timeDiffMins(v(`${px}-tv-f${i}`), v(`${px}-tv-t${i}`));
-    wait    += timeDiffMins(v(`${px}-wt-f${i}`), v(`${px}-wt-t${i}`));
-    attend  += timeDiffMins(v(`${px}-at-f${i}`), v(`${px}-at-t${i}`));
-    if (!arrival  && v(`${px}-tv-t${i}`)) arrival  = v(`${px}-tv-t${i}`);
-    if (v(`${px}-at-t${i}`))              departure = v(`${px}-at-t${i}`);
-  }
-  el(`${px}-tot-travel`).value  = fmtDuration(travel);
-  el(`${px}-tot-wait`).value    = fmtDuration(wait);
-  el(`${px}-tot-attend`).value  = fmtDuration(attend);
-  if (arrival)   el(`${px}-arrival-disp`).value  = arrival;
-  if (departure) el(`${px}-departure-disp`).value = departure;
-}
-
-// ============================================================
-// FORM 2 — FIRST CONTACT FLAG
-// ============================================================
-function checkF2FC() {
-  const notified = v('f2-fc-notified');
-  const contact = v('f2-fc-contact');
-  if (!notified || !contact) return;
-  const [nh, nm] = notified.split(':').map(Number);
-  const [ch, cm] = contact.split(':').map(Number);
-  const diff = (ch * 60 + cm) - (nh * 60 + nm);
-  el('f2-fc-flag').style.display = diff > 45 ? 'block' : 'none';
-}
-
-// ============================================================
-// FORM 2 — DETENTION REVIEWS
-// ============================================================
-function calcF2Detention() {
-  const date = v('f2-arrest-date');
-  const time = v('f2-arrest-time');
-  if (!date || !time) { ['f2-det-6','f2-det-15','f2-det-24'].forEach(id => el(id).textContent = '—'); return; }
-  const base = new Date(`${date}T${time}`);
-  if (isNaN(base)) return;
-  el('f2-det-6').textContent = formatDT(new Date(base.getTime() + 6*3600000));
-  el('f2-det-15').textContent = formatDT(new Date(base.getTime() + 15*3600000));
-  el('f2-det-24').textContent = formatDT(new Date(base.getTime() + 24*3600000));
-}
-
-// ============================================================
-// FORM 3 — PTPH TOGGLE
-// ============================================================
-function togglePTPH() {
-  el('f3-ptph-section').style.display = v('f3-hearing-type') === 'PTPH' ? 'block' : 'none';
-}
-
-function updateCaseName() {
-  el('f3-case-name').value = v('f3-defendant') ? `Regina v ${v('f3-defendant')}` : '';
-}
-
-function getF3Parties() {
-  const pts = [];
-  if (cb('f3-p-defendant')) pts.push('Defendant');
-  if (cb('f3-p-prosecution')) pts.push('Prosecution Counsel');
-  if (cb('f3-p-defence')) pts.push('Defence Counsel');
-  if (cb('f3-p-judge')) pts.push('Judge');
-  if (cb('f3-p-interpreter')) pts.push('Interpreter');
-  if (cb('f3-p-probation')) pts.push('Probation');
-  if (cb('f3-p-yot')) pts.push('YOT');
-  return pts.join(', ') || 'Not recorded';
-}
-
-
-// ============================================================
-// PDF BUILDER
-// ============================================================
-function makePDF(firmName, title, solicitorName) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p','mm','a4');
-  const L = 15, W = 180;
-  const NAVY = [26, 58, 92];
-  let y = 0;
-
-  function _header() {
-    const cx = 105; // centre of A4
-    // Firm name — large bold navy, centred
-    doc.setTextColor(...NAVY);
-    doc.setFont('helvetica', 'bold');
-    if (firmName) {
-      doc.setFontSize(18);
-      doc.text(firmName, cx, 18, { align: 'center' });
-    } else {
-      doc.setFontSize(16);
-      doc.setTextColor(160, 160, 160);
-      doc.setFont('helvetica', 'italic');
-      doc.text('[Law Firm Name]', cx, 18, { align: 'center' });
-      doc.setTextColor(...NAVY);
-      doc.setFont('helvetica', 'bold');
-    }
-    // Subtitle — form title, centred
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.setTextColor(80, 80, 80);
-    doc.text(title, cx, 26, { align: 'center' });
-    // Date — top right
-    doc.setFontSize(8);
-    doc.setTextColor(120, 120, 120);
-    doc.text(new Date().toLocaleDateString('en-GB'), 195, 12, { align: 'right' });
-    // Divider line — navy
-    doc.setDrawColor(...NAVY);
-    doc.setLineWidth(0.8);
-    doc.line(L, 31, L + W, 31);
-    doc.setLineWidth(0.2);
-    doc.setTextColor(0, 0, 0);
-    y = 38;
-  }
-
-  function _pageHeader() {
-    doc.setFillColor(...NAVY);
-    doc.rect(0, 0, 210, 14, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
-    doc.text(`${firmName || '[Law Firm Name]'} — ${title} (continued)`, L, 9.5);
-    doc.setTextColor(0, 0, 0);
-    y = 20;
-  }
-
-  function chk(need) {
-    if (y + (need||12) > 272) { doc.addPage(); _pageHeader(); }
-  }
-
-  const section = (t) => {
-    chk(14);
-    doc.setFillColor(...NAVY);
-    doc.rect(L, y, W, 8, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.text(t, L+3, y+5.5);
-    doc.setTextColor(0,0,0);
-    y += 11;
-  };
-
-  const field = (label, value) => {
-    const val = (value||'').toString().trim() || '—';
-    const lw = 55, vx = L+lw+3, vw = W-lw-3;
-    const lines = doc.splitTextToSize(val, vw);
-    chk(lines.length * 4.5 + 5);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text(label + ':', L, y);
-    doc.setFont('helvetica','normal');
-    doc.text(lines, vx, y);
-    y += Math.max(lines.length, 1) * 4.5 + 2;
-    doc.setDrawColor(230,230,230);
-    doc.line(L, y-0.5, L+W, y-0.5);
-    y += 1.5;
-  };
-
-  const fieldFull = (label, value) => {
-    const val = (value||'').toString().trim() || '—';
-    chk(15);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text(label + ':', L, y); y += 5;
-    doc.setFont('helvetica','normal');
-    const lines = doc.splitTextToSize(val, W);
-    lines.forEach(ln => { chk(5); doc.text(ln, L, y); y += 4.5; });
-    y += 2;
-    doc.setDrawColor(230,230,230);
-    doc.line(L, y-0.5, L+W, y-0.5);
-    y += 1.5;
-  };
-
-  const row2 = (pairs) => {
-    const cw = W/2;
-    let maxLines = 1;
-    const sp = pairs.map(([lbl, val]) => {
-      const lines = doc.splitTextToSize((val||'—').toString(), cw - 8);
-      const trimmed = lines.slice(0, 2);
-      maxLines = Math.max(maxLines, trimmed.length);
-      return [lbl, trimmed];
-    });
-    chk(10 + maxLines * 4.5);
-    sp.forEach(([lbl, lines], i) => {
-      const x = L + i * cw;
-      doc.setFont('helvetica','bold'); doc.setFontSize(8);
-      doc.text(lbl + ':', x, y);
-      doc.setFont('helvetica','normal');
-      doc.text(lines, x, y + 5);
-    });
-    y += 8 + maxLines * 4.5;
-    doc.setDrawColor(230,230,230);
-    doc.line(L, y - 0.5, L + W, y - 0.5);
-    y += 1.5;
-  };
-
-  const tbl = (hdrs, rows) => {
-    doc.autoTable({
-      head: [hdrs], body: rows, startY: y,
-      margin: { left: L, right: L },
-      styles: { fontSize: 7, cellPadding: 2, lineColor: [220,220,220], lineWidth: 0.3 },
-      headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [248,250,252] },
-      theme: 'grid'
-    });
-    y = doc.lastAutoTable.finalY + 5;
-  };
-
-  const save = (filename) => {
-    const total = doc.internal.getNumberOfPages();
-    const footer = `${firmName || ''}${solicitorName ? ' | ' + solicitorName : ''}`;
-    for (let i = 1; i <= total; i++) {
-      doc.setPage(i);
-      doc.setFillColor(...NAVY);
-      doc.rect(0, 281, 210, 16, 'F');
-      doc.setTextColor(255,255,255);
-      doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
-      doc.text(`${footer} | PRIVATE & CONFIDENTIAL — This document is intended solely for the named recipient.`, L, 287, {maxWidth: W-20});
-      doc.text(`Page ${i} of ${total}`, 197, 292, {align:'right'});
-    }
-    doc.save(filename);
-  };
-
-  _header();
-  return { section, field, fieldFull, row2, tbl, save, getY: () => y, spacer: (n=5) => { y += n; } };
-}
-
-// ============================================================
-// FORM 1 PDF
-// ============================================================
-function generateForm1PDF() {
-  markDraftCompleted('form1');
-  const s = getSettings();
-  const p = makePDF(s.firmName, 'Police Station Attendance Note', s.solicitorName);
-
-  p.section('HEADER');
-  p.row2([['Date', fmtDate(v('f1-date'))], ['UFN', v('f1-ufn')]]);
-  p.row2([['DSCC Reference', v('f1-dscc')], ['Custody Number', v('f1-custody')]]);
-  p.field('Police Station', v('f1-station'));
-  p.row2([['Case Type', gt('f1-case-type')], ['Representative', v('f1-rep')]]);
-
-  p.section('CLIENT DETAILS');
-  p.field('Full Name', v('f1-client-name'));
-  p.row2([['Date of Birth', fmtDate(v('f1-dob'))], ['Age', v('f1-age')]]);
-  p.fieldFull('Address', v('f1-address'));
-  p.row2([['Telephone', v('f1-phone')], ['Email', v('f1-email')]]);
-  p.row2([['Gender', v('f1-gender')], ['Nationality', v('f1-nationality')]]);
-  p.field('Ethnicity', v('f1-ethnicity'));
-  p.row2([['NI Number', v('f1-ni')], ['Youth Client', gt('f1-youth')]]);
-
-  p.section('POLICE DETAILS');
-  p.row2([['Arrest Date', fmtDate(v('f1-arrest-date'))], ['Arrest Time', v('f1-arrest-time')]]);
-  p.field('Place of Arrest', v('f1-arrest-place'));
-  p.fieldFull('Offence(s)', v('f1-offence'));
-  const atTypes = [cb('f1-interview-cb')&&'Interview', cb('f1-idparade-cb')&&'ID Parade'].filter(Boolean).join(', ');
-  p.field('Attendance Type', atTypes || 'Not specified');
-  p.field('Officer Name(s)', v('f1-officers'));
-  p.row2([['Attendance', gt('f1-vol-arrest')], ['Fit for Interview', gt('f1-fit')]]);
-  const flags = [cb('f1-access-delayed')&&'Access Delayed', cb('f1-vulnerable')&&'Vulnerable', cb('f1-fme')&&'FME'].filter(Boolean).join(', ');
-  p.field('Additional Flags', flags || 'None');
-
-  p.section('CO-DEFENDANTS');
-  p.row2([['Conflict of Interest', gt('f1-conflict')], ['Custody Number', v('f1-codef-custody')]]);
-  p.field('Co-Defendant Name', v('f1-codef-name'));
-
-  p.section('POLICE INFORMATION');
-  const polInfo = [cb('f1-custody-record')&&'Custody Record Viewed', cb('f1-prev-interview')&&'Previous Interviews', cb('f1-samples-taken')&&'Samples Taken'].filter(Boolean).join(', ');
-  p.field('Custody Information', polInfo || 'None noted');
-  p.field('Previous Interview Position', gt('f1-silence-stmt'));
-
-  p.section('PRE-INTERVIEW ADVICE GIVEN');
-  p.row2([['Caution Explained', gt('f1-adv-caution')], ['Options Advised', gt('f1-adv-options')]]);
-  p.row2([['Evidence Discussed', gt('f1-adv-evidence')], ['Samples Procedure', gt('f1-adv-samples')]]);
-  p.field('ID Procedures', gt('f1-adv-id'));
-
-  p.section('CLIENT INSTRUCTIONS');
-  p.fieldFull('Previous Convictions', v('f1-prev-convictions'));
-  p.fieldFull('Version of Events', v('f1-version-events'));
-  p.fieldFull('Alibi', v('f1-alibi'));
-
-  p.section('INTERVIEW ADVICE');
-  const ia = [cb('f1-ia-nocomment')&&'No Comment', cb('f1-ia-comment')&&'Answer Questions', cb('f1-ia-statement')&&'Prepared Statement'].filter(Boolean).join(', ');
-  p.field('Advice Given', ia || 'Not recorded');
-  p.fieldFull('Reason for Advice', v('f1-ia-reason'));
-  p.field('Agreed Action', v('f1-ia-action'));
-
-  p.section('INTERVIEW');
-  p.row2([['Attended Interview', gt('f1-int-attended')], ['']]);
-  p.row2([['Start Time', v('f1-int-start')], ['End Time', v('f1-int-end')]]);
-  p.fieldFull('Interview Notes', v('f1-int-notes'));
-
-  p.section('RESULT');
-  p.field('Outcome', v('f1-result'));
-  p.row2([['Court Name', v('f1-court-name')], ['Court Date', fmtDate(v('f1-court-date'))]]);
-  p.fieldFull('Bail Conditions', v('f1-bail-conditions'));
-
-  p.section('TRAVEL AND TIME');
-  const f1TravelRows = [];
-  for (let i = 1; i <= 4; i++) {
-    const tf = v(`f1-tv-f${i}`), tt = v(`f1-tv-t${i}`);
-    const wf = v(`f1-wt-f${i}`), wt = v(`f1-wt-t${i}`);
-    const af = v(`f1-at-f${i}`), at = v(`f1-at-t${i}`);
-    if (tf||tt||wf||wt||af||at) f1TravelRows.push([`${tf||'—'} → ${tt||'—'}`, `${wf||'—'} → ${wt||'—'}`, `${af||'—'} → ${at||'—'}`]);
-  }
-  if (f1TravelRows.length) p.tbl(['Travel Time (From→To)', 'Waiting Time (From→To)', 'Attendance Time (From→To)'], f1TravelRows);
-  p.row2([['Total Travel', v('f1-tot-travel')||'—'], ['Total Waiting', v('f1-tot-wait')||'—']]);
-  p.row2([['Total Attendance', v('f1-tot-attend')||'—'], ['Total Mileage', v('f1-mileage')||'—']]);
-  p.row2([['Arrival Time', v('f1-arrival-disp')||'—'], ['Departure Time', v('f1-departure-disp')||'—']]);
-
-  // Telephone calls table
-  const telHdrs = ['Date','Time','Person','Type','Duration'];
-  const telRows = [];
-  for (let i = 1; i <= f1TelCount; i++) {
-    if (!el(`f1-tel-row-${i}`)) continue;
-    telRows.push([fmtDate(v(`f1-td-${i}`)), v(`f1-tt-${i}`), v(`f1-tp-${i}`), v(`f1-ttype-${i}`), v(`f1-tdur-${i}`)]);
-  }
-  if (telRows.length > 0) {
-    p.section('TELEPHONE CALLS');
-    p.tbl(telHdrs, telRows);
-  }
-
-  p.save(`Police_Station_${(v('f1-client-name')||'Attendance').replace(/\s+/g,'_')}_${v('f1-date')||today()}.pdf`);
-}
-
-// ============================================================
-// FORM 2 PDF
-// ============================================================
-function generateForm2PDF() {
-  markDraftCompleted('form2');
-  const s = getSettings();
-  const p = makePDF(s.firmName, 'Magistrates Court Attendance Note', s.solicitorName);
-
-  p.section('HEADER');
-  p.row2([['Court', v('f2-court')], ['Date', fmtDate(v('f2-date'))]]);
-  p.row2([['Case Reference', v('f2-case-ref')], ['DSCC Reference', v('f2-dscc')]]);
-  p.field('Fee Earner', v('f2-fee-earner'));
-
-  p.section('CLIENT DETAILS');
-  p.field('Full Name', v('f2-client-name'));
-  p.row2([['Date of Birth', fmtDate(v('f2-dob'))], ['Age', v('f2-age')]]);
-  p.field('Ethnicity', v('f2-ethnicity'));
-  p.fieldFull('Address', v('f2-address'));
-  p.row2([['Contact', v('f2-contact')], ['NI Number', v('f2-ni')]]);
-  p.field('Income / Employment', v('f2-income'));
-  p.fieldFull('Allegations', v('f2-allegations'));
-
-  p.section('ARREST DETAILS');
-  p.row2([['Custody Reference', v('f2-custody-ref')], ['Attendance', gt('f2-arrested')]]);
-  p.field('Arresting Officer', v('f2-officer'));
-  p.field('Place of Arrest', v('f2-arrest-place'));
-  p.row2([['Arrest Date', fmtDate(v('f2-arrest-date'))], ['Arrest Time', v('f2-arrest-time')]]);
-  p.row2([['Detention Authorised', gt('f2-det-auth')], ['Access Delayed', cb('f2-access-delayed')?'Yes':'No']]);
-  p.field('OIC Details', v('f2-oic'));
-  p.fieldFull('Warrants / Bail Conditions', v('f2-warrants'));
-
-  p.section('FIRST CONTACT TIMES');
-  p.row2([['Notified', v('f2-fc-notified')||'—'], ['First Contact', v('f2-fc-contact')||'—']]);
-  const fcMins = (() => {
-    const n = v('f2-fc-notified'), c = v('f2-fc-contact');
-    if (!n||!c) return null;
-    const [nh,nm] = n.split(':').map(Number), [ch,cm] = c.split(':').map(Number);
-    return (ch*60+cm)-(nh*60+nm);
-  })();
-  if (fcMins !== null) p.field('Notification to Contact', `${fcMins} minutes${fcMins > 45 ? ' ⚠ OVER 45 MINUTES' : ''}`);
-  p.row2([['Advised Attending', v('f2-fc-advised')||'—'], ['Requested', v('f2-fc-requested')||'—']]);
-  p.field('Arrived', v('f2-fc-arrived')||'—');
-
-  p.section('TRAVEL AND TIME');
-  const f2TravelRows = [];
-  for (let i = 1; i <= 4; i++) {
-    const tf = v(`f2-tv-f${i}`), tt = v(`f2-tv-t${i}`);
-    const wf = v(`f2-wt-f${i}`), wt = v(`f2-wt-t${i}`);
-    const af = v(`f2-at-f${i}`), at = v(`f2-at-t${i}`);
-    if (tf||tt||wf||wt||af||at) f2TravelRows.push([`${tf||'—'} → ${tt||'—'}`, `${wf||'—'} → ${wt||'—'}`, `${af||'—'} → ${at||'—'}`]);
-  }
-  if (f2TravelRows.length) p.tbl(['Travel Time (From→To)', 'Waiting Time (From→To)', 'Attendance Time (From→To)'], f2TravelRows);
-  p.row2([['Total Travel', v('f2-tot-travel')||'—'], ['Total Waiting', v('f2-tot-wait')||'—']]);
-  p.row2([['Total Attendance', v('f2-tot-attend')||'—'], ['Total Mileage', v('f2-mileage')||'—']]);
-  p.row2([['Arrival Time', v('f2-arrival-disp')||'—'], ['Departure Time', v('f2-departure-disp')||'—']]);
-
-  p.section('DETENTION REVIEWS');
-  p.row2([['6-hour review', el('f2-det-6').textContent], ['15-hour review', el('f2-det-15').textContent]]);
-  p.field('24-hour review', el('f2-det-24').textContent);
-
-  p.section('DISCLOSURE');
-  p.row2([['Officer', v('f2-disc-officer')], ['Time', v('f2-disc-time')||'—']]);
-  p.fieldFull('Details', v('f2-disc-details'));
-
-  p.section('SAMPLES');
-  const samps = [cb('f2-samp-taken')&&'Taken', cb('f2-samp-consent')&&'Consent Given', cb('f2-samp-nonintimate')&&'Non-Intimate', cb('f2-samp-searches')&&'Searches'].filter(Boolean).join(', ');
-  p.field('Samples', samps||'None recorded');
-
-  p.section('CO-ACCUSED');
-  p.field('Co-Accused', gt('f2-coaccused'));
-  p.row2([['Name(s)', v('f2-co-names')], ['Represented By', v('f2-co-rep')]]);
-  p.field('Implicates Client', gt('f2-co-implicate'));
-
-  p.section('CLIENT INSTRUCTIONS');
-  p.row2([['Start Time', v('f2-ci-start')||'—'], ['End Time', v('f2-ci-end')||'—']]);
-  p.fieldFull('Instructions', v('f2-ci-instructions'));
-  p.fieldFull('Previous Convictions', v('f2-ci-prevconv'));
-  p.field('Bail Status', v('f2-ci-bail'));
-
-  p.section('ADVICE GIVEN');
-  const adv = [cb('f2-adv-detention')&&'Detention Rights', cb('f2-adv-caution')&&'Caution', cb('f2-adv-warnings')&&'Special Warnings'].filter(Boolean).join(', ');
-  p.field('Topics Covered', adv||'See notes');
-  p.fieldFull('Advice Notes', v('f2-adv-text'));
-
-  p.section('MEDICAL');
-  p.row2([['Complaint', v('f2-med-complaint')], ['Injuries', v('f2-med-injuries')]]);
-  p.row2([['Dependency', gt('f2-addict')], ['FME', gt('f2-fme')]]);
-  p.row2([['Fit to Detain', gt('f2-fit-detain')], ['Fit to Interview', gt('f2-fit-interview')]]);
-
-  p.section('INTERVIEW DETAILS');
-  p.field('Persons Present', v('f2-int-persons'));
-  p.row2([['Start Time', v('f2-int-start')||'—'], ['End Time', v('f2-int-end')||'—']]);
-  p.row2([['Reference', v('f2-int-ref')], ['Seal Number', v('f2-int-seal')]]);
-  p.fieldFull('Notes', v('f2-int-notes'));
-
-  p.section('RESULT');
-  p.field('Outcome', v('f2-result'));
-  p.field('Court', v('f2-result-court'));
-  p.fieldFull('Bail Conditions', v('f2-bail-conditions'));
-  p.field('Outcome Explained to Client', gt('f2-outcome-explained'));
-
-  p.save(`Magistrates_Court_${(v('f2-client-name')||'Attendance').replace(/\s+/g,'_')}_${v('f2-date')||today()}.pdf`);
-}
-
-// ============================================================
-// FORM 3 PDF
-// ============================================================
-function generateForm3PDF() {
-  markDraftCompleted('form3');
-  const s = getSettings();
-  const p = makePDF(s.firmName, 'Crown Court Attendance Note', s.solicitorName);
-
-  p.section('HEADER');
-  p.field('Court', v('f3-court'));
-  p.row2([['Case Name', v('f3-case-name')], ['Defendant', v('f3-defendant')]]);
-  p.row2([['Judge', v('f3-judge')], ['Date', fmtDate(v('f3-date'))]]);
-  p.row2([['Prosecution Counsel', v('f3-pros-counsel')], ['Defence Counsel', v('f3-def-counsel')]]);
-  p.field('Hearing Type', v('f3-hearing-type'));
-
-  p.section('HEARING DETAILS');
-  p.field('Parties Present', getF3Parties());
-  p.fieldFull('Hearing Summary', v('f3-summary'));
-  p.fieldFull('Orders Made', v('f3-orders'));
-  p.field('Next Hearing Date', fmtDate(v('f3-next-hearing')));
-
-  if (v('f3-hearing-type') === 'PTPH') {
-    p.section('STAGE DATES (PTPH)');
-    p.row2([['Stage 1', fmtDate(v('f3-stage1'))], ['Stage 2', fmtDate(v('f3-stage2'))]]);
-    p.row2([['Stage 3', fmtDate(v('f3-stage3'))], ['Stage 4', fmtDate(v('f3-stage4'))]]);
-    p.row2([['COTR', fmtDate(v('f3-cotr'))], ['Trial Warned', fmtDate(v('f3-trial-warned'))]]);
-    p.field('Trial Date', fmtDate(v('f3-trial-date')));
-  }
-
-  p.section('POST HEARING');
-  p.field('Conference Held with Client', gt('f3-conference'));
-  p.fieldFull('Notes', v('f3-post-notes'));
-  p.fieldFull('Further Instructions', v('f3-further-instructions'));
-
-  p.section('SOLICITOR SIGN OFF');
-  p.row2([['Solicitor', v('f3-solicitor')], ['Date', fmtDate(v('f3-sign-date'))]]);
-  p.field('Firm', v('f3-firm') || s.firmName);
-
-  p.save(`Crown_Court_${(v('f3-case-name')||v('f3-defendant')||'Attendance').replace(/[\s\/]+/g,'_')}_${v('f3-date')||today()}.pdf`);
-}
-
-// ============================================================
-// DICTATION
-// ============================================================
-let mediaRecorder = null;
-let audioChunks = [];
-let dictRecording = false;
-
-function openDictation() {
-  if (!localStorage.getItem('lf-mic-notice')) {
-    el('dictation-permission').style.display = 'block';
-  }
-  el('dictation-error').style.display = 'none';
-  el('dictation-copy-confirm').style.display = 'none';
-  setMicState('idle');
-  showScreen('dictation', 1);
-}
-
-function leaveDictation() {
-  if (dictRecording) stopRecording();
-  showScreen('home', -1);
-}
-
-function dismissPermission() {
-  localStorage.setItem('lf-mic-notice', '1');
-  el('dictation-permission').style.display = 'none';
-}
-
-function setMicState(state) {
-  const btn = el('mic-btn');
-  const status = el('mic-status');
-  btn.className = btn.className.replace(/mic-\w+/g, '').trim();
-  if (state === 'idle') {
-    btn.classList.add('mic-idle');
-    status.innerHTML = 'Tap to start recording';
-    status.style.color = '#6b7280';
-    dictRecording = false;
-    stopRecTimer();
-  } else if (state === 'recording') {
-    btn.classList.add('mic-recording');
-    status.innerHTML = 'Recording… tap to stop';
-    status.style.color = '#ef4444';
-    dictRecording = true;
-    startRecTimer();
-  } else if (state === 'processing') {
-    btn.classList.add('mic-processing');
-    status.innerHTML = '<span class="spin"></span>Transcribing your recording…';
-    status.style.color = '#64748b';
-    dictRecording = false;
-    stopRecTimer();
-  }
-}
-
-function getSupportedMime() {
-  const types = [
-    'audio/webm;codecs=opus','audio/webm',
-    'audio/ogg;codecs=opus','audio/ogg','audio/mp4'
-  ];
-  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
-}
-
-async function toggleRecording() {
-  el('dictation-error').style.display = 'none';
-  if (dictRecording) {
-    stopRecording();
-  } else {
-    await startRecording();
-  }
-}
-
-async function startRecording() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mime = getSupportedMime();
-    mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-    audioChunks = [];
-
-    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      transcribeAudio();
-    };
-    mediaRecorder.start(250); // collect every 250ms for reliability on mobile
-    setMicState('recording');
-  } catch (err) {
-    el('dictation-error').textContent = 'Microphone access denied. Please allow microphone access in browser settings.';
-    el('dictation-error').style.display = 'block';
-    setMicState('idle');
-  }
-}
-
-function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    setMicState('processing');
-  }
-}
-
-async function transcribeAudio() {
-  const mimeType = (audioChunks[0] && audioChunks[0].type) || 'audio/webm';
-  const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm';
-  const blob = new Blob(audioChunks, { type: mimeType });
-  const form = new FormData();
-  form.append('audio', blob, `recording.${ext}`);
-  try {
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 45000);
-    const res = await fetch('/api/transcribe', { method: 'POST', body: form, signal: ctrl.signal });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    appendTranscript(data.text || '');
-  } catch (err) {
-    const msg = !navigator.onLine
-      ? 'No internet connection — check your network and try again.'
-      : err.name === 'AbortError'
-      ? 'Request timed out — please try again.'
-      : 'Could not transcribe — please try again.';
-    el('dictation-error').textContent = msg;
-    el('dictation-error').style.display = 'block';
-  }
-  setMicState('idle');
-}
-
-function appendTranscript(text) {
-  if (!text.trim()) return;
-  const ta = el('dictation-transcript');
-  const existing = ta.value.trim();
-  ta.value = existing ? existing + '\n\n' + text.trim() : text.trim();
-  ta.scrollTop = ta.scrollHeight;
-}
-
-function dictationCopy() {
-  const text = el('dictation-transcript').value;
-  if (!text.trim()) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const msg = el('dictation-copy-confirm');
-    msg.style.display = 'block';
-    setTimeout(() => { msg.style.display = 'none'; }, 2000);
-  }).catch(() => {});
-}
-
-function dictationClear() {
-  if (dictRecording) return;
-  el('dictation-transcript').value = '';
-  el('dictation-error').style.display = 'none';
-  el('dictation-copy-confirm').style.display = 'none';
-}
-
-function dictationNewRecording() {
-  if (!dictRecording) startRecording();
-}
-
-// ============================================================
-// DRAFT SYSTEM — FIX 1
-// ============================================================
-const DRAFTS_KEY = 'lf-drafts';
-let currentDraftId = { form1: null, form2: null, form3: null };
-let autoSaveTimer = null;
-let currentDraftsTab = 'draft';
-
-function getAllDrafts() {
-  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); } catch { return []; }
-}
-function saveDraftsStore(drafts) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts)); }
-
-function collectFormState(formType) {
-  const scr = el('screen-' + formType);
-  if (!scr) return { inputs: {}, toggles: {}, checkboxes: {} };
-  const state = { inputs: {}, toggles: {}, checkboxes: {} };
-  scr.querySelectorAll('input[id], textarea[id], select[id]').forEach(inp => {
-    if (inp.type !== 'checkbox') state.inputs[inp.id] = inp.value;
-  });
-  scr.querySelectorAll('[data-group].on').forEach(btn => {
-    state.toggles[btn.dataset.group] = btn.dataset.val;
-  });
-  scr.querySelectorAll('input[type="checkbox"][id]').forEach(c => {
-    state.checkboxes[c.id] = c.checked;
-  });
-  return state;
-}
-
-function restoreFormState(formType, state) {
-  if (!state) return;
-  if (formType === 'form1') {
-    el('f1-tel-body').innerHTML = '';
-    f1TelCount = 0;
-    let maxTel = 0;
-    Object.keys(state.inputs || {}).forEach(id => { const m = id.match(/^f1-td-(\d+)$/); if (m) maxTel = Math.max(maxTel, +m[1]); });
-    for (let i = 0; i < Math.max(maxTel, 1); i++) addTelRow();
-  }
-  Object.entries(state.inputs || {}).forEach(([id, val]) => { const e = el(id); if (e && e.type !== 'checkbox') e.value = val; });
-  Object.entries(state.toggles || {}).forEach(([group, val]) => setToggle(group, val));
-  Object.entries(state.checkboxes || {}).forEach(([id, chk]) => { const e = el(id); if (e && e.type === 'checkbox') e.checked = chk; });
-  if (formType === 'form1') { calcAge('f1-dob','f1-age'); calcTravelTotals('f1'); }
-  if (formType === 'form2') { calcAge('f2-dob','f2-age'); calcTravelTotals('f2'); calcF2Detention(); checkFC(); }
-  if (formType === 'form3') { updateCaseName(); togglePTPH(); }
-}
-
-function getDraftClientName(formType, state) {
-  const inp = state.inputs || {};
-  if (formType === 'form1') return (inp['f1-client-name'] || '').trim();
-  if (formType === 'form2') return (inp['f2-client-name'] || '').trim();
-  if (formType === 'form3') return (inp['f3-defendant'] || '').trim();
-  return '';
-}
-
-function saveDraft(formType) {
-  const state = collectFormState(formType);
-  const clientName = getDraftClientName(formType, state) || 'Unnamed';
-  const drafts = getAllDrafts();
-  const existingId = currentDraftId[formType];
-  const idx = existingId ? drafts.findIndex(d => d.id === existingId) : -1;
-  if (idx >= 0) {
-    drafts[idx] = { ...drafts[idx], clientName, savedAt: new Date().toISOString(), state };
-  } else {
-    const id = Date.now().toString();
-    currentDraftId[formType] = id;
-    drafts.unshift({ id, formType, clientName, savedAt: new Date().toISOString(), status: 'draft', state });
-  }
-  saveDraftsStore(drafts);
-  flashSaveBtn(formType);
-  renderDrafts();
-}
-
-function flashSaveBtn(formType) {
-  const btn = el('save-draft-btn-' + formType);
-  if (!btn) return;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Saved';
-  btn.classList.add('saved-flash');
-  setTimeout(() => { btn.textContent = orig; btn.classList.remove('saved-flash'); }, 1500);
-}
-
-function startAutoSave(formType) {
-  if (autoSaveTimer) clearInterval(autoSaveTimer);
-  autoSaveTimer = setInterval(() => {
-    const state = collectFormState(formType);
-    const hasData = getDraftClientName(formType, state) ||
-      Object.values(state.inputs).some(v => v && v !== today());
-    if (hasData) saveDraft(formType);
-  }, 30000);
-}
-
-function stopAutoSave() {
-  if (autoSaveTimer) { clearInterval(autoSaveTimer); autoSaveTimer = null; }
-}
-
-function markDraftCompleted(formType) {
-  const state = collectFormState(formType);
-  const clientName = getDraftClientName(formType, state) || 'Unnamed';
-  const drafts = getAllDrafts();
-  const existingId = currentDraftId[formType];
-  const idx = existingId ? drafts.findIndex(d => d.id === existingId) : -1;
-  if (idx >= 0) {
-    drafts[idx] = { ...drafts[idx], clientName, savedAt: new Date().toISOString(), state, status: 'completed' };
-  } else {
-    const id = Date.now().toString();
-    currentDraftId[formType] = id;
-    drafts.unshift({ id, formType, clientName, savedAt: new Date().toISOString(), status: 'completed', state });
-  }
-  saveDraftsStore(drafts);
-}
-
-function loadDraftAndOpen(draftId) {
-  const draft = getAllDrafts().find(d => d.id === draftId);
-  if (!draft) return;
-  openForm(draft.formType);
-  setTimeout(() => {
-    restoreFormState(draft.formType, draft.state);
-    currentDraftId[draft.formType] = draft.id;
-  }, 80);
-}
-
-function deleteDraft(id) {
-  saveDraftsStore(getAllDrafts().filter(d => d.id !== id));
-  renderDrafts();
-}
-
-function confirmDeleteDraft(id, name) {
-  if (confirm('Delete "' + (name || 'this note') + '"?')) deleteDraft(id);
-}
-
-function showDraftsTab(tab) {
-  currentDraftsTab = tab;
-  el('tab-draft').classList.toggle('tab-active', tab === 'draft');
-  el('tab-completed').classList.toggle('tab-active', tab === 'completed');
-  renderDrafts();
-}
-
-function escHtml(s) {
-  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function renderDrafts() {
-  const list = el('notes-list');
-  if (!list) return;
-  const filtered = getAllDrafts().filter(d => d.status === currentDraftsTab);
-  if (filtered.length === 0) {
-    const msg = currentDraftsTab === 'draft'
-      ? 'No drafts yet — open a form and tap Save'
-      : 'No completed notes yet';
-    list.innerHTML = '<p class="text-center text-gray-400 text-sm py-5 px-4">' + msg + '</p>';
-    return;
-  }
-  const labels = { form1: 'Police Station', form2: 'Magistrates', form3: 'Crown Court' };
-  list.innerHTML = filtered.map(d => {
-    const dt = new Date(d.savedAt);
-    const ts = dt.toLocaleDateString('en-GB') + ' · ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const badge = d.status === 'completed'
-      ? '<span class="note-badge note-badge-done">PDF</span>'
-      : '<span class="note-badge note-badge-draft">Draft</span>';
-    return '<div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0">'
-      + '<div class="flex-1 min-w-0 cursor-pointer" onclick="loadDraftAndOpen(\'' + d.id + '\')">'
-      + '<p class="font-semibold text-gray-900 text-sm truncate">' + escHtml(d.clientName) + '</p>'
-      + '<p class="text-xs text-gray-400 mt-0.5">' + (labels[d.formType] || '') + ' · ' + ts + '</p>'
-      + '</div>' + badge
-      + '<button onclick="confirmDeleteDraft(\'' + d.id + '\',\'' + escHtml(d.clientName) + '\')" class="text-gray-300 active:text-red-400 p-1 flex-shrink-0">'
-      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6M9 6V4h6v2"/></svg>'
-      + '</button></div>';
-  }).join('');
-}
-
-// ============================================================
-// FIRM NAME QUICK EDIT — FIX 3
-// ============================================================
-function updateFirmDisplay() {
-  const s = getSettings();
-  const disp = el('firm-name-display');
-  if (disp) disp.textContent = s.firmName || 'Set firm name…';
-}
-
-function startFirmEdit() {
-  el('firm-display').style.display = 'none';
-  el('firm-edit').style.display = 'flex';
-  const s = getSettings();
-  el('firm-quick-input').value = s.firmName || '';
-  el('firm-quick-input').focus();
-}
-
-function saveFirmName() {
-  const s = getSettings();
-  s.firmName = el('firm-quick-input').value.trim();
-  localStorage.setItem('lf-settings', JSON.stringify(s));
-  if (el('settings-firm')) el('settings-firm').value = s.firmName;
-  el('firm-display').style.display = 'flex';
-  el('firm-edit').style.display = 'none';
-  updateFirmDisplay();
-}
-
-// ============================================================
-// DICTATION TIMER — FIX 4
-// ============================================================
-let recTimerInterval = null;
-let recStartMs = 0;
-
-function startRecTimer() {
-  recStartMs = Date.now();
-  el('rec-timer').style.display = 'block';
-  recTimerInterval = setInterval(() => {
-    const secs = Math.floor((Date.now() - recStartMs) / 1000);
-    const m = Math.floor(secs / 60), s = secs % 60;
-    el('rec-timer').textContent = m + ':' + String(s).padStart(2, '0');
-    if (secs >= 60) el('rec-warn').style.display = 'block';
-  }, 500);
-}
-
-function stopRecTimer() {
-  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
-  if (el('rec-timer')) el('rec-timer').style.display = 'none';
-  if (el('rec-warn')) el('rec-warn').style.display = 'none';
-}
-
-// ============================================================
-// INVOICE — FIX 5
-// ============================================================
-let invItemCount = 0;
-
-function openInvoice() {
-  el('inv-date').value = today();
-  el('inv-number').value = 'INV-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-4);
-  invItemCount = 0;
-  el('inv-items-body').innerHTML = '';
-  addInvItem(); addInvItem(); addInvItem();
-  showScreen('invoice', 1);
-}
-
-function addInvItem() {
-  if (invItemCount >= 8) return;
-  invItemCount++;
-  const n = invItemCount;
-  const div = document.createElement('div');
-  div.id = 'inv-item-' + n;
-  div.className = 'grid gap-2 mb-2 items-center';
-  div.style.gridTemplateColumns = '1fr 90px 28px';
-  div.innerHTML = '<input type="text" id="inv-desc-' + n + '" class="mini-inp" placeholder="Description">'
-    + '<input type="number" id="inv-amt-' + n + '" class="mini-inp" style="text-align:right" placeholder="0.00" step="0.01" oninput="calcInvTotals()">'
-    + '<button onclick="removeInvItem(' + n + ')" class="text-red-400 font-bold text-lg leading-none">×</button>';
-  el('inv-items-body').appendChild(div);
-}
-
-function removeInvItem(n) {
-  const r = el('inv-item-' + n);
-  if (r) { r.remove(); calcInvTotals(); }
-}
-
-function calcInvTotals() {
-  let sub = 0;
-  for (let i = 1; i <= invItemCount; i++) {
-    const e = el('inv-amt-' + i);
-    if (e) sub += parseFloat(e.value || 0) || 0;
-  }
-  const vatOn = gt('inv-vat') === 'Yes';
-  const vat = vatOn ? sub * 0.2 : 0;
-  el('inv-subtotal').textContent = '£' + sub.toFixed(2);
-  el('inv-vat-amt').textContent = '£' + vat.toFixed(2);
-  el('inv-total').textContent = '£' + (sub + vat).toFixed(2);
-  el('inv-vat-row').style.display = vatOn ? 'flex' : 'none';
-}
-
-function generateInvoicePDF() {
-  const s = getSettings();
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p','mm','a4');
-  const L = 15, W = 180;
-  const NAVY = [13, 27, 62], GOLD = [200, 168, 75];
-
-  // Dark header band
-  doc.setFillColor(...NAVY);
-  doc.rect(0, 0, 210, 52, 'F');
-  doc.setDrawColor(...GOLD);
-  doc.setLineWidth(3);
-  doc.line(0, 52, 210, 52);
-  doc.setLineWidth(0.2);
-
-  // INVOICE title
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(24);
-  doc.text('INVOICE', L, 22);
-
-  // Firm name
-  doc.setFontSize(10); doc.setFont('helvetica','normal');
-  if (s.firmName) doc.text(s.firmName, L, 31);
-  if (s.firmAddress) {
-    doc.setFontSize(8);
-    doc.splitTextToSize(s.firmAddress, 85).slice(0,2).forEach((ln, i) => doc.text(ln, L, 37 + i*4));
-  }
-
-  // Invoice meta (right)
-  doc.setTextColor(180,190,210); doc.setFontSize(8);
-  doc.text('Invoice: ' + (v('inv-number')||''), 195, 22, { align:'right' });
-  doc.text('Date: ' + fmtDate(v('inv-date')), 195, 28, { align:'right' });
-
-  let y = 64;
-  // Bill to
-  doc.setTextColor(0,0,0);
-  doc.setFont('helvetica','bold'); doc.setFontSize(8);
-  doc.setTextColor(100,100,100); doc.text('BILLED TO', L, y);
-  y += 5;
-  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(0,0,0);
-  if (v('inv-client')) { doc.text(v('inv-client'), L, y); y += 5; }
-  if (v('inv-matter')) { doc.setFontSize(8); doc.setTextColor(100,100,100); doc.text(v('inv-matter'), L, y); y += 6; }
-  y += 4;
-
-  // Line items table
-  const rows = [];
-  let sub = 0;
-  for (let i = 1; i <= invItemCount; i++) {
-    const desc = v('inv-desc-' + i);
-    const e = el('inv-amt-' + i);
-    const amt = parseFloat(e ? e.value : 0) || 0;
-    if (desc || amt > 0) { rows.push([desc || '—', '£' + amt.toFixed(2)]); sub += amt; }
-  }
-  doc.autoTable({
-    head: [['Description','Amount']], body: rows, startY: y,
-    margin: { left: L, right: L },
-    styles: { fontSize: 9, cellPadding: 4, lineColor: [220,220,220], lineWidth: 0.3 },
-    headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold' },
-    columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 35, halign: 'right' } },
-    alternateRowStyles: { fillColor: [248,250,252] }, theme: 'grid'
-  });
-  y = doc.lastAutoTable.finalY + 6;
-
-  // Totals
-  const vatOn = gt('inv-vat') === 'Yes';
-  const vat = vatOn ? sub * 0.2 : 0;
-  const total = sub + vat;
-  const tx = L + W - 72;
-  if (vatOn) {
-    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
-    doc.text('Subtotal', tx, y); doc.text('£' + sub.toFixed(2), L+W, y, { align:'right' }); y += 6;
-    doc.text('VAT (20%)', tx, y); doc.text('£' + vat.toFixed(2), L+W, y, { align:'right' }); y += 6;
-    doc.setDrawColor(...NAVY); doc.setLineWidth(0.4); doc.line(tx, y, L+W, y); y += 3;
-  }
-  doc.setFillColor(...NAVY);
-  doc.roundedRect(tx - 4, y - 4, 75, 13, 2, 2, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-  doc.text('TOTAL DUE', tx, y + 4);
-  doc.text('£' + total.toFixed(2), L+W-2, y + 4, { align:'right' });
-  y += 18;
-
-  // Payment info
-  const terms = v('inv-terms'), notes = v('inv-notes'), link = v('inv-payment-link');
-  if (terms || notes || link) {
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
-    doc.text('PAYMENT DETAILS', L, y); y += 6;
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
-    if (terms) { doc.text(terms, L, y); y += 5; }
-    if (link) { doc.setTextColor(36,84,212); doc.text(link, L, y); doc.setTextColor(60,60,60); y += 5; }
-    if (notes) { doc.splitTextToSize(notes, W).forEach(ln => { doc.text(ln, L, y); y += 4.5; }); }
-  }
-
-  // Footer
-  doc.setFillColor(...NAVY);
-  doc.rect(0, 281, 210, 16, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
-  doc.text((s.firmName || '') + ' | PRIVATE & CONFIDENTIAL', L, 287, { maxWidth: W-20 });
-  doc.text('Page 1 of 1', 197, 292, { align:'right' });
-
-  doc.save('Invoice_' + (v('inv-client')||'Invoice').replace(/\s+/g,'_') + '_' + (v('inv-date')||today()) + '.pdf');
-}
-
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
-  showScreen('splash');
-  setTimeout(() => showScreen('welcome', 1), 2000);
+// Mobile menu toggle
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+menuBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('hidden');
 });
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
+
+// Close mobile menu on link click
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+});
+
+// Fade-up on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
   });
-}
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
