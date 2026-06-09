@@ -20,6 +20,29 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname)));
 
+// ── POST /api/login ──────────────────────────────────────────
+// Validates an access code against the ACCESS_CODES env var.
+// ACCESS_CODES=firm1code,firm2code,firm3code
+app.post('/api/login', (req, res) => {
+  const { code } = req.body || {};
+  const codes = (process.env.ACCESS_CODES || '')
+    .split(',').map(c => c.trim()).filter(Boolean);
+  if (!code || !codes.includes(code)) {
+    return res.json({ ok: false });
+  }
+  res.json({ ok: true });
+});
+
+// ── POST /api/verify ─────────────────────────────────────────
+// Checks if a previously stored access code is still valid
+// (allows revocation by removing a code from ACCESS_CODES).
+app.post('/api/verify', (req, res) => {
+  const { code } = req.body || {};
+  const codes = (process.env.ACCESS_CODES || '')
+    .split(',').map(c => c.trim()).filter(Boolean);
+  res.json({ ok: !!(code && codes.includes(code)) });
+});
+
 // ── POST /api/transcribe ──────────────────────────────────────
 // Receives multipart audio, sends to OpenAI Whisper, returns { text }
 app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
@@ -99,4 +122,6 @@ app.listen(PORT, () => {
   console.log(`LegalForms server running at http://localhost:${PORT}`);
   console.log(`  OPENAI_API_KEY:    ${process.env.OPENAI_API_KEY    ? '✓ set' : '✗ missing'}`);
   console.log(`  ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '✓ set' : '✗ missing'}`);
+  const codes = (process.env.ACCESS_CODES || '').split(',').filter(Boolean);
+  console.log(`  ACCESS_CODES:      ${codes.length ? `✓ ${codes.length} code(s)` : '✗ missing — all logins will fail'}`);
 });
