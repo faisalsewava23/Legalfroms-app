@@ -9,14 +9,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LegalForms">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#2454d4">
+<meta name="theme-color" content="#1A2340">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
-html,body{font-size:16px;margin:0;padding:0;background:#f0f4f8}
-input,select,textarea,button{font-size:16px!important;font-family:inherit}
+html,body{font-size:16px;margin:0;padding:0;background:#F0F0F8;font-family:'DM Sans',system-ui,sans-serif}
+input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',system-ui,sans-serif}
 .screen{display:none}.screen.active{display:block}
 
 /* ---- Inputs ---- */
@@ -28,14 +29,14 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 /* ---- Segmented toggle controls ---- */
 .toggle-group{display:flex;gap:0;background:#e8edf5;border-radius:12px;padding:3px}
 .toggle-btn{flex:1;padding:10px 8px;border:none;border-radius:9px;background:transparent;color:#6b7280;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;line-height:1.2}
-.toggle-btn.on{background:#fff;color:#0d1b3e;box-shadow:0 2px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.07)}
+.toggle-btn.on{background:#fff;color:#1A2340;box-shadow:0 2px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.07)}
 /* Inline yes/no toggles keep a bordered pill style */
 .yn-mini{display:flex;gap:5px}
 .yn-mini .toggle-btn{padding:7px 14px;font-size:14px;border:1.5px solid #dde3ec;background:#fff;color:#374151;border-radius:8px}
-.yn-mini .toggle-btn.on{background:#0d1b3e;border-color:#0d1b3e;color:#fff;box-shadow:none}
+.yn-mini .toggle-btn.on{background:#1A2340;border-color:#1A2340;color:#fff;box-shadow:none}
 
 /* ---- Section headers ---- */
-.sec-hd{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.05em;border-left:4px solid #c8a84b}
+.sec-hd{background:linear-gradient(135deg,#1A2340 0%,#1E2B4A 100%);color:#fff;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;letter-spacing:.05em;border-left:4px solid #D4A017}
 .sec-bd{background:#fff;border:1.5px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;padding:16px;box-shadow:0 4px 16px rgba(13,27,62,.06)}
 
 /* ---- Field labels ---- */
@@ -51,7 +52,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 /* ---- Checkbox rows ---- */
 .chk-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;border-bottom:1px solid #f3f4f6}
 .chk-row:last-child{border-bottom:none}
-.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#0d1b3e;cursor:pointer}
+.chk-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:#1A2340;cursor:pointer}
 
 /* ---- Table headers ---- */
 .tel-hd{display:grid;grid-template-columns:95px 70px 1fr 85px 60px 30px;gap:5px;padding:0 2px;margin-bottom:3px}
@@ -62,7 +63,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 /* ---- Misc UI ---- */
 .fc-flag{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:8px;padding:9px 13px;font-size:13px;font-weight:700;margin-top:8px}
-.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#0d1b3e}
+.det-pill{display:inline-block;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:#1A2340}
 .det-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6}
 .det-row:last-child{border-bottom:none}
 .narrative-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:#1e293b}
@@ -71,7 +72,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 /* ---- Dictation ---- */
 @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 22px rgba(239,68,68,0)}}
-.mic-idle{background:#0d1b3e;color:#fff;border:none}
+.mic-idle{background:#1A2340;color:#fff;border:none}
 .mic-recording{background:#ef4444!important;color:#fff;animation:mic-pulse 1.4s ease-in-out infinite}
 .mic-processing{background:#64748b!important;color:#fff}
 .dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
@@ -79,35 +80,42 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 /* ---- Travel time table ---- */
 .time-cell-inp{width:100%;border:none;padding:5px 2px;font-size:13px;background:transparent;text-align:center;min-width:0;color:#111827}
-.time-cell-inp:focus{outline:2px solid #0d1b3e;border-radius:3px}
-.ttime-th-group{background:linear-gradient(135deg,#0d1b3e 0%,#162550 100%);color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #162550}
+.time-cell-inp:focus{outline:2px solid #1A2340;border-radius:3px}
+.ttime-th-group{background:linear-gradient(135deg,#1A2340 0%,#1E2B4A 100%);color:#fff;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border:2px solid #1E2B4A}
 .ttime-th-sub{border:1px solid #d1d5db;background:#f9fafb;text-align:center;padding:5px 3px;font-size:12px;color:#4b5563;font-weight:600}
 .ttime-td{border:1px solid #d1d5db;padding:2px}
 .ttime-tot{background:#eef4fb;border-radius:10px;padding:11px 12px;border:1px solid #c8d8ea}
 .ttime-tot p:first-child{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px}
-.ttime-tot .tval{font-weight:700;color:#0d1b3e;font-size:16px;margin:0}
+.ttime-tot .tval{font-weight:700;color:#1A2340;font-size:16px;margin:0}
 
 /* ---- Nav bar depth ---- */
 .sticky.top-0{box-shadow:0 2px 10px rgba(0,0,0,.2)}
 
-/* ---- Home hero gradient ---- */
-.hero-hd{background:#0d0f1e}
-.hero-logo{box-shadow:0 8px 32px rgba(99,79,220,.45)}
+/* ---- Home screen ---- */
+.lf-home-hd{background:#1A2340;padding:48px 24px 40px;display:flex;flex-direction:column;align-items:center;border-bottom-left-radius:32px;border-bottom-right-radius:32px}
+.lf-logo-circle{width:64px;height:64px;border-radius:50%;background:#1E2B4A;border:2px solid rgba(212,160,23,.35);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.lf-logo-text{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;color:#fff}
+.lf-logo-sub{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase}
+.lf-home-body{padding:24px 16px 40px;display:flex;flex-direction:column;gap:20px;background:#F0F0F8;min-height:calc(100vh - 190px)}
+.lf-firm-card{background:#fff;border-radius:16px;padding:16px 20px;border:1px solid #E5E7EB}
+.lf-firm-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:#6B7280;text-transform:uppercase}
+.lf-edit-btn{width:34px;height:34px;border-radius:50%;background:rgba(26,35,64,.07);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.lf-section-label{font-size:11px;font-weight:600;letter-spacing:.12em;color:#6B7280;text-transform:uppercase;margin:0 4px}
+.lf-row{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:14px 16px;cursor:pointer;text-align:left;width:100%;transition:box-shadow .15s,transform .15s;opacity:0;animation:lf-fade-row .35s ease forwards}
+.lf-row:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,35,64,.08)}
+.lf-icon-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lf-row-label{font-size:15px;font-weight:600;color:#1A1A2E}
+.lf-row-sub{font-size:13px;color:#6B7280}
+.lf-chevron{width:30px;height:30px;border-radius:50%;background:#F4F4F8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes lf-fade-row{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* ---- Home card icon circles ---- */
-.icon-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.icon-police{background:#fde8e8}
-.icon-mags{background:#ede9fe}
-.icon-crown{background:#fef3c7}
-.icon-dictate{background:#d1fae5}
-.icon-invoice{background:#ede9fe}
-.chevron-circle{width:32px;height:32px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tab-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:999px;background:#f0f4f8;color:#6b7280;border:none;cursor:pointer;transition:all .2s}
-.tab-btn.tab-active{background:#0d1b3e;color:#fff}
+/* ---- Notes tabs ---- */
+.tab-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:999px;background:rgba(26,35,64,.07);color:#6B7280;border:none;cursor:pointer;transition:all .2s}
+.tab-btn.tab-active{background:#1A2340;color:#fff}
 .note-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;flex-shrink:0}
 .note-badge-draft{background:#fef3c7;color:#92400e}
 .note-badge-done{background:#d1fae5;color:#065f46}
-.saved-flash{background:#c8a84b!important;color:#0d1b3e!important}
+.saved-flash{background:#D4A017!important;color:#1A2340!important}
 .firm-edit-wrap{display:none}
 
 /* ---- Screen transitions ---- */
@@ -122,20 +130,20 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 @keyframes splashLogoIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes splashBarGrow{from{width:0}to{width:100%}}
 .splash-logo-anim{animation:splashLogoIn .5s cubic-bezier(.34,1.56,.64,1) forwards}
-.splash-bar{height:3px;background:#c8a84b;border-radius:3px;animation:splashBarGrow 2s linear forwards}
+.splash-bar{height:3px;background:#D4A017;border-radius:3px;animation:splashBarGrow 2s linear forwards}
 
 /* ---- Welcome / Onboarding ---- */
 .ob-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
-.ob-dot.ob-active{background:#c8a84b;width:24px;border-radius:4px}
+.ob-dot.ob-active{background:#D4A017;width:24px;border-radius:4px}
 .ob-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:28px 24px}
 .ob-input{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 16px;color:#fff;font-size:16px;outline:none;transition:border-color .2s}
 .ob-input::placeholder{color:rgba(255,255,255,.35)}
-.ob-input:focus{border-color:#c8a84b;background:rgba(255,255,255,.13)}
-.ob-btn-primary{width:100%;background:#c8a84b;color:#0d1b3e;border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:opacity .15s}
+.ob-input:focus{border-color:#D4A017;background:rgba(255,255,255,.13)}
+.ob-btn-primary{width:100%;background:#D4A017;color:#1A2340;border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:opacity .15s}
 .ob-btn-primary:active{opacity:.85}
 .ob-btn-ghost{background:none;border:none;color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;padding:10px;margin-top:4px}
 .ob-btn-ghost:hover{color:rgba(255,255,255,.7)}
-.ob-bg{background:linear-gradient(160deg,#0a1428 0%,#0d1b3e 45%,#111f45 100%);min-height:100vh}
+.ob-bg{background:linear-gradient(160deg,#0f1829 0%,#1A2340 45%,#162447 100%);min-height:100vh}
 </style>
 </head>
 <body>
@@ -149,7 +157,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         <div class="w-20 h-20 rounded-3xl flex items-center justify-center mb-5" style="background:rgba(255,255,255,.1);box-shadow:0 8px 40px rgba(36,84,212,.4)">
           <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
-        <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
+        <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#D4A017">Forms</span></h1>
         <p class="mt-1 text-sm" style="color:rgba(255,255,255,.4)">Digital Attendance Notes</p>
       </div>
       <div class="rounded-2xl p-6" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)">
@@ -157,7 +165,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         <input id="login-code" type="password" class="ob-input mb-4" placeholder="••••••••••"
                onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
         <button id="login-btn" onclick="doLogin()"
-          style="width:100%;background:#0d1b3e;color:#fff;border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:background .15s">
+          style="width:100%;background:#1A2340;color:#fff;border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:background .15s">
           Login
         </button>
         <p id="login-error" class="hidden mt-3 text-sm text-center font-medium" style="color:#f87171;line-height:1.4"></p>
@@ -178,7 +186,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
       </div>
       <div class="text-center">
-        <h1 class="text-4xl font-bold tracking-tight">Legal<span style="color:#c8a84b">Forms</span></h1>
+        <h1 class="text-4xl font-bold tracking-tight">Legal<span style="color:#D4A017">Forms</span></h1>
         <p class="mt-2 text-sm" style="color:rgba(255,255,255,.45)">Digital Attendance Notes</p>
       </div>
     </div>
@@ -195,22 +203,22 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <div class="w-24 h-24 rounded-3xl flex items-center justify-center mb-8" style="background:rgba(255,255,255,.1);box-shadow:0 8px 40px rgba(36,84,212,.4)">
         <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
       </div>
-      <h1 class="text-4xl font-bold tracking-tight mb-3">Legal<span style="color:#c8a84b">Forms</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight mb-3">Legal<span style="color:#D4A017">Forms</span></h1>
       <p class="text-lg mb-2 font-medium" style="color:rgba(255,255,255,.7)">Digital Attendance Notes</p>
       <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,.4);max-width:280px">Built for solicitors. Police station, Magistrates &amp; Crown Court — all in one place.</p>
       <div class="flex gap-4 mt-10 mb-2 text-center">
         <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">3</span>
+          <span class="text-2xl font-bold" style="color:#D4A017">3</span>
           <span class="text-xs" style="color:rgba(255,255,255,.4)">Form Types</span>
         </div>
         <div style="width:1px;background:rgba(255,255,255,.1)"></div>
         <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">PDF</span>
+          <span class="text-2xl font-bold" style="color:#D4A017">PDF</span>
           <span class="text-xs" style="color:rgba(255,255,255,.4)">Export Ready</span>
         </div>
         <div style="width:1px;background:rgba(255,255,255,.1)"></div>
         <div class="flex flex-col items-center gap-1">
-          <span class="text-2xl font-bold" style="color:#c8a84b">🎙️</span>
+          <span class="text-2xl font-bold" style="color:#D4A017">🎙️</span>
           <span class="text-xs" style="color:rgba(255,255,255,.4)">Voice Notes</span>
         </div>
       </div>
@@ -277,112 +285,98 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 <!-- ===== HOME ===== -->
 <div id="screen-home" class="screen">
-  <div class="hero-hd px-6 pt-14 pb-10 text-white text-center">
-    <div class="hero-logo w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style="background:#6344dc">
-      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+
+  <div class="lf-home-hd">
+    <div class="lf-logo-circle">
+      <svg width="28" height="28" fill="none" stroke="#D4A017" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
     </div>
-    <h1 class="text-3xl font-bold tracking-tight">Legal<span style="color:#6c8fff">Forms</span></h1>
-    <p class="mt-2 text-base" style="color:rgba(255,255,255,.5)">Digital Attendance Notes</p>
+    <div class="lf-logo-text">Legal<span style="color:#D4A017">Forms</span></div>
+    <div class="lf-logo-sub">Digital Attendance Notes</div>
   </div>
-  <!-- Quick firm name edit bar -->
-  <div class="px-4 pt-4">
-    <div id="firm-display" class="bg-white rounded-2xl px-4 py-4 border border-gray-100 shadow-sm cursor-pointer" onclick="startFirmEdit()">
-      <p class="text-xs font-bold tracking-widest text-gray-400 mb-1" style="text-transform:uppercase">Law Firm</p>
-      <div class="flex items-center justify-between">
-        <span id="firm-name-display" class="text-base text-gray-400 truncate">Set firm name…</span>
-        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ml-3" style="background:#ede9fe">
-          <svg class="w-4 h-4" style="color:#6344dc" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+
+  <div class="lf-home-body">
+
+    <div class="lf-firm-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span class="lf-firm-label">Law Firm</span>
+        <button class="lf-edit-btn" onclick="startFirmEdit()">
+          <svg width="16" height="16" fill="none" stroke="#1A2340" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+      </div>
+      <div id="firm-display" onclick="startFirmEdit()" style="cursor:pointer">
+        <span id="firm-name-display" style="font-size:17px;font-weight:500;color:#1A1A2E">Set firm name…</span>
+      </div>
+      <div id="firm-edit" class="firm-edit-wrap" style="margin-top:10px">
+        <input type="text" id="firm-quick-input" class="form-input" placeholder="Law Firm Name">
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button onclick="saveFirmName()" style="flex:1;background:#1A2340;color:#fff;border:none;border-radius:10px;padding:10px;font-weight:700;font-size:14px;cursor:pointer">Save</button>
+          <button onclick="cancelFirmEdit()" style="flex:1;background:#f3f4f6;color:#6B7280;border:none;border-radius:10px;padding:10px;font-weight:700;font-size:14px;cursor:pointer">Cancel</button>
         </div>
       </div>
     </div>
-    <div id="firm-edit" class="firm-edit-wrap flex gap-2 items-center mt-2">
-      <input type="text" id="firm-quick-input" class="form-input flex-1" placeholder="Law Firm Name">
-      <button onclick="saveFirmName()" class="bg-[#0d1b3e] text-white px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">Save</button>
+
+    <p class="lf-section-label">Note Types</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <button onclick="openForm('form1')" class="lf-row" style="animation-delay:0ms">
+        <div class="lf-icon-circle" style="background:#FDECEA;color:#E53935"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Police Station</p><p class="lf-row-sub">Custody attendance note</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
+      <button onclick="openForm('form2')" class="lf-row" style="animation-delay:60ms">
+        <div class="lf-icon-circle" style="background:#EDE9FD;color:#6A3FB5"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"/><path d="M6 8l-3 7h6L6 8z"/><path d="M18 8l-3 7h6L18 8z"/><line x1="4" y1="21" x2="20" y2="21"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Magistrates Court</p><p class="lf-row-sub">Court attendance note</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
+      <button onclick="openForm('form3')" class="lf-row" style="animation-delay:120ms">
+        <div class="lf-icon-circle" style="background:#FEF3C7;color:#F59E0B"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="11" rx="2"/><path d="M7 10V6l5 3 5-3v4"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Crown Court</p><p class="lf-row-sub">Attendance note</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
+      <button onclick="openDictation()" class="lf-row" style="animation-delay:180ms">
+        <div class="lf-icon-circle" style="background:#DCFCE7;color:#16A34A"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Voice Dictation</p><p class="lf-row-sub">Speak your notes — instant text</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
+      <button onclick="openInvoice()" class="lf-row" style="animation-delay:240ms">
+        <div class="lf-icon-circle" style="background:#FFF7E6;color:#D4A017"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="13" y2="15"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Generate Invoice</p><p class="lf-row-sub">Create billing documents</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
+      <button onclick="showScreen('settings',1)" class="lf-row" style="animation-delay:300ms">
+        <div class="lf-icon-circle" style="background:#F4F5F7;color:#6B7280"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+        <div style="flex:1"><p class="lf-row-label">Settings</p><p class="lf-row-sub">Practice details &amp; account</p></div>
+        <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>
     </div>
-  </div>
 
-  <div class="px-4 pt-5 pb-1">
-    <p class="text-xs font-bold tracking-widest text-gray-400" style="text-transform:uppercase">Note Types</p>
-  </div>
-
-  <div class="p-4 space-y-3 pt-2">
-    <button onclick="openForm('form1')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="icon-circle icon-police">
-        <svg class="w-6 h-6" style="color:#dc2626" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <p class="lf-section-label">My Notes</p>
+        <div style="display:flex;gap:6px">
+          <button onclick="showDraftsTab('draft')" id="tab-draft" class="tab-btn tab-active">Drafts</button>
+          <button onclick="showDraftsTab('completed')" id="tab-completed" class="tab-btn">Completed</button>
+        </div>
       </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-base">Police Station</p>
-        <p class="text-gray-400 text-sm mt-0.5">Custody attendance note</p>
-      </div>
-      <div class="chevron-circle"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
-    </button>
-    <button onclick="openForm('form2')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="icon-circle icon-mags">
-        <svg class="w-6 h-6" style="color:#6344dc" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-base">Magistrates Court</p>
-        <p class="text-gray-400 text-sm mt-0.5">Court attendance note</p>
-      </div>
-      <div class="chevron-circle"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
-    </button>
-    <button onclick="openForm('form3')" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="icon-circle icon-crown">
-        <svg class="w-6 h-6" style="color:#d97706" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-base">Crown Court</p>
-        <p class="text-gray-400 text-sm mt-0.5">Attendance note</p>
-      </div>
-      <div class="chevron-circle"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
-    </button>
-    <button onclick="openDictation()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="icon-circle icon-dictate">
-        <svg class="w-6 h-6" style="color:#059669" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-base">Voice Dictation</p>
-        <p class="text-gray-400 text-sm mt-0.5">Speak your notes — get instant text</p>
-      </div>
-      <div class="chevron-circle"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
-    </button>
-    <button onclick="openInvoice()" class="w-full bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 flex items-center gap-4 active:bg-gray-50">
-      <div class="icon-circle icon-invoice">
-        <svg class="w-6 h-6" style="color:#6344dc" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-      </div>
-      <div class="flex-1">
-        <p class="font-bold text-gray-900 text-base">Generate Invoice</p>
-        <p class="text-gray-400 text-sm mt-0.5">Create billing documents</p>
-      </div>
-      <div class="chevron-circle"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
-    </button>
-    <button onclick="showScreen('settings',1)" class="w-full flex items-center justify-center gap-2 py-3.5 text-gray-500 border border-gray-200 rounded-2xl bg-white mt-2">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      <span class="font-medium">Settings</span>
-    </button>
-  </div>
-
-  <!-- My Notes -->
-  <div class="px-4 pb-6 mt-1">
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="font-bold text-gray-600 text-xs uppercase tracking-wider">My Notes</h2>
-      <div class="flex gap-1">
-        <button onclick="showDraftsTab('draft')" id="tab-draft" class="tab-btn tab-active">Drafts</button>
-        <button onclick="showDraftsTab('completed')" id="tab-completed" class="tab-btn">Completed</button>
+      <div style="background:#fff;border-radius:16px;border:1px solid #E5E7EB;overflow:hidden">
+        <div id="notes-list"><p style="text-align:center;color:#9CA3AF;font-size:14px;padding:20px 16px">No drafts yet — open a form and tap Save</p></div>
       </div>
     </div>
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div id="notes-list"><p class="text-center text-gray-400 text-sm py-5 px-4">No drafts yet — open a form and tap Save</p></div>
-    </div>
+
   </div>
 </div>
 
 <!-- ===== SETTINGS ===== -->
 <div id="screen-settings" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold text-lg">Settings</span>
-    <button onclick="saveSettings()" class="bg-white text-[#0d1b3e] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="saveSettings()" class="bg-white text-[#1A2340] px-4 py-2 rounded-xl font-bold text-sm">Save</button>
   </div>
   <div class="p-4">
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -419,11 +413,11 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 <!-- ===== FORM 1: POLICE STATION ===== -->
 <div id="screen-form1" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Police Station Attendance</span>
-    <button id="save-draft-btn-form1" onclick="saveDraft('form1')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm1PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form1" onclick="saveDraft('form1')" class="bg-[#D4A017] text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm1PDF()" class="bg-white text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -665,12 +659,12 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         </table>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f1-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f1-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f1-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f1-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f1-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f1-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
       </div>
     </div></div>
 
@@ -688,17 +682,17 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <button onclick="addTelRow()" class="mt-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-semibold text-sm active:bg-gray-50">+ Add Call</button>
     </div></div>
 
-    <button onclick="generateForm1PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm1PDF()" class="w-full bg-[#1A2340] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== FORM 2: MAGISTRATES COURT ===== -->
 <div id="screen-form2" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Magistrates Court</span>
-    <button id="save-draft-btn-form2" onclick="saveDraft('form2')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm2PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form2" onclick="saveDraft('form2')" class="bg-[#D4A017] text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm2PDF()" class="bg-white text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -838,12 +832,12 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         </table>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
-        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#0d1b3e;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Travel</p><input type="text" id="f2-tot-travel" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 1hr 30mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Waiting</p><input type="text" id="f2-tot-wait" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 15 mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Attendance</p><input type="text" id="f2-tot-attend" class="tval w-full bg-transparent border-none focus:outline-none p-0" placeholder="e.g. 2hrs 30 mins" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Total Mileage</p><input type="number" id="f2-mileage" class="tval w-full bg-transparent border-none focus:outline-none p-0 mt-0" placeholder="0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Arrival Time</p><input type="time" id="f2-arrival-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
+        <div class="ttime-tot"><p>Departure Time</p><input type="time" id="f2-departure-disp" class="tval w-full bg-transparent border-none focus:outline-none p-0" style="font-weight:700;color:#1A2340;font-size:16px"></div>
       </div>
     </div></div>
 
@@ -974,17 +968,17 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
     </div></div>
 
-    <button onclick="generateForm2PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm2PDF()" class="w-full bg-[#1A2340] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== FORM 3: CROWN COURT ===== -->
 <div id="screen-form3" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Crown Court Attendance</span>
-    <button id="save-draft-btn-form3" onclick="saveDraft('form3')" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
-    <button onclick="generateForm3PDF()" class="bg-white text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button id="save-draft-btn-form3" onclick="saveDraft('form3')" class="bg-[#D4A017] text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">Save</button>
+    <button onclick="generateForm3PDF()" class="bg-white text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -1095,13 +1089,13 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       <div class="fld"><label class="fld-lbl">Firm</label><input type="text" id="f3-firm" class="form-input" readonly></div>
     </div></div>
 
-    <button onclick="generateForm3PDF()" class="w-full bg-[#0d1b3e] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
+    <button onclick="generateForm3PDF()" class="w-full bg-[#1A2340] text-white py-4 rounded-2xl font-bold text-lg shadow-md active:opacity-90 mt-2">Generate PDF</button>
   </div>
 </div>
 
 <!-- ===== DICTATION SCREEN ===== -->
 <div id="screen-dictation" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="leaveDictation()" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <div class="flex-1">
       <p class="font-bold text-lg leading-tight">Voice Dictation</p>
@@ -1115,7 +1109,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
     <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
       <p class="font-bold mb-1">🔒 Microphone access</p>
       <p>This app uses your microphone <strong>only</strong> to transcribe your spoken notes. Audio is processed securely via OpenAI Whisper and is never stored anywhere.</p>
-      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#0d1b3e] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
+      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#1A2340] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
     </div>
 
     <!-- Mic button -->
@@ -1136,7 +1130,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
     <div class="w-full flex-1">
       <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Transcribed Notes</label>
       <textarea id="dictation-transcript"
-        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#0d1b3e] text-gray-900 leading-relaxed"
+        class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#1A2340] text-gray-900 leading-relaxed"
         style="min-height:300px;font-size:18px"
         placeholder="Your transcribed notes will appear here…"></textarea>
       <p id="dictation-error" class="mt-2 text-red-500 font-semibold text-sm text-center" style="display:none">
@@ -1149,8 +1143,8 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
     <!-- Action buttons -->
     <div class="flex gap-3 w-full mt-5">
-      <button onclick="dictationCopy()" class="dct-action-btn bg-[#0d1b3e] text-white">Copy</button>
-      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#0d1b3e]">New Recording</button>
+      <button onclick="dictationCopy()" class="dct-action-btn bg-[#1A2340] text-white">Copy</button>
+      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#1A2340]">New Recording</button>
       <button onclick="dictationClear()" class="dct-action-btn bg-[#fee2e2] text-red-700">Clear</button>
     </div>
 
@@ -1159,10 +1153,10 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
 
 <!-- ===== INVOICE ===== -->
 <div id="screen-invoice" class="screen">
-  <div class="sticky top-0 z-10 bg-[#0d1b3e] text-white flex items-center px-4 py-4 gap-3">
+  <div class="sticky top-0 z-10 bg-[#1A2340] text-white flex items-center px-4 py-4 gap-3">
     <button onclick="showScreen('home',-1)" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <span class="flex-1 font-bold">Generate Invoice</span>
-    <button onclick="generateInvoicePDF()" class="bg-[#c8a84b] text-[#0d1b3e] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
+    <button onclick="generateInvoicePDF()" class="bg-[#D4A017] text-[#1A2340] px-3 py-2 rounded-xl font-bold text-sm">PDF</button>
   </div>
   <div class="p-4 space-y-4">
 
@@ -1180,7 +1174,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
         <span class="fld-lbl">Description</span><span class="fld-lbl text-right">Amount £</span><span></span>
       </div>
       <div id="inv-items-body"></div>
-      <button onclick="addInvItem()" class="mt-2 text-sm font-semibold flex items-center gap-1.5" style="color:#0d1b3e;background:none;border:none;cursor:pointer;padding:0">
+      <button onclick="addInvItem()" class="mt-2 text-sm font-semibold flex items-center gap-1.5" style="color:#1A2340;background:none;border:none;cursor:pointer;padding:0">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
         Add line item
       </button>
@@ -1196,7 +1190,7 @@ input,select,textarea,button{font-size:16px!important;font-family:inherit}
       </div>
       <div class="det-row"><span class="text-sm text-gray-600">Subtotal</span><span id="inv-subtotal" class="font-bold text-gray-900">£0.00</span></div>
       <div id="inv-vat-row" class="det-row" style="display:none"><span class="text-sm text-gray-600">VAT (20%)</span><span id="inv-vat-amt" class="font-bold text-gray-900">£0.00</span></div>
-      <div class="det-row" style="border-bottom:none"><span class="font-bold text-[#0d1b3e]">Total Due</span><span id="inv-total" class="font-bold text-[#0d1b3e] text-xl">£0.00</span></div>
+      <div class="det-row" style="border-bottom:none"><span class="font-bold text-[#1A2340]">Total Due</span><span id="inv-total" class="font-bold text-[#1A2340] text-xl">£0.00</span></div>
     </div></div>
 
     <div><div class="sec-hd">PAYMENT</div><div class="sec-bd">
@@ -2196,10 +2190,15 @@ function updateFirmDisplay() {
 
 function startFirmEdit() {
   el('firm-display').style.display = 'none';
-  el('firm-edit').style.display = 'flex';
+  el('firm-edit').style.display = 'block';
   const s = getSettings();
   el('firm-quick-input').value = s.firmName || '';
   el('firm-quick-input').focus();
+}
+
+function cancelFirmEdit() {
+  el('firm-display').style.display = 'block';
+  el('firm-edit').style.display = 'none';
 }
 
 function saveFirmName() {
@@ -2207,7 +2206,7 @@ function saveFirmName() {
   s.firmName = el('firm-quick-input').value.trim();
   localStorage.setItem('lf-settings', JSON.stringify(s));
   if (el('settings-firm')) el('settings-firm').value = s.firmName;
-  el('firm-display').style.display = 'flex';
+  el('firm-display').style.display = 'block';
   el('firm-edit').style.display = 'none';
   updateFirmDisplay();
 }
