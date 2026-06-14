@@ -67,16 +67,8 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
 .det-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6}
 .det-row:last-child{border-bottom:none}
 .narrative-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:#1e293b}
-.spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
 /* ---- Dictation ---- */
-@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 22px rgba(239,68,68,0)}}
-.mic-idle{background:#1A2340;color:#fff;border:none}
-.mic-recording{background:#ef4444!important;color:#fff;animation:mic-pulse 1.4s ease-in-out infinite}
-.mic-processing{background:#64748b!important;color:#fff}
-.dictation-permission{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:16px;font-size:15px;color:#1e40af;line-height:1.6}
-.dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s;active:opacity-80}
+.dct-action-btn{flex:1;padding:14px 8px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:opacity .15s}
 
 /* ---- Travel time table ---- */
 .time-cell-inp{width:100%;border:none;padding:5px 2px;font-size:13px;background:transparent;text-align:center;min-width:0;color:#111827}
@@ -340,7 +332,7 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
       </button>
       <button onclick="openDictation()" class="lf-row" style="animation-delay:180ms">
         <div class="lf-icon-circle" style="background:#DCFCE7;color:#16A34A"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></div>
-        <div style="flex:1"><p class="lf-row-label">Voice Dictation</p><p class="lf-row-sub">Speak your notes — instant text</p></div>
+        <div style="flex:1"><p class="lf-row-label">Voice Dictation</p><p class="lf-row-sub">Live notes using your iPhone keyboard mic</p></div>
         <div class="lf-chevron"><svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
       </button>
       <button onclick="openInvoice()" class="lf-row" style="animation-delay:240ms">
@@ -1112,65 +1104,66 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
     <button onclick="leaveDictation()" class="w-10 h-10 flex items-center justify-center text-2xl">←</button>
     <div class="flex-1">
       <p class="font-bold text-lg leading-tight">Voice Dictation</p>
-      <p class="text-blue-200 text-sm leading-tight">Tap the mic and speak freely</p>
+      <p class="text-blue-200 text-sm leading-tight">Live transcription as you speak</p>
     </div>
   </div>
 
-  <div class="p-5 flex flex-col items-center" style="min-height:calc(100vh - 68px)">
+  <!-- First-time tooltip (fixed bottom, auto-dismiss after 5s, tap anywhere to dismiss) -->
+  <div id="dictation-kbd-tip"
+    style="display:none;position:fixed;bottom:24px;left:0;right:0;z-index:100;padding:0 16px;transition:opacity 0.4s ease">
+    <div style="background:#1A2340;border-radius:18px;padding:16px 18px;box-shadow:0 8px 36px rgba(0,0,0,0.45)">
+      <p style="color:#D4A017;font-weight:700;font-size:12px;letter-spacing:0.08em;margin-bottom:6px">TIP</p>
+      <p style="color:#ffffff;font-size:14px;line-height:1.55">Once you tap the mic on your keyboard it stays on hands-free. Just speak naturally and tap it again when finished.</p>
+    </div>
+  </div>
 
-    <!-- Tip box -->
-    <div class="w-full mb-4 rounded-2xl px-4 py-3" style="background:#EEF2FF;border:1px solid #C7D2FE">
-      <p class="font-bold text-sm mb-1" style="color:#3730A3">Tip: Quick dictation</p>
-      <p class="text-sm" style="color:#4338CA">Tap any text box in your forms and use your phone's keyboard microphone for live dictation. Use High Accuracy Mode below for important sections that need the best legal accuracy.</p>
+  <div class="p-4 flex flex-col" style="min-height:calc(100vh - 68px);gap:14px">
+
+    <!-- Instruction banner -->
+    <div style="background:#F3F4F6;border-radius:16px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+      <span style="font-size:26px;line-height:1;flex-shrink:0">🎤</span>
+      <p style="font-size:14px;line-height:1.6;color:#374151">Tap the microphone icon on your iPhone keyboard to start live dictation. Words appear on screen as you speak — just like Voice Memos.</p>
     </div>
 
-    <!-- One-time permission notice -->
-    <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
-      <p class="font-bold mb-1">🔒 Microphone access</p>
-      <p>This app uses your microphone <strong>only</strong> to transcribe your spoken notes. Audio is processed securely via OpenAI Whisper and is never stored anywhere.</p>
-      <button onclick="dismissPermission()" class="mt-3 w-full bg-[#1A2340] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
-    </div>
-
-    <!-- High Accuracy Mode label -->
-    <div class="w-full mb-2 text-center">
-      <p class="font-bold text-base" style="color:#1A2340">🎙️ High Accuracy Mode</p>
-      <p class="text-sm text-gray-500">For important sections — best legal accuracy</p>
-    </div>
-
-    <!-- Mic button -->
-    <div class="flex flex-col items-center mt-4 mb-6 w-full">
-      <button id="mic-btn" onclick="toggleRecording()"
-        class="mic-idle rounded-full flex items-center justify-center transition-all duration-200 active:scale-95"
-        style="width:130px;height:130px;min-width:130px;min-height:130px">
-        <svg id="mic-icon" style="width:56px;height:56px" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-        </svg>
-      </button>
-      <p id="mic-status" class="mt-4 text-gray-500 font-semibold text-base text-center">Tap to start recording</p>
-      <p id="rec-timer" class="font-mono font-bold text-xl text-red-500 mt-1 text-center" style="display:none">0:00</p>
-      <p id="rec-warn" class="text-xs font-semibold text-amber-600 mt-1 text-center px-4" style="display:none">Long recordings may take a few seconds to transcribe</p>
-    </div>
-
-    <!-- Transcript area -->
-    <div class="w-full flex-1">
-      <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Transcribed Notes</label>
+    <!-- Main text area -->
+    <div style="flex:1;display:flex;flex-direction:column">
       <textarea id="dictation-transcript"
         class="w-full border-2 border-gray-200 rounded-2xl p-4 resize-none focus:outline-none focus:border-[#1A2340] text-gray-900 leading-relaxed"
-        style="min-height:300px;font-size:18px"
-        placeholder="Your transcribed notes will appear here…"></textarea>
-      <p id="dictation-error" class="mt-2 text-red-500 font-semibold text-sm text-center" style="display:none">
-        Could not transcribe — please try again
-      </p>
+        style="flex:1;min-height:350px;font-size:18px"
+        placeholder="Tap here first, then tap 🎤 on your keyboard to start speaking…"></textarea>
       <p id="dictation-copy-confirm" class="mt-2 text-green-600 font-semibold text-sm text-center" style="display:none">
         ✓ Copied to clipboard
       </p>
     </div>
 
+    <!-- Keyboard illustration -->
+    <div style="background:#F3F4F6;border-radius:16px;padding:12px 14px 14px">
+      <p style="text-align:center;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#6B7280;margin-bottom:10px">WHERE TO FIND THE MIC KEY</p>
+      <div style="background:#D1D5DB;border-radius:12px;padding:8px 8px 10px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;gap:3px;justify-content:center">
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">Z</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">X</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">C</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">V</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">B</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">N</span>
+          <span style="background:#fff;border-radius:5px;padding:5px 7px;font-size:12px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF">M</span>
+        </div>
+        <div style="display:flex;gap:3px;align-items:center">
+          <span style="background:#ADB5BD;border-radius:5px;padding:7px 8px;font-size:11px;font-weight:700;color:#1A1A2E;box-shadow:0 2px 0 #8A9199;white-space:nowrap;flex-shrink:0">123</span>
+          <span style="background:#ADB5BD;border-radius:5px;padding:7px 7px;font-size:14px;box-shadow:0 2px 0 #8A9199;flex-shrink:0">😊</span>
+          <span style="background:#fff;border-radius:5px;padding:7px 0;font-size:11px;color:#1A1A2E;box-shadow:0 2px 0 #9CA3AF;flex:1;text-align:center">space</span>
+          <span style="background:#0D9488;border-radius:6px;padding:6px 11px;font-size:22px;line-height:1;box-shadow:0 3px 0 #0F766E,0 0 0 3px rgba(13,148,136,0.35);flex-shrink:0">🎤</span>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:12px;font-weight:800;color:#0D9488;margin-top:9px;letter-spacing:0.04em">↑ Tap here to start speaking</p>
+    </div>
+
     <!-- Action buttons -->
-    <div class="flex gap-3 w-full mt-5">
+    <div style="display:flex;gap:10px">
       <button onclick="dictationCopy()" class="dct-action-btn bg-[#1A2340] text-white">Copy</button>
-      <button onclick="dictationNewRecording()" class="dct-action-btn bg-[#e8edf5] text-[#1A2340]">New Recording</button>
       <button onclick="dictationClear()" class="dct-action-btn bg-[#fee2e2] text-red-700">Clear</button>
+      <button onclick="dictationNewNote()" class="dct-action-btn bg-[#e8edf5] text-[#1A2340]">New Note</button>
     </div>
 
   </div>
@@ -1888,133 +1881,36 @@ function generateForm3PDF() {
 // ============================================================
 // DICTATION
 // ============================================================
-let mediaRecorder = null;
-let audioChunks = [];
-let dictRecording = false;
-
 function openDictation() {
-  if (!localStorage.getItem('lf-mic-notice')) {
-    el('dictation-permission').style.display = 'block';
-  }
-  el('dictation-error').style.display = 'none';
   el('dictation-copy-confirm').style.display = 'none';
-  setMicState('idle');
   showScreen('dictation', 1);
+  // Auto-focus textarea so iPhone keyboard appears immediately
+  setTimeout(() => { const ta = el('dictation-transcript'); if (ta) ta.focus(); }, 200);
+  // Show one-time tooltip, auto-dismiss after 5 seconds, tap anywhere to dismiss
+  if (!localStorage.getItem('lf-kbd-tip-seen')) {
+    localStorage.setItem('lf-kbd-tip-seen', '1');
+    const tip = el('dictation-kbd-tip');
+    if (tip) {
+      setTimeout(() => {
+        tip.style.opacity = '0';
+        tip.style.display = 'block';
+        requestAnimationFrame(() => requestAnimationFrame(() => { tip.style.opacity = '1'; }));
+        const dismiss = () => {
+          tip.style.opacity = '0';
+          setTimeout(() => { tip.style.display = 'none'; }, 400);
+          document.removeEventListener('touchstart', dismiss);
+          document.removeEventListener('click', dismiss);
+        };
+        setTimeout(dismiss, 5000);
+        document.addEventListener('touchstart', dismiss, { once: true });
+        document.addEventListener('click', dismiss, { once: true });
+      }, 600);
+    }
+  }
 }
 
 function leaveDictation() {
-  if (dictRecording) stopRecording();
   showScreen('home', -1);
-}
-
-function dismissPermission() {
-  localStorage.setItem('lf-mic-notice', '1');
-  el('dictation-permission').style.display = 'none';
-}
-
-function setMicState(state) {
-  const btn = el('mic-btn');
-  const status = el('mic-status');
-  btn.className = btn.className.replace(/mic-\w+/g, '').trim();
-  if (state === 'idle') {
-    btn.classList.add('mic-idle');
-    status.innerHTML = 'Tap to start recording';
-    status.style.color = '#6b7280';
-    dictRecording = false;
-    stopRecTimer();
-  } else if (state === 'recording') {
-    btn.classList.add('mic-recording');
-    status.innerHTML = 'Recording… tap to stop';
-    status.style.color = '#ef4444';
-    dictRecording = true;
-    startRecTimer();
-  } else if (state === 'processing') {
-    btn.classList.add('mic-processing');
-    status.innerHTML = '<span class="spin"></span>Transcribing your recording…';
-    status.style.color = '#64748b';
-    dictRecording = false;
-    stopRecTimer();
-  }
-}
-
-function getSupportedMime() {
-  const types = [
-    'audio/webm;codecs=opus','audio/webm',
-    'audio/ogg;codecs=opus','audio/ogg','audio/mp4'
-  ];
-  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
-}
-
-async function toggleRecording() {
-  el('dictation-error').style.display = 'none';
-  if (dictRecording) {
-    stopRecording();
-  } else {
-    await startRecording();
-  }
-}
-
-async function startRecording() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mime = getSupportedMime();
-    mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-    audioChunks = [];
-
-    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      transcribeAudio();
-    };
-    mediaRecorder.start(250); // collect every 250ms for reliability on mobile
-    setMicState('recording');
-  } catch (err) {
-    el('dictation-error').textContent = 'Microphone access denied. Please allow microphone access in browser settings.';
-    el('dictation-error').style.display = 'block';
-    setMicState('idle');
-  }
-}
-
-function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    setMicState('processing');
-  }
-}
-
-async function transcribeAudio() {
-  const mimeType = (audioChunks[0] && audioChunks[0].type) || 'audio/webm';
-  const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm';
-  const blob = new Blob(audioChunks, { type: mimeType });
-  const form = new FormData();
-  form.append('audio', blob, `recording.${ext}`);
-  try {
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 45000);
-    const res = await fetch('/api/transcribe', { method: 'POST', body: form, signal: ctrl.signal });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    appendTranscript(data.text || '');
-  } catch (err) {
-    const msg = !navigator.onLine
-      ? 'No internet connection — check your network and try again.'
-      : err.name === 'AbortError'
-      ? 'Request timed out — please try again.'
-      : 'Could not transcribe — please try again.';
-    el('dictation-error').textContent = msg;
-    el('dictation-error').style.display = 'block';
-  }
-  setMicState('idle');
-}
-
-function appendTranscript(text) {
-  if (!text.trim()) return;
-  const ta = el('dictation-transcript');
-  const existing = ta.value.trim();
-  ta.value = existing ? existing + '\n\n' + text.trim() : text.trim();
-  ta.scrollTop = ta.scrollHeight;
 }
 
 function dictationCopy() {
@@ -2028,14 +1924,20 @@ function dictationCopy() {
 }
 
 function dictationClear() {
-  if (dictRecording) return;
-  el('dictation-transcript').value = '';
-  el('dictation-error').style.display = 'none';
-  el('dictation-copy-confirm').style.display = 'none';
+  const ta = el('dictation-transcript');
+  if (!ta.value.trim()) return;
+  if (confirm('Clear all text?')) {
+    ta.value = '';
+    el('dictation-copy-confirm').style.display = 'none';
+  }
 }
 
-function dictationNewRecording() {
-  if (!dictRecording) startRecording();
+function dictationNewNote() {
+  const ta = el('dictation-transcript');
+  if (ta.value.trim() && !confirm('Start a new note? Current text will be cleared.')) return;
+  ta.value = '';
+  el('dictation-copy-confirm').style.display = 'none';
+  setTimeout(() => { ta.focus(); }, 50);
 }
 
 // ============================================================
@@ -2240,28 +2142,7 @@ function saveFirmName() {
   updateFirmDisplay();
 }
 
-// ============================================================
-// DICTATION TIMER — FIX 4
-// ============================================================
-let recTimerInterval = null;
-let recStartMs = 0;
 
-function startRecTimer() {
-  recStartMs = Date.now();
-  el('rec-timer').style.display = 'block';
-  recTimerInterval = setInterval(() => {
-    const secs = Math.floor((Date.now() - recStartMs) / 1000);
-    const m = Math.floor(secs / 60), s = secs % 60;
-    el('rec-timer').textContent = m + ':' + String(s).padStart(2, '0');
-    if (secs >= 60) el('rec-warn').style.display = 'block';
-  }, 500);
-}
-
-function stopRecTimer() {
-  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
-  if (el('rec-timer')) el('rec-timer').style.display = 'none';
-  if (el('rec-warn')) el('rec-warn').style.display = 'none';
-}
 
 // ============================================================
 // INVOICE — FIX 5

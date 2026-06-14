@@ -1,22 +1,20 @@
 // LegalForms — Express server
-// Serves index.html and proxies to Claude + OpenAI APIs.
+// Serves index.html and proxies to Anthropic Claude API.
 //
 // Required env vars:
-//   OPENAI_API_KEY    — for /api/transcribe (Whisper)
 //   ANTHROPIC_API_KEY — for /api/generate (Crown Court narrative)
+//   OPENAI_API_KEY    — reserved for future use
+//   ACCESS_CODES      — comma-separated login codes
 //
 // Usage:
 //   npm install
-//   OPENAI_API_KEY=sk-... ANTHROPIC_API_KEY=sk-ant-... node server.js
+//   ANTHROPIC_API_KEY=sk-ant-... ACCESS_CODES=code1,code2 node server.js
 
 const express = require('express');
-const multer = require('multer');
 const path = require('path');
 
 // Native fetch and FormData are built into Node 18+ — no extra packages needed
 const app = express();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
-
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname)));
 
@@ -41,42 +39,6 @@ app.post('/api/verify', (req, res) => {
   const codes = (process.env.ACCESS_CODES || '')
     .split(',').map(c => c.trim()).filter(Boolean);
   res.json({ ok: !!(code && codes.includes(code)) });
-});
-
-// ── POST /api/transcribe ──────────────────────────────────────
-// Receives multipart audio, sends to OpenAI Whisper, returns { text }
-app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No audio file received' });
-
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return res.status(500).json({ error: 'OPENAI_API_KEY not set on server' });
-
-  try {
-    const mime = req.file.mimetype || 'audio/webm';
-    const ext = mime.includes('mp4') ? 'mp4' : mime.includes('ogg') ? 'ogg' : 'webm';
-
-    const form = new FormData();
-    form.append('file', new File([req.file.buffer], `recording.${ext}`, { type: mime }));
-    form.append('model', 'whisper-1');
-    form.append('language', 'en');
-
-    const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}` },
-      body: form,
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      console.error('Whisper error:', data);
-      return res.status(502).json({ error: data.error?.message || 'Whisper API error' });
-    }
-
-    res.json({ text: data.text });
-  } catch (err) {
-    console.error('Transcribe error:', err);
-    res.status(500).json({ error: err.message });
-  }
 });
 
 // ── POST /api/generate ────────────────────────────────────────
@@ -120,8 +82,8 @@ app.post('/api/generate', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`LegalForms server running at http://localhost:${PORT}`);
-  console.log(`  OPENAI_API_KEY:    ${process.env.OPENAI_API_KEY    ? '✓ set' : '✗ missing'}`);
   console.log(`  ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '✓ set' : '✗ missing'}`);
+  console.log(`  OPENAI_API_KEY:    ${process.env.OPENAI_API_KEY    ? '✓ set (reserved for future use)' : '— not set'}`);
   const codes = (process.env.ACCESS_CODES || '').split(',').filter(Boolean);
   console.log(`  ACCESS_CODES:      ${codes.length ? `✓ ${codes.length} code(s)` : '✗ missing — all logins will fail'}`);
 });
