@@ -519,6 +519,19 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
       </div>
     </div></div>
 
+    <!-- S3b: Officer in the Case -->
+    <div><div class="sec-hd">OFFICER IN THE CASE (OIC)</div><div class="sec-bd">
+      <div class="fld"><label class="fld-lbl">OIC Name</label><input type="text" id="f1-oic-name" class="form-input" placeholder="Full name"></div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Rank</label><input type="text" id="f1-oic-rank" class="form-input" placeholder="e.g. DC, DS, PC"></div>
+        <div><label class="fld-lbl">Badge / Collar No.</label><input type="text" id="f1-oic-badge" class="form-input"></div>
+      </div>
+      <div class="row2 fld">
+        <div><label class="fld-lbl">Contact Number</label><input type="tel" id="f1-oic-phone" class="form-input"></div>
+        <div><label class="fld-lbl">Email</label><input type="email" id="f1-oic-email" class="form-input"></div>
+      </div>
+    </div></div>
+
     <!-- S4: Co-Defendants -->
     <div><div class="sec-hd">CO-DEFENDANTS</div><div class="sec-bd">
       <div class="fld"><label class="fld-lbl">Conflict of Interest</label>
@@ -559,7 +572,7 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
     <!-- S7: Client Instructions -->
     <div><div class="sec-hd">CLIENT INSTRUCTIONS</div><div class="sec-bd">
       <div class="fld"><label class="fld-lbl">Previous Convictions</label><textarea id="f1-prev-convictions" rows="2" class="form-input resize-none" placeholder="List any known previous convictions"></textarea></div>
-      <div class="fld"><label class="fld-lbl">Version of Events</label><textarea id="f1-version-events" rows="4" class="form-input resize-none" placeholder="Client's account of events"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Police Version of Events</label><textarea id="f1-version-events" rows="4" class="form-input resize-none" placeholder="Client's account of events"></textarea></div>
       <div class="fld"><label class="fld-lbl">Alibi</label><textarea id="f1-alibi" rows="2" class="form-input resize-none" placeholder="Any alibi details"></textarea></div>
     </div></div>
 
@@ -1105,6 +1118,12 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
 
   <div class="p-5 flex flex-col items-center" style="min-height:calc(100vh - 68px)">
 
+    <!-- Tip box -->
+    <div class="w-full mb-4 rounded-2xl px-4 py-3" style="background:#EEF2FF;border:1px solid #C7D2FE">
+      <p class="font-bold text-sm mb-1" style="color:#3730A3">Tip: Quick dictation</p>
+      <p class="text-sm" style="color:#4338CA">Tap any text box in your forms and use your phone's keyboard microphone for live dictation. Use High Accuracy Mode below for important sections that need the best legal accuracy.</p>
+    </div>
+
     <!-- One-time permission notice -->
     <div id="dictation-permission" class="dictation-permission w-full" style="display:none">
       <p class="font-bold mb-1">🔒 Microphone access</p>
@@ -1112,8 +1131,14 @@ input,select,textarea,button{font-size:16px!important;font-family:'DM Sans',syst
       <button onclick="dismissPermission()" class="mt-3 w-full bg-[#1A2340] text-white py-3 rounded-xl font-bold text-base">Got it — continue</button>
     </div>
 
+    <!-- High Accuracy Mode label -->
+    <div class="w-full mb-2 text-center">
+      <p class="font-bold text-base" style="color:#1A2340">🎙️ High Accuracy Mode</p>
+      <p class="text-sm text-gray-500">For important sections — best legal accuracy</p>
+    </div>
+
     <!-- Mic button -->
-    <div class="flex flex-col items-center mt-6 mb-6 w-full">
+    <div class="flex flex-col items-center mt-4 mb-6 w-full">
       <button id="mic-btn" onclick="toggleRecording()"
         class="mic-idle rounded-full flex items-center justify-center transition-all duration-200 active:scale-95"
         style="width:130px;height:130px;min-width:130px;min-height:130px">
@@ -1565,9 +1590,8 @@ function makePDF(firmName, title, solicitorName) {
     let maxLines = 1;
     const sp = pairs.map(([lbl, val]) => {
       const lines = doc.splitTextToSize((val||'—').toString(), cw - 8);
-      const trimmed = lines.slice(0, 2);
-      maxLines = Math.max(maxLines, trimmed.length);
-      return [lbl, trimmed];
+      maxLines = Math.max(maxLines, lines.length);
+      return [lbl, lines];
     });
     chk(10 + maxLines * 4.5);
     sp.forEach(([lbl, lines], i) => {
@@ -1648,6 +1672,11 @@ function generateForm1PDF() {
   const flags = [cb('f1-access-delayed')&&'Access Delayed', cb('f1-vulnerable')&&'Vulnerable', cb('f1-fme')&&'FME'].filter(Boolean).join(', ');
   p.field('Additional Flags', flags || 'None');
 
+  p.section('OFFICER IN THE CASE (OIC)');
+  p.field('OIC Name', v('f1-oic-name'));
+  p.row2([['Rank', v('f1-oic-rank')], ['Badge / Collar No.', v('f1-oic-badge')]]);
+  p.row2([['Contact Number', v('f1-oic-phone')], ['Email', v('f1-oic-email')]]);
+
   p.section('CO-DEFENDANTS');
   p.row2([['Conflict of Interest', gt('f1-conflict')], ['Custody Number', v('f1-codef-custody')]]);
   p.field('Co-Defendant Name', v('f1-codef-name'));
@@ -1664,7 +1693,7 @@ function generateForm1PDF() {
 
   p.section('CLIENT INSTRUCTIONS');
   p.fieldFull('Previous Convictions', v('f1-prev-convictions'));
-  p.fieldFull('Version of Events', v('f1-version-events'));
+  p.fieldFull('Police Version of Events', v('f1-version-events'));
   p.fieldFull('Alibi', v('f1-alibi'));
 
   p.section('INTERVIEW ADVICE');
