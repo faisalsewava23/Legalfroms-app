@@ -20,6 +20,18 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname)));
 
+app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, 'app.html'));
+});
+
+app.get('/support', (req, res) => {
+  res.sendFile(path.join(__dirname, 'support.html'));
+});
+
+app.get('/terms', (req, res) => {
+  res.sendFile(path.join(__dirname, 'terms.html'));
+});
+
 // ── POST /api/transcribe ──────────────────────────────────────
 // Receives multipart audio, sends to OpenAI Whisper, returns { text }
 app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
