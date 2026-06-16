@@ -18,15 +18,18 @@ tailwind.config = {
     extend: {
       colors: {
         navy: '#0C447C',
-        'navy-dark': '#071F3A',
+        'navy-deep': '#071F3A',
         teal: '#1D9E75',
         'teal-dark': '#177a5b',
+        'teal-light': '#e6f7f1',
         purple: '#6B4FBB',
         'purple-dark': '#5a3fa0',
+        'warm-bg': '#FAFAF8',
+        'warm-border': '#E8E5E0',
       },
       fontFamily: {
-        heading: ['"DM Serif Display"', 'Georgia', 'serif'],
-        body: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        body: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       }
     }
   }
@@ -34,512 +37,551 @@ tailwind.config = {
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 html { scroll-behavior: smooth; }
-body { font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 16px; line-height: 1.7; color: #374151; }
-h1, h2, h3, h4, h5, h6 { font-family: 'DM Serif Display', Georgia, serif; }
-
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-@keyframes bars {
-  0%, 100% { height: 8px; }
-  50% { height: 24px; }
-}
-.pulse-ring {
-  animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-.bar-animate {
-  animation: bars 1s ease-in-out infinite;
-}
+body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1a1a1a; }
+h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .fade-up {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(24px);
 }
 .fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
+  animation: fade-up 0.6s ease forwards;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+@keyframes bars {
+  0%, 100% { height: 6px; }
+  50% { height: 22px; }
+}
+.pulse-ring { animation: pulse-ring 1.5s cubic-bezier(0.4,0,0.6,1) infinite; }
+.bar-animate { animation: bars 1s ease-in-out infinite; }
+
+.strikeword {
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  text-decoration-color: #1D9E75;
+  text-underline-offset: -2px;
 }
 </style>
 </head>
 <body class="bg-white">
 
+<!-- ANNOUNCEMENT BAR -->
+<div class="bg-warm-bg border-b border-warm-border">
+  <div class="max-w-[1200px] mx-auto px-6 py-3 text-center text-sm text-gray-600 font-medium">
+    What if your attendance notes wrote themselves... while you advised? <a href="#dictation" class="text-navy font-semibold hover:underline ml-1">See AI Dictation →</a>
+  </div>
+</div>
+
 <!-- NAVIGATION -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-navy shadow-lg">
-  <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="#" class="text-white font-bold text-xl font-heading tracking-wide">LegalForms</a>
+<nav class="border-b border-gray-100 bg-white">
+  <div class="max-w-[1200px] mx-auto px-6 py-5 flex items-center justify-between">
+    <a href="#" class="text-navy text-xl font-extrabold tracking-tight font-body">
+      <span class="text-navy">legal</span><span class="text-teal">forms</span>
+    </a>
 
     <!-- Desktop Nav -->
-    <div class="hidden md:flex items-center gap-8">
-      <a href="#features" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Features</a>
-      <a href="#pricing" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Pricing</a>
-      <a href="#contact" class="text-white/90 hover:text-white transition text-sm font-semibold tracking-wide uppercase">Contact</a>
-      <a href="#pricing" class="bg-teal hover:bg-teal-dark text-white font-bold px-5 py-2.5 rounded-lg transition transform hover:scale-105 text-sm">Start Free Trial</a>
+    <div class="hidden md:flex items-center gap-10">
+      <a href="#features" class="text-gray-600 hover:text-navy transition text-[15px] font-medium">Features</a>
+      <a href="#pricing" class="text-gray-600 hover:text-navy transition text-[15px] font-medium">Pricing</a>
+      <a href="#how-it-works" class="text-gray-600 hover:text-navy transition text-[15px] font-medium">How it works</a>
+      <a href="#contact" class="text-gray-600 hover:text-navy transition text-[15px] font-medium">Contact</a>
+    </div>
+
+    <div class="hidden md:flex items-center gap-4">
+      <a href="/app" class="text-gray-600 hover:text-navy transition text-[15px] font-medium">Login</a>
+      <a href="#pricing" class="bg-navy hover:bg-navy-deep text-white font-semibold px-5 py-2.5 rounded-full transition text-sm">Start free trial</a>
     </div>
 
     <!-- Hamburger -->
-    <button id="menu-btn" class="md:hidden text-white focus:outline-none" aria-label="Toggle menu">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    <button id="menu-btn" class="md:hidden text-gray-700" aria-label="Toggle menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-navy border-t border-white/10 px-6 pb-4">
-    <a href="#features" class="block py-3 text-white/90 hover:text-white font-semibold">Features</a>
-    <a href="#pricing" class="block py-3 text-white/90 hover:text-white font-semibold">Pricing</a>
-    <a href="#contact" class="block py-3 text-white/90 hover:text-white font-semibold">Contact</a>
-    <a href="#pricing" class="block mt-3 bg-teal text-white font-bold px-5 py-3 rounded-lg text-center">Start Free Trial</a>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 px-6 pb-5">
+    <a href="#features" class="block py-3 text-gray-600 font-medium">Features</a>
+    <a href="#pricing" class="block py-3 text-gray-600 font-medium">Pricing</a>
+    <a href="#how-it-works" class="block py-3 text-gray-600 font-medium">How it works</a>
+    <a href="#contact" class="block py-3 text-gray-600 font-medium">Contact</a>
+    <a href="/app" class="block py-3 text-gray-600 font-medium">Login</a>
+    <a href="#pricing" class="block mt-3 bg-navy text-white font-semibold px-5 py-3 rounded-full text-center text-sm">Start free trial</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="bg-navy min-h-[90vh] flex items-center pt-20" id="hero">
-  <div class="max-w-[1200px] mx-auto px-6 py-16 text-center w-full">
-    <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-      Go Paperless at the<br>Police Station and Court
+<section class="pt-20 pb-16 md:pt-28 md:pb-24 px-6">
+  <div class="max-w-[900px] mx-auto text-center">
+    <h1 class="text-5xl md:text-7xl lg:text-[5.2rem] text-navy leading-[1.08] mb-8 tracking-tight">
+      Go <span class="strikeword">paperless</span> when<br>you defend clients
     </h1>
-    <p class="text-teal text-xl md:text-2xl font-semibold mb-6">
-      Digital attendance notes for<br>criminal defence solicitors
+    <p class="text-gray-500 text-lg md:text-xl max-w-[620px] mx-auto mb-10 leading-relaxed font-normal">
+      The all-in-one digital attendance note app for police station, magistrates court and crown court — built for criminal defence solicitors.
     </p>
-    <p class="text-white/80 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-      Replace the paper forms you fill out at the police station, magistrates court and crown court.
-      Completed digitally on your phone in under 3 minutes. Professional PDF generated automatically.
-    </p>
-
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-      <a href="#pricing" class="bg-teal hover:bg-teal-dark text-white font-bold text-lg px-8 py-4 rounded-lg transition transform hover:scale-105 shadow-xl">
-        Start Free 1 Week Trial
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+      <a href="#pricing" class="bg-teal hover:bg-teal-dark text-white font-semibold text-[15px] px-7 py-3.5 rounded-full transition shadow-sm">
+        Start free trial
       </a>
-      <a href="#how-it-works" class="border-2 border-white text-white font-bold text-lg px-8 py-4 rounded-lg hover:bg-white/10 transition">
-        See How It Works
+      <a href="#how-it-works" class="border border-gray-300 text-gray-700 font-semibold text-[15px] px-7 py-3.5 rounded-full hover:border-gray-400 hover:bg-gray-50 transition">
+        See how it works
       </a>
     </div>
+    <p class="text-gray-400 text-sm">No card required · 1 week free · Cancel any time</p>
+  </div>
+</section>
 
-    <p class="text-white/60 text-sm mb-12">No card required &nbsp;•&nbsp; No contract &nbsp;•&nbsp; Cancel any time</p>
+<!-- PRODUCT MOCKUPS — incident.io style 3 card layout -->
+<section class="px-6 pb-20 md:pb-28">
+  <div class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+    <!-- Police Station Card -->
+    <div class="bg-navy rounded-2xl p-6 pb-0 overflow-hidden relative group">
+      <div class="mb-5">
+        <span class="text-teal text-xs font-bold uppercase tracking-wider">Police Station</span>
+        <h3 class="text-white text-lg font-display mt-1.5">Custody attendance note</h3>
+      </div>
+      <!-- Mock form UI -->
+      <div class="bg-white rounded-t-xl p-4 shadow-2xl">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-2 h-2 rounded-full bg-red-400"></div>
+          <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+          <div class="w-2 h-2 rounded-full bg-green-400"></div>
+          <span class="text-[11px] text-gray-400 ml-2 font-mono">legalformsapp.co.uk/app</span>
+        </div>
+        <div class="space-y-3">
+          <div class="bg-navy/5 rounded-lg p-3">
+            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wide mb-1">Client Name</div>
+            <div class="text-sm text-gray-800 font-medium">James Richardson</div>
+          </div>
+          <div class="bg-navy/5 rounded-lg p-3">
+            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wide mb-1">Custody Record No.</div>
+            <div class="text-sm text-gray-800 font-medium">CR-2026-04812</div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-navy/5 rounded-lg p-3">
+              <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wide mb-1">Offence</div>
+              <div class="text-sm text-gray-800 font-medium">S.47 ABH</div>
+            </div>
+            <div class="bg-navy/5 rounded-lg p-3">
+              <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wide mb-1">Result</div>
+              <div class="text-sm text-teal font-semibold">NFA ✓</div>
+            </div>
+          </div>
+          <div class="bg-teal text-white text-center text-sm font-semibold py-2.5 rounded-lg">Generate PDF</div>
+        </div>
+      </div>
+    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
-        <div class="text-teal text-3xl font-bold">3 minutes</div>
-        <div class="text-white/70 text-sm mt-1">Per attendance note</div>
+    <!-- Dictation Card -->
+    <div class="bg-navy-deep rounded-2xl p-6 pb-0 overflow-hidden relative">
+      <div class="mb-5">
+        <span class="text-teal text-xs font-bold uppercase tracking-wider">AI Dictation</span>
+        <h3 class="text-white text-lg font-display mt-1.5">Speak, don't type</h3>
       </div>
-      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
-        <div class="text-teal text-3xl font-bold">3 forms</div>
-        <div class="text-white/70 text-sm mt-1">All covered in one app</div>
+      <!-- Mock chat/dictation UI -->
+      <div class="bg-white rounded-t-xl p-4 shadow-2xl">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-2 h-2 rounded-full bg-red-400"></div>
+          <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+          <div class="w-2 h-2 rounded-full bg-green-400"></div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-3 mb-3">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <div class="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <span class="text-[11px] text-red-500 font-bold uppercase tracking-wide">Recording</span>
+            <span class="text-[11px] text-gray-400 ml-auto">01:24</span>
+          </div>
+          <div class="flex items-end gap-0.5 h-6">
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.1s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.2s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.3s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.15s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.25s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.05s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.35s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.12s"></div>
+            <div class="w-1 bg-teal/60 rounded-full bar-animate" style="animation-delay:0.22s"></div>
+          </div>
+        </div>
+        <div class="text-[13px] text-gray-700 leading-relaxed mb-3">
+          <span class="text-gray-400 italic">Transcription:</span><br>
+          "Client advised on right to silence. Police disclosed CCTV evidence placing client at scene. Advised no comment interview given strength of..."
+        </div>
+        <div class="flex gap-2">
+          <div class="flex-1 bg-navy/5 rounded-lg text-center text-xs font-semibold text-navy py-2">Insert into form</div>
+          <div class="flex-1 bg-navy/5 rounded-lg text-center text-xs font-semibold text-gray-400 py-2">Discard</div>
+        </div>
       </div>
-      <div class="bg-white/5 backdrop-blur border border-white/10 rounded-xl px-6 py-5">
-        <div class="text-teal text-3xl font-bold">£19/user</div>
-        <div class="text-white/70 text-sm mt-1">Starting from per month</div>
+    </div>
+
+    <!-- Dashboard Card -->
+    <div class="bg-navy rounded-2xl p-6 pb-0 overflow-hidden relative">
+      <div class="mb-5">
+        <span class="text-teal text-xs font-bold uppercase tracking-wider">All Forms</span>
+        <h3 class="text-white text-lg font-display mt-1.5">Three courts, one app</h3>
       </div>
+      <!-- Mock dashboard UI -->
+      <div class="bg-white rounded-t-xl p-4 shadow-2xl">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-2 h-2 rounded-full bg-red-400"></div>
+          <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+          <div class="w-2 h-2 rounded-full bg-green-400"></div>
+        </div>
+        <div class="space-y-2.5">
+          <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+            <span class="text-lg">🚔</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-gray-800">Police Station</div>
+              <div class="text-[11px] text-gray-400">Custody attendance form</div>
+            </div>
+            <span class="text-[10px] font-bold text-teal bg-teal-light px-2 py-1 rounded-full">3 min</span>
+          </div>
+          <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+            <span class="text-lg">⚖️</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-gray-800">Magistrates Court</div>
+              <div class="text-[11px] text-gray-400">Full attendance note</div>
+            </div>
+            <span class="text-[10px] font-bold text-teal bg-teal-light px-2 py-1 rounded-full">3 min</span>
+          </div>
+          <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+            <span class="text-lg">🏛️</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-gray-800">Crown Court</div>
+              <div class="text-[11px] text-gray-400">Hearing attendance note</div>
+            </div>
+            <span class="text-[10px] font-bold text-teal bg-teal-light px-2 py-1 rounded-full">3 min</span>
+          </div>
+          <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+            <span class="text-lg">🧾</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-gray-800">Invoicing</div>
+              <div class="text-[11px] text-gray-400">Auto-calculated fees</div>
+            </div>
+            <span class="text-[10px] font-bold text-navy bg-navy/5 px-2 py-1 rounded-full">Built in</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<section class="border-y border-gray-100 py-14 px-6">
+  <div class="max-w-[900px] mx-auto grid grid-cols-3 gap-8 text-center">
+    <div>
+      <div class="text-navy text-4xl md:text-5xl font-display">3 min</div>
+      <div class="text-gray-400 text-sm mt-1">Per attendance note</div>
+    </div>
+    <div class="border-x border-gray-100">
+      <div class="text-navy text-4xl md:text-5xl font-display">3 forms</div>
+      <div class="text-gray-400 text-sm mt-1">All covered in one app</div>
+    </div>
+    <div>
+      <div class="text-navy text-4xl md:text-5xl font-display">£25</div>
+      <div class="text-gray-400 text-sm mt-1">Starting per month</div>
     </div>
   </div>
 </section>
 
 <!-- THE PROBLEM -->
-<section class="bg-white py-20 px-6" id="features">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-14 fade-up">
-      <h2 class="text-navy text-3xl md:text-4xl font-bold mb-6">Still filling out paper forms<br>in custody suites?</h2>
-      <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-        Criminal defence solicitors spend 20 to 30 minutes per attendance filling out the same paper forms
-        by hand — under pressure, often in noisy environments, with no way to save or search past notes.
-      </p>
-    </div>
+<section class="py-20 md:py-28 px-6" id="features">
+  <div class="max-w-[900px] mx-auto text-center mb-16 fade-up">
+    <h2 class="text-navy text-4xl md:text-5xl leading-tight mb-6">Still filling out paper forms<br>in custody suites?</h2>
+    <p class="text-gray-500 text-lg max-w-[560px] mx-auto leading-relaxed">
+      Criminal defence solicitors spend 20 to 30 minutes per attendance filling out the same paper forms
+      by hand — under pressure, often in noisy environments, with no way to save or search past notes.
+    </p>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
-        <div class="text-4xl mb-4">⏱️</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">20 to 30 minutes per form</h3>
-        <p class="text-gray-500">Handwriting attendance notes at the police station, magistrates court and crown court eats into time you do not have</p>
-      </div>
-      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
-        <div class="text-4xl mb-4">📋</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Three different paper forms</h3>
-        <p class="text-gray-500">Each court and the police station require separate forms — all filled by hand every single visit</p>
-      </div>
-      <div class="bg-red-50 border border-red-100 rounded-xl p-8 text-center fade-up">
-        <div class="text-4xl mb-4">🔍</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">No way to search past notes</h3>
-        <p class="text-gray-500">Paper forms pile up and finding a previous attendance note means searching through physical files</p>
-      </div>
+  <div class="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="border border-red-100 bg-red-50/50 rounded-2xl p-7 fade-up">
+      <div class="text-3xl mb-4">⏱️</div>
+      <h3 class="text-navy text-xl mb-2 font-display">20–30 minutes per form</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Handwriting attendance notes at the police station, magistrates court and crown court eats into time you do not have</p>
+    </div>
+    <div class="border border-red-100 bg-red-50/50 rounded-2xl p-7 fade-up">
+      <div class="text-3xl mb-4">📋</div>
+      <h3 class="text-navy text-xl mb-2 font-display">Three different paper forms</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Each court and the police station require separate forms — all filled by hand every single visit</p>
+    </div>
+    <div class="border border-red-100 bg-red-50/50 rounded-2xl p-7 fade-up">
+      <div class="text-3xl mb-4">🔍</div>
+      <h3 class="text-navy text-xl mb-2 font-display">No way to search past notes</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Paper forms pile up and finding a previous attendance note means searching through physical files</p>
     </div>
   </div>
 </section>
 
 <!-- THE SOLUTION -->
-<section class="bg-[#F5F5F5] py-20 px-6">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-14 fade-up">
-      <h2 class="text-navy text-3xl md:text-4xl font-bold">LegalForms — all three forms<br>on your phone</h2>
-    </div>
+<section class="bg-warm-bg border-y border-warm-border py-20 md:py-28 px-6">
+  <div class="max-w-[900px] mx-auto text-center mb-16 fade-up">
+    <h2 class="text-navy text-4xl md:text-5xl leading-tight">All three forms,<br>on your phone</h2>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
-        <div class="text-4xl mb-4">🚔</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Police Station Attendance Form</h3>
-        <p class="text-gray-500">All fields from the paper custody form — completed digitally. Client details, police disclosure, interview notes, advice given and result. Professional PDF ready in under 3 minutes.</p>
-      </div>
-      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
-        <div class="text-4xl mb-4">⚖️</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Magistrates Court Attendance Form</h3>
-        <p class="text-gray-500">Full magistrates court attendance note covering arrest details, client instructions, advice given, interview details and court result. Done on your phone.</p>
-      </div>
-      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-teal fade-up">
-        <div class="text-4xl mb-4">🏛️</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Crown Court Attendance Note</h3>
-        <p class="text-gray-500">Crown court attendance note with hearing details, parties present, orders made, stage dates and post hearing conference notes. Generated as a professional PDF.</p>
-      </div>
+  <div class="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-2xl p-7 border border-warm-border shadow-sm fade-up">
+      <div class="w-10 h-10 bg-teal-light rounded-xl flex items-center justify-center text-xl mb-5">🚔</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Police Station Attendance Form</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">All fields from the paper custody form — completed digitally. Client details, police disclosure, interview notes, advice given and result. Professional PDF ready in under 3 minutes.</p>
+    </div>
+    <div class="bg-white rounded-2xl p-7 border border-warm-border shadow-sm fade-up">
+      <div class="w-10 h-10 bg-teal-light rounded-xl flex items-center justify-center text-xl mb-5">⚖️</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Magistrates Court Attendance Form</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Full magistrates court attendance note covering arrest details, client instructions, advice given, interview details and court result. Done on your phone.</p>
+    </div>
+    <div class="bg-white rounded-2xl p-7 border border-warm-border shadow-sm fade-up">
+      <div class="w-10 h-10 bg-teal-light rounded-xl flex items-center justify-center text-xl mb-5">🏛️</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Crown Court Attendance Note</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Crown court attendance note with hearing details, parties present, orders made, stage dates and post hearing conference notes. Generated as a professional PDF.</p>
     </div>
   </div>
 </section>
 
 <!-- VOICE DICTATION -->
-<section class="bg-navy py-20 px-6">
-  <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<section class="py-20 md:py-28 px-6" id="dictation">
+  <div class="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
     <!-- Left -->
     <div class="fade-up">
-      <span class="inline-block bg-teal/20 text-teal font-bold text-sm px-4 py-1.5 rounded-full mb-5 tracking-wide uppercase">New Feature</span>
-      <h2 class="text-white text-3xl md:text-4xl font-bold mb-6">🎙️ AI Voice Dictation</h2>
-      <p class="text-white/80 text-lg leading-relaxed mb-6">
+      <span class="inline-flex items-center gap-2 bg-teal-light text-teal font-bold text-xs px-3.5 py-1.5 rounded-full mb-6 uppercase tracking-wider">
+        <span class="w-1.5 h-1.5 bg-teal rounded-full"></span>
+        New Feature
+      </span>
+      <h2 class="text-navy text-4xl md:text-5xl leading-tight mb-6">AI Voice<br>Dictation</h2>
+      <p class="text-gray-500 text-[15px] leading-relaxed mb-5">
         Speak your notes out loud and have them transcribed instantly with legal accuracy — powered by OpenAI Whisper.
       </p>
-      <p class="text-white/80 text-lg leading-relaxed mb-6">
+      <p class="text-gray-500 text-[15px] leading-relaxed mb-5">
         No more typing on a small screen in a noisy custody suite. Tap the mic, speak freely, and watch your notes appear automatically.
       </p>
-      <p class="text-white/80 text-lg leading-relaxed mb-8">
+      <p class="text-gray-500 text-[15px] leading-relaxed mb-8">
         Perfect for interview notes, advice given and client instructions.
       </p>
       <ul class="space-y-3">
-        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Legal terminology recognised accurately</li>
-        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Works even with background noise</li>
-        <li class="flex items-center gap-3 text-white/90"><span class="text-teal text-xl">✓</span> Tap to start — tap to stop</li>
+        <li class="flex items-center gap-3 text-gray-700 text-[15px]"><span class="w-5 h-5 bg-teal-light rounded-full flex items-center justify-center"><span class="text-teal text-xs font-bold">✓</span></span> Legal terminology recognised accurately</li>
+        <li class="flex items-center gap-3 text-gray-700 text-[15px]"><span class="w-5 h-5 bg-teal-light rounded-full flex items-center justify-center"><span class="text-teal text-xs font-bold">✓</span></span> Works even with background noise</li>
+        <li class="flex items-center gap-3 text-gray-700 text-[15px]"><span class="w-5 h-5 bg-teal-light rounded-full flex items-center justify-center"><span class="text-teal text-xs font-bold">✓</span></span> Tap to start — tap to stop</li>
       </ul>
     </div>
 
     <!-- Right — Phone Mockup -->
     <div class="flex justify-center fade-up">
       <div class="relative">
-        <!-- Phone Frame -->
-        <div class="w-[280px] h-[560px] bg-navy-dark rounded-[3rem] border-4 border-white/20 shadow-2xl p-3 relative overflow-hidden">
-          <!-- Notch -->
-          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-navy-dark rounded-b-2xl z-10"></div>
-          <!-- Screen -->
-          <div class="w-full h-full bg-white rounded-[2.2rem] flex flex-col items-center justify-center relative overflow-hidden">
-            <!-- Mic Button -->
+        <div class="w-[280px] h-[560px] bg-navy-deep rounded-[3rem] border-[3px] border-gray-700 shadow-2xl p-3 relative overflow-hidden">
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-navy-deep rounded-b-2xl z-10"></div>
+          <div class="w-full h-full bg-white rounded-[2.3rem] flex flex-col items-center justify-center relative overflow-hidden">
             <div class="relative flex items-center justify-center mb-6">
-              <div class="absolute w-28 h-28 rounded-full border-4 border-red-400 pulse-ring"></div>
-              <div class="absolute w-24 h-24 rounded-full border-2 border-red-300 pulse-ring" style="animation-delay: 0.5s;"></div>
-              <div class="w-20 h-20 bg-teal rounded-full flex items-center justify-center shadow-xl relative z-10">
-                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <div class="absolute w-28 h-28 rounded-full border-[3px] border-red-400 pulse-ring"></div>
+              <div class="absolute w-24 h-24 rounded-full border-2 border-red-300 pulse-ring" style="animation-delay:0.5s"></div>
+              <div class="w-20 h-20 bg-teal rounded-full flex items-center justify-center shadow-lg relative z-10">
+                <svg class="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                   <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
                 </svg>
               </div>
             </div>
-            <p class="text-red-500 font-bold text-sm tracking-wider uppercase">Recording...</p>
-            <!-- Waveform -->
-            <div class="flex items-end gap-1 mt-4 h-8">
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.1s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.2s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.3s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.4s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.15s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.25s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.35s;"></div>
-              <div class="w-1.5 bg-teal rounded-full bar-animate" style="animation-delay: 0.05s;"></div>
+            <p class="text-red-500 font-bold text-xs tracking-widest uppercase mb-4">Recording...</p>
+            <div class="flex items-end gap-[3px] h-7">
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.1s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.2s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.3s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.4s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.15s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.25s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.35s"></div>
+              <div class="w-[3px] bg-teal rounded-full bar-animate" style="animation-delay:0.05s"></div>
             </div>
+            <p class="text-gray-400 text-[11px] mt-6">Works on iPhone and Android</p>
           </div>
         </div>
-        <p class="text-white/60 text-center text-sm mt-4">Works on iPhone and Android</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="bg-white py-20 px-6" id="how-it-works">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-14 fade-up">
-      <h2 class="text-navy text-3xl md:text-4xl font-bold">Up and running in 3 steps</h2>
+<section class="bg-warm-bg border-y border-warm-border py-20 md:py-28 px-6" id="how-it-works">
+  <div class="max-w-[900px] mx-auto text-center mb-16 fade-up">
+    <h2 class="text-navy text-4xl md:text-5xl leading-tight">Up and running in 3 steps</h2>
+  </div>
+
+  <div class="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+    <div class="hidden md:block absolute top-7 left-[20%] right-[20%] border-t-2 border-dashed border-gray-300"></div>
+
+    <div class="text-center fade-up relative">
+      <div class="w-14 h-14 bg-navy text-white rounded-full flex items-center justify-center text-2xl font-display mx-auto mb-5 relative z-10 shadow-sm">1</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Install on your phone</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Open legalformsapp.co.uk in Safari on iPhone or Chrome on Android. Tap Add to Home Screen for instant app access — no App Store needed.</p>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-      <!-- Dotted connector lines (desktop only) -->
-      <div class="hidden md:block absolute top-12 left-[33%] right-[33%] border-t-2 border-dashed border-gray-300"></div>
-
-      <div class="text-center fade-up relative">
-        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">1</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Install on your phone</h3>
-        <p class="text-gray-500">Open legalformsapp.co.uk in Safari on iPhone or Chrome on Android. Tap Add to Home Screen for instant app access — no App Store needed.</p>
-      </div>
-      <div class="text-center fade-up relative">
-        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">2</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Fill in your form</h3>
-        <p class="text-gray-500">Choose your form type — police station, magistrates or crown court. Fill in the fields or use voice dictation to speak your notes.</p>
-      </div>
-      <div class="text-center fade-up relative">
-        <div class="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-5 relative z-10">3</div>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Generate your PDF</h3>
-        <p class="text-gray-500">Tap Generate and your professional attendance note PDF is ready instantly — with your firm name at the top. Save, share or email directly.</p>
-      </div>
+    <div class="text-center fade-up relative">
+      <div class="w-14 h-14 bg-navy text-white rounded-full flex items-center justify-center text-2xl font-display mx-auto mb-5 relative z-10 shadow-sm">2</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Fill in your form</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Choose your form type — police station, magistrates or crown court. Fill in the fields or use voice dictation to speak your notes.</p>
+    </div>
+    <div class="text-center fade-up relative">
+      <div class="w-14 h-14 bg-navy text-white rounded-full flex items-center justify-center text-2xl font-display mx-auto mb-5 relative z-10 shadow-sm">3</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Generate your PDF</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed">Tap Generate and your professional attendance note PDF is ready instantly — with your firm name at the top. Save, share or email directly.</p>
     </div>
   </div>
 </section>
 
 <!-- COMING SOON -->
-<section class="bg-[#F5F5F5] py-20 px-6">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-14 fade-up">
-      <h2 class="text-navy text-3xl md:text-4xl font-bold">What is coming next</h2>
-    </div>
+<section class="py-20 md:py-28 px-6">
+  <div class="max-w-[900px] mx-auto text-center mb-16 fade-up">
+    <h2 class="text-navy text-4xl md:text-5xl leading-tight">What's coming next</h2>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-purple fade-up">
-        <div class="text-4xl mb-3">🔗</div>
-        <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wide">Coming Soon</span>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">LEAP Integration</h3>
-        <p class="text-gray-500 mb-4">Upload completed attendance notes directly into your LEAP matter with one tap. No switching between apps. No manual filing. Currently awaiting LEAP API approval.</p>
-        <a href="#contact" class="text-purple font-semibold hover:underline text-sm">Join the waitlist →</a>
-      </div>
-      <div class="bg-white rounded-xl p-8 shadow-lg border-t-4 border-purple fade-up">
-        <div class="text-4xl mb-3">💾</div>
-        <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wide">Coming Soon</span>
-        <h3 class="text-navy text-xl font-bold mb-3 font-body">Saved Notes Library</h3>
-        <p class="text-gray-500 mb-4">Access all your past attendance notes in one searchable library. Find any note by client name, date or case type in seconds.</p>
-        <a href="#contact" class="text-purple font-semibold hover:underline text-sm">Join the waitlist →</a>
-      </div>
+  <div class="max-w-[800px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl p-7 border border-warm-border shadow-sm fade-up">
+      <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wider">Coming Soon</span>
+      <div class="text-3xl mb-3">🔗</div>
+      <h3 class="text-navy text-xl mb-3 font-display">LEAP Integration</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed mb-4">Upload completed attendance notes directly into your LEAP matter with one tap. No switching between apps. No manual filing. Currently awaiting LEAP API approval.</p>
+      <a href="#contact" class="text-purple font-semibold text-sm hover:underline">Join the waitlist →</a>
+    </div>
+    <div class="bg-white rounded-2xl p-7 border border-warm-border shadow-sm fade-up">
+      <span class="inline-block bg-purple/10 text-purple font-bold text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wider">Coming Soon</span>
+      <div class="text-3xl mb-3">💾</div>
+      <h3 class="text-navy text-xl mb-3 font-display">Saved Notes Library</h3>
+      <p class="text-gray-500 text-[15px] leading-relaxed mb-4">Access all your past attendance notes in one searchable library. Find any note by client name, date or case type in seconds.</p>
+      <a href="#contact" class="text-purple font-semibold text-sm hover:underline">Join the waitlist →</a>
     </div>
   </div>
 </section>
 
 <!-- PRICING -->
-<section class="bg-white py-20 px-6" id="pricing">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-14 fade-up">
-      <h2 class="text-navy text-3xl md:text-4xl font-bold mb-4">Simple honest pricing</h2>
+<section class="bg-warm-bg border-y border-warm-border py-20 md:py-28 px-6" id="pricing">
+  <div class="max-w-[900px] mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="text-navy text-4xl md:text-5xl leading-tight mb-4">Simple, honest pricing</h2>
       <p class="text-gray-500 text-lg">Pay only for what you need. No hidden fees. Cancel any time.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <!-- Starter -->
-      <div class="bg-white rounded-xl p-8 border-t-4 border-gray-300 shadow-md fade-up">
-        <p class="text-gray-500 font-semibold text-sm uppercase tracking-wide mb-2">Starter</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[750px] mx-auto mb-10">
+      <!-- Solo -->
+      <div class="bg-white rounded-2xl p-8 border border-warm-border shadow-sm fade-up">
+        <p class="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4">Solo</p>
         <div class="mb-6">
-          <span class="text-navy text-5xl font-bold">£19</span>
-          <span class="text-gray-500">/user/month</span>
+          <span class="text-navy text-5xl font-display">£25</span>
+          <span class="text-gray-400 text-sm">/month</span>
         </div>
-        <ul class="space-y-3 mb-6 text-sm">
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> All 3 attendance forms</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> PDF generation</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Invoicing</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Firm name on all PDFs</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> 100 minutes transcription/month</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Cancel any time</li>
-          <li class="flex items-center gap-2"><span class="text-red-400">❌</span> Full voice transcription</li>
+        <ul class="space-y-3 mb-8 text-[15px]">
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> All 3 attendance forms</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> PDF generation</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Invoice generator</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Keyboard voice dictation</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> 1 user</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Cancel any time</li>
         </ul>
-        <p class="text-gray-400 text-xs italic mb-6">100 min/month transcription token included</p>
-        <a href="#pricing" class="block w-full text-center border-2 border-gray-300 text-navy font-bold py-3 rounded-lg hover:bg-gray-50 transition">Start Free Trial</a>
+        <a href="#" class="block w-full text-center border border-gray-300 text-navy font-semibold py-3 rounded-full hover:bg-gray-50 transition text-sm">Start Free Trial</a>
       </div>
 
-      <!-- Pro -->
-      <div class="bg-white rounded-xl p-8 border-t-4 border-navy shadow-xl relative fade-up scale-[1.02]">
-        <div class="absolute top-4 right-4 bg-teal text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</div>
-        <p class="text-navy font-bold text-sm uppercase tracking-wide mb-2">Pro</p>
+      <!-- Firm -->
+      <div class="bg-white rounded-2xl p-8 border-2 border-navy shadow-lg relative fade-up">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide">Most Popular</div>
+        <p class="text-navy font-bold text-sm uppercase tracking-wider mb-1">Firm</p>
+        <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-4">Coming Soon</p>
         <div class="mb-6">
-          <span class="text-navy text-5xl font-bold">£35</span>
-          <span class="text-gray-500">/user/month</span>
+          <span class="text-navy text-5xl font-display">£40</span>
+          <span class="text-gray-400 text-sm">/month</span>
         </div>
-        <ul class="space-y-3 mb-6 text-sm">
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Everything in Starter</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Full voice transcription</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> 1,000 minutes/month included</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Overage at £0.02/min</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Priority support</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Cancel any time</li>
+        <ul class="space-y-3 mb-8 text-[15px]">
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Everything in Solo</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> LEAP integration</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Direct upload to LEAP matter</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Up to 5 users</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Priority support</li>
+          <li class="flex items-center gap-2.5"><span class="text-teal">✅</span> Cancel any time</li>
         </ul>
-        <a href="#pricing" class="block w-full text-center bg-navy text-white font-bold py-3 rounded-lg hover:bg-navy-dark transition">Start Free Trial</a>
-      </div>
-
-      <!-- Premium -->
-      <div class="bg-white rounded-xl p-8 border-t-4 border-purple shadow-md fade-up">
-        <div class="absolute top-4 right-4 bg-purple text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Coming Soon</div>
-        <p class="text-purple font-bold text-sm uppercase tracking-wide mb-2">Premium</p>
-        <div class="mb-6">
-          <span class="text-navy text-3xl font-bold">Contact us</span>
-        </div>
-        <ul class="space-y-3 mb-6 text-sm">
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Everything in Pro</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> LEAP integration</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Direct upload to LEAP matter</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Dedicated account manager</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Custom onboarding</li>
-          <li class="flex items-center gap-2"><span class="text-teal">✅</span> Unlimited transcription</li>
-        </ul>
-        <a href="#contact" class="block w-full text-center bg-purple text-white font-bold py-3 rounded-lg hover:bg-purple-dark transition">Get in Touch</a>
+        <a href="#contact" class="block w-full text-center bg-navy text-white font-semibold py-3 rounded-full hover:bg-navy-deep transition text-sm">Join Waitlist</a>
       </div>
     </div>
 
-    <p class="text-center text-gray-400 text-sm mb-14">1 week free trial on Starter and Pro — no card required. All prices exclude VAT.</p>
-
-    <!-- Comparison Table -->
-    <div class="fade-up">
-      <h3 class="text-navy text-2xl font-bold text-center mb-8 font-body">Full feature comparison</h3>
-      <div class="overflow-x-auto rounded-xl shadow-md border border-gray-200">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-navy text-white">
-              <th class="text-left px-6 py-4 font-semibold">Feature</th>
-              <th class="text-center px-6 py-4 font-semibold">Starter</th>
-              <th class="text-center px-6 py-4 font-semibold">Pro</th>
-              <th class="text-center px-6 py-4 font-semibold">Premium</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="bg-white">
-              <td class="px-6 py-3">All 3 forms</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-            </tr>
-            <tr class="bg-gray-50">
-              <td class="px-6 py-3">PDF generation</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-            </tr>
-            <tr class="bg-white">
-              <td class="px-6 py-3">Invoicing</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-            </tr>
-            <tr class="bg-gray-50">
-              <td class="px-6 py-3">Firm name on PDFs</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-              <td class="text-center px-6 py-3 text-teal">✅</td>
-            </tr>
-            <tr class="bg-white">
-              <td class="px-6 py-3">Voice transcription</td>
-              <td class="text-center px-6 py-3">100 min</td>
-              <td class="text-center px-6 py-3">1,000 min</td>
-              <td class="text-center px-6 py-3">Unlimited</td>
-            </tr>
-            <tr class="bg-gray-50">
-              <td class="px-6 py-3">Overage rate</td>
-              <td class="text-center px-6 py-3">—</td>
-              <td class="text-center px-6 py-3">£0.02/min</td>
-              <td class="text-center px-6 py-3">Included</td>
-            </tr>
-            <tr class="bg-white">
-              <td class="px-6 py-3">LEAP integration</td>
-              <td class="text-center px-6 py-3 text-red-400">❌</td>
-              <td class="text-center px-6 py-3 text-red-400">❌</td>
-              <td class="text-center px-6 py-3 text-teal">✅ Soon</td>
-            </tr>
-            <tr class="bg-gray-50">
-              <td class="px-6 py-3">Support</td>
-              <td class="text-center px-6 py-3">Standard</td>
-              <td class="text-center px-6 py-3">Priority</td>
-              <td class="text-center px-6 py-3">Dedicated</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <p class="text-center text-gray-400 text-sm">1 week free trial on Solo — no card required. All prices exclude VAT.</p>
   </div>
 </section>
 
 <!-- FINAL CTA -->
-<section class="bg-teal py-20 px-6">
-  <div class="max-w-[1200px] mx-auto text-center">
-    <h2 class="text-white text-3xl md:text-4xl font-bold mb-4">Ready to go paperless?</h2>
-    <p class="text-white/80 text-lg mb-10">Join criminal defence solicitors saving 20 minutes per attendance note</p>
-    <a href="#pricing" class="inline-block bg-white text-navy font-bold text-lg px-10 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-xl">
-      Start Your Free 1 Week Trial
+<section class="py-20 md:py-28 px-6">
+  <div class="max-w-[700px] mx-auto text-center">
+    <h2 class="text-navy text-4xl md:text-5xl leading-tight mb-5">Ready to go paperless?</h2>
+    <p class="text-gray-500 text-lg mb-10">Join criminal defence solicitors saving 20 minutes per attendance note</p>
+    <a href="#pricing" class="inline-block bg-teal hover:bg-teal-dark text-white font-semibold text-[15px] px-8 py-4 rounded-full transition shadow-sm">
+      Start your free 1 week trial
     </a>
-    <p class="text-white/60 text-sm mt-6">No card required &nbsp;•&nbsp; No contract &nbsp;•&nbsp; 1 week free &nbsp;•&nbsp; Cancel any time</p>
+    <p class="text-gray-400 text-sm mt-6">No card required · No contract · 1 week free · Cancel any time</p>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="bg-navy-dark py-16 px-6" id="contact">
-  <div class="max-w-[1200px] mx-auto">
+<footer class="bg-navy-deep py-16 px-6" id="contact">
+  <div class="max-w-[1100px] mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-      <!-- Col 1 -->
       <div>
-        <h3 class="text-white text-xl font-bold font-heading mb-1">LegalForms</h3>
-        <p class="text-gray-400 text-sm mb-3">by TechBusy</p>
-        <p class="text-gray-400 text-sm">Digital attendance notes for criminal defence solicitors</p>
+        <div class="text-lg font-extrabold mb-1">
+          <span class="text-white">legal</span><span class="text-teal">forms</span>
+        </div>
+        <p class="text-gray-500 text-sm mb-3">by TechBusy</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Digital attendance notes for criminal defence solicitors</p>
       </div>
-      <!-- Col 2 -->
       <div>
-        <h4 class="text-white font-bold mb-4 font-body">Product</h4>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
-          <li><a href="#pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
-          <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How it works</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-white transition">Coming soon</a></li>
+        <h4 class="text-white font-semibold text-sm mb-4">Product</h4>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="#features" class="text-gray-500 hover:text-white transition">Features</a></li>
+          <li><a href="#pricing" class="text-gray-500 hover:text-white transition">Pricing</a></li>
+          <li><a href="#how-it-works" class="text-gray-500 hover:text-white transition">How it works</a></li>
+          <li><a href="#" class="text-gray-500 hover:text-white transition">Coming soon</a></li>
         </ul>
       </div>
-      <!-- Col 3 -->
       <div>
-        <h4 class="text-white font-bold mb-4 font-body">Legal</h4>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
+        <h4 class="text-white font-semibold text-sm mb-4">Legal</h4>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="#" class="text-gray-500 hover:text-white transition">Privacy Policy</a></li>
+          <li><a href="#" class="text-gray-500 hover:text-white transition">Terms of Service</a></li>
+          <li><a href="#" class="text-gray-500 hover:text-white transition">Cookie Policy</a></li>
         </ul>
       </div>
-      <!-- Col 4 -->
       <div>
-        <h4 class="text-white font-bold mb-4 font-body">Contact</h4>
-        <p class="text-gray-400 text-sm mb-2">Questions or feedback?</p>
+        <h4 class="text-white font-semibold text-sm mb-4">Contact</h4>
+        <p class="text-gray-500 text-sm mb-2">Questions or feedback?</p>
         <a href="mailto:hello@legalformsapp.co.uk" class="text-teal hover:underline text-sm">hello@legalformsapp.co.uk</a>
-        <p class="mt-3"><a href="#" class="text-gray-400 hover:text-white transition text-sm">Follow us on LinkedIn</a></p>
+        <p class="mt-3"><a href="#" class="text-gray-500 hover:text-white transition text-sm">Follow us on LinkedIn</a></p>
       </div>
     </div>
 
-    <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
+    <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-600 text-sm">
       <p>&copy; 2026 TechBusy Ltd. All rights reserved.</p>
       <p>legalformsapp.co.uk</p>
     </div>
   </div>
 </footer>
 
-<!-- Scripts -->
 <script>
-// Mobile menu toggle
 const menuBtn = document.getElementById('menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
-menuBtn.addEventListener('click', () => {
-  mobileMenu.classList.toggle('hidden');
-});
+menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileMenu.classList.add('hidden')));
 
-// Close mobile menu on link click
-mobileMenu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-});
-
-// Fade-up on scroll
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
-
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
 </body>
